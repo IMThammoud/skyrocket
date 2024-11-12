@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Regal hinzufuegen</title>
+  <link rel="stylesheet" href="/css/simple.css">
+</head>
+<body>
+<h1>
+  Regal Erstellen
+</h1>
+<div>
+  <form action="/shelve/submit" method="post">
+    <label for="shelve_name">Name des Regals <br><input type="text" placeholder="Notebooks, Smartphones" name="shelve_name" id="shelve_name"></label>
+
+    <br>
+    <br>
+    <div>
+    <label for="article-radio-button">Artikel
+      <input type="radio" name="is_for_service" id="article-radio-button" value="no"></label>
+    <label for="service-radio-button">Dienstleistung
+      <input type="radio" name="is_for_service" id="service-radio-button" value="yes">
+    </label>
+    </div>
+    <br>
+    <select name="category" id="category">
+      <option value="electronics">Elektronisch</option>
+      <option value="selfmade">Eigene Produktion</option>
+    </select>
+    <br>
+    <div id="article-selection-div">
+      <select name="article-selection" id="article-selection">
+      <option value="notebook">Laptop / Notebook</option>
+      <option value="smartphone">Smartphone</option>
+    </select>
+    </div>
+    <br>
+    <button type="submit" >create</button>
+  </form>
+</div>
+</body>
+</html>
