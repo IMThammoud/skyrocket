@@ -1,0 +1,2 @@
+MARIADB_USERNAME=trondl
+MARIADB_PASSWORD=dercheker

@@ -1,9 +1,9 @@
 HELP.md
 target/
+src/main/java/com/skyrocket/envs.txt
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-envs.txt
 !**/src/main/java/com/skyrocket/envs.txt
 ### STS ###
 .apt_generated
