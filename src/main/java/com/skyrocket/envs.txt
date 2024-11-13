@@ -1,2 +1,4 @@
+DATABASE_URL=jdbc:mariadb://localhost:3306/
+DATABASE_NAME=skyrocket
 MARIADB_USERNAME=trondl
 MARIADB_PASSWORD=dercheker
