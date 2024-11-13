@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PageController {
-    final static Logger LOG = LoggerFactory.getLogger(PageController.class);
+    public final static Logger LOG = LoggerFactory.getLogger(PageController.class);
 
     @GetMapping("/")
     public String landingPage(){
@@ -32,6 +32,8 @@ public class PageController {
                                    @RequestParam(name = "category")String shelveCategory,
                                    @RequestParam(name = "article-selection")String articleType){
     LOG.info("Received Request");
-        return "blubububullblblbabababab";
+
+    // Add Javascript Modal saying added Shelve or not with Thymeleaf Rendering
+        return "shelve-dashboard";
     }
 }
