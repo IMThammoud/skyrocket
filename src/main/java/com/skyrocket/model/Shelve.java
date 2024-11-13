@@ -1,5 +1,6 @@
 package com.skyrocket.model;
 
+
 import java.util.UUID;
 
 public class Shelve {
@@ -8,13 +9,24 @@ public class Shelve {
     private String category;
     private boolean isForServices;
 
+    public String getType() {
+        return type;
+    }
+
+    public Shelve setType(String type) {
+        this.type = type;
+        return this;
+    }
+
+    private String type;
     private UUID fkUserAccount;
 
-    public Shelve(UUID id, String name, String category, boolean isForServices, UUID fkUserAccount) {
+    public Shelve(UUID id, String name, String category, boolean isForServices, String type,UUID fkUserAccount) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.isForServices = isForServices;
+        this.type = type;
         this.fkUserAccount = fkUserAccount;
     }
 
@@ -23,8 +35,8 @@ public class Shelve {
         return id;
     }
 
-    public Shelve setId(UUID id) {
-        this.id = id;
+    public Shelve setId() {
+        this.id = UUID.randomUUID();
         return this;
     }
 

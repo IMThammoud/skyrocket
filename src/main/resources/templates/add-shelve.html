@@ -10,7 +10,7 @@
   Regal Erstellen
 </h1>
 <div>
-  <form action="/shelve/submit" method="post">
+  <form action="/shelve/submit" method="POST">
     <label for="shelve_name">Name des Regals <br><input type="text" placeholder="Notebooks, Smartphones" name="shelve_name" id="shelve_name"></label>
 
     <br>
@@ -23,19 +23,20 @@
     </label>
     </div>
     <br>
+    <label for="category"> Kategorie <br>
     <select name="category" id="category">
       <option value="electronics">Elektronisch</option>
       <option value="selfmade">Eigene Produktion</option>
-    </select>
+    </select></label>
     <br>
     <div id="article-selection-div">
-      <select name="article-selection" id="article-selection">
+      <select name="article_selection" id="article-selection">
       <option value="notebook">Laptop / Notebook</option>
       <option value="smartphone">Smartphone</option>
     </select>
     </div>
     <br>
-    <button type="submit" >create</button>
+    <input type="submit">
   </form>
 </div>
 </body>
