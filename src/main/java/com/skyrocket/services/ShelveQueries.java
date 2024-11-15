@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static com.skyrocket.DatabaseConnector.connection;
+import static com.skyrocket.DatabaseConnector.DBConnector.connection;
 import static com.skyrocket.controller.PageController.LOG;
 
 @Service
