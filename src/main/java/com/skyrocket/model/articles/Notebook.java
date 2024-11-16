@@ -14,7 +14,6 @@ public class Notebook extends Article {
     private String operatingSystem;
     private double batteryCapacityHealth;
     private String keyboardLayout;
-    private int amountOfItems;
     private String sideNote;
 
     public Notebook(UUID id,
@@ -31,10 +30,10 @@ public class Notebook extends Article {
                     int storage,
                     double displaySize,
                     String keyboardLayout,
-                    int amountOfItems,
-                    String sideNote
+                    String sideNote,
+                    UUID shelveIdAsForeinKey
                     ) {
-        super(id, name, amount, type, description, priceWhenBought, sellingPrice);
+        super(id, name, amount, type, description, priceWhenBought, sellingPrice, shelveIdAsForeinKey);
         this.manufacturer = manufacturer;
         this.modelNr = modelNr;
         this.cpu = cpu;
@@ -42,7 +41,6 @@ public class Notebook extends Article {
         this.storage = storage;
         this.displaySize = displaySize;
         this.keyboardLayout = keyboardLayout;
-        this.amountOfItems = amountOfItems;
         this.sideNote = sideNote;
 
 
@@ -119,14 +117,6 @@ public class Notebook extends Article {
 
     public void setKeyboardLayout(String keyboardLayout) {
         this.keyboardLayout = keyboardLayout;
-    }
-
-    public int getAmountOfItems() {
-        return amountOfItems;
-    }
-
-    public void setAmountOfItems(int amountOfItems) {
-        this.amountOfItems = amountOfItems;
     }
 
     public String getSideNote() {

@@ -11,8 +11,18 @@ public abstract class Article {
     private double priceWhenBought;
     private double sellingPrice;
 
+    public UUID getShelveIdAsForeignKey() {
+        return shelveIdAsForeignKey;
+    }
 
-    public Article(UUID id, String name, int amount, String type, String description, double priceWhenBought, double sellingPrice) {
+    public void setShelveIdAsForeignKey(UUID shelveIdAsForeignKey) {
+        this.shelveIdAsForeignKey = shelveIdAsForeignKey;
+    }
+
+    private UUID shelveIdAsForeignKey;
+
+
+    public Article(UUID id, String name, int amount, String type, String description, double priceWhenBought, double sellingPrice, UUID shelveIdAsForeignKey) {
         this.id = id;
         this.name = name;
         this.amount = amount;
@@ -20,6 +30,7 @@ public abstract class Article {
         this.description = description;
         this.priceWhenBought = priceWhenBought;
         this.sellingPrice = sellingPrice;
+        this.shelveIdAsForeignKey = shelveIdAsForeignKey;
     }
 
     public UUID getId() {
