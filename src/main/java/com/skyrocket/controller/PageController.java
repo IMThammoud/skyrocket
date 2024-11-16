@@ -16,7 +16,6 @@ import java.util.UUID;
 public class PageController {
     public final static Logger LOG = LoggerFactory.getLogger(PageController.class);
     Shelve shelve;
-
     @Autowired
     ShelveQueries shelveQueries;
     Boolean isForService;

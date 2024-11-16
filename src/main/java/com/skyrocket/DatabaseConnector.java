@@ -54,7 +54,7 @@ public class DatabaseConnector{
 
                 LOG.info("PREPARED DATABASE TABLES SUCCESSFULLY");
 
-        } catch(SQLException e){
+        } catch(Exception e){
             LOG.info("Preparing Database-tables failed, REASON: "+ e.getMessage());}
         }
     }
