@@ -1,4 +1,5 @@
-# Skyrocket
+# Skyrocket (Mister Einzelunternehmer)
+![Alt-Text](src/main/resources/static/imgs/logo-600px.svg)
 ### An Inventory App 
 
 ### Requirements to run locally:
