@@ -1,6 +1,5 @@
-# Skyrocket (Mister Einzelunternehmer)
 ![Alt-Text](src/main/resources/static/imgs/logo-600px.svg)
-### An Inventory App 
+### An Inventory App  (Codename Skyrocket)
 
 ### Requirements to run locally:
 - Run a MariaDB-Database and call it skyrocket
