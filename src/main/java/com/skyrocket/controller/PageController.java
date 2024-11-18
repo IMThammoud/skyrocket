@@ -1,7 +1,12 @@
 package com.skyrocket.controller;
 
 import com.skyrocket.model.Shelve;
+import com.skyrocket.model.UserAccount;
 import com.skyrocket.services.ShelveQueries;
+import com.skyrocket.services.UserAccountQueries;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +19,41 @@ import java.util.UUID;
 
 @Controller
 public class PageController {
+
+    public PageController() {};
+
     public final static Logger LOG = LoggerFactory.getLogger(PageController.class);
     Shelve shelve;
     @Autowired
     ShelveQueries shelveQueries;
+    @Autowired
+    UserAccountQueries userAccountQueries;
     Boolean isForService;
+    @Autowired
+    HttpSession session;
 
     @GetMapping("/")
     public String landingPage(){
         return "landing-page";
+    }
+
+    @GetMapping("/registration-page")
+    public String registrationPage(){
+        return "registration";
+    }
+
+    @PostMapping("/register")
+    public String register(@RequestParam(name = "email")String email,
+                           @RequestParam(name = "password")String password,
+                           @RequestParam(name = "password-confirm")String passwordConfirmation
+                           ){
+
+        UserAccount newUser = new UserAccount(UUID.randomUUID(), email, password, session.getId());
+
+        LOG.info("Registering new user: " + newUser.toString());
+        LOG.info("same sessionID: " + session.getId());
+        userAccountQueries.insertUser(newUser);
+        return "login-site";
     }
 
     @GetMapping("/shelve/dashboard")

@@ -1,36 +1,33 @@
 package com.skyrocket.model;
 
-import org.apache.catalina.User;
-
 import java.util.Date;
 import java.util.UUID;
 
 public class UserAccount {
     private UUID id;
-    private String userEmail;
-    private String userPw;
+    private String email;
+    private String password;
     private Date creationDate;
 
-    public UserAccount(UUID id,
-                       String userName,
-                       String userPw,
-                       String userEmail,
-                       Date creationDate){
-
-        this.id = id;
-        this.userEmail = userEmail;
-        this.userPw = userPw;
-        this.creationDate = creationDate;
+    public String getSessionId() {
+        return sessionId;
     }
 
-    @Override
-    public String toString() {
-        return "UserAccount{" +
-                "id=" + id +
-                ", userEmail='" + userEmail + '\'' +
-                ", userPw='" + userPw + '\'' +
-                ", creationDate=" + creationDate +
-                '}';
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    private String sessionId;
+
+    public UserAccount(UUID id,
+                       String email,
+                       String password,
+                       String sessionId) {
+
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.sessionId = sessionId;
     }
 
     public UUID getId() {
@@ -42,21 +39,21 @@ public class UserAccount {
         return this;
     }
 
-    public String getUserPw() {
-        return userPw;
+    public String getPassword() {
+        return password;
     }
 
-    public UserAccount setUserPw(String userPw) {
-        this.userPw = userPw;
+    public UserAccount setPassword(String password) {
+        this.password = password;
         return this;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public UserAccount setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public UserAccount setEmail(String email) {
+        this.email = email;
         return this;
     }
 
@@ -71,5 +68,16 @@ public class UserAccount {
 
     public UserAccount build(){
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "UserAccount{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", creationDate=" + creationDate +
+                ", sessionId='" + sessionId + '\'' +
+                '}';
     }
 }

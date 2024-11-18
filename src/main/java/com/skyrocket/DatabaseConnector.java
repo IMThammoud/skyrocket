@@ -53,7 +53,20 @@ public class DatabaseConnector{
                             PRIMARY KEY (`pk_shelve_id`)
                           ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci""");
 
+                LOG.info("Preparing shelve table.");
                 statement.execute();
+
+                statement = connection.prepareStatement("""
+                        CREATE TABLE IF NOT EXISTS user_account(
+                            pk_id varchar(64) NOT NULL,
+                            email varchar(64) NOT NULL,
+                            user_password varchar(64) NOT NULL,
+                            session_id varchar(100) NOT NULL,
+                            created_at timestamp DEFAULT current_timestamp NOT NULL
+                        )""");
+                LOG.info("Preparing user_account table.");
+                statement.execute();
+
                 LOG.info("PREPARED DATABASE TABLES SUCCESSFULLY");
 
         } catch(Exception e){

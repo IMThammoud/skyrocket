@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/simple.css">
+</head>
+<body>
+<header>
+    <div><img src="/imgs/logo-400px-90px.svg" alt="Hippo-logo"></div>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a>Kontakt</a></li>
+        </ul></nav>
+</header>
+
+<fieldset>
+    <form action="/register" method="post">
+        <label for="email">E-Mail-Adresse</label>
+        <input type="email" placeholder="Frederik@Beispiel.de" name="email" id="email" required>
+
+
+        <label for="password">Passwort</label>
+        <input type="password" placeholder="Passwort" name="password" id="password" required>
+        <br>
+        <input type="password" placeholder="Passwort wiederholen" name="password-confirm" id="password-confirm" required>
+        <br>
+        <input type="submit" value="Registrieren">
+    </form>
+</fieldset>
+
+</body>
+</html>
