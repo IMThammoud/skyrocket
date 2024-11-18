@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -41,8 +42,8 @@ public class DatabaseConnector{
 
         public static void prepareTables(){
             try{
-                connection.prepareStatement("""
-                        CREATE TABLE
+                PreparedStatement statement = connection.prepareStatement("""
+                        CREATE TABLE IF NOT EXISTS
                           `shelve` (
                             `pk_shelve_id` varchar(64) NOT NULL,
                             `name` varchar(64) NOT NULL,
@@ -52,6 +53,7 @@ public class DatabaseConnector{
                             PRIMARY KEY (`pk_shelve_id`)
                           ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci""");
 
+                statement.execute();
                 LOG.info("PREPARED DATABASE TABLES SUCCESSFULLY");
 
         } catch(Exception e){
