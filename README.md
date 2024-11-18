@@ -10,5 +10,6 @@
 
 #### Functionalities in progress:
 + Inventory with different shelves, articles and services
++ Exporting as csv, pdf or similar
 + functioning login system
 + an API connection (eBay or PayPal or something similar)
