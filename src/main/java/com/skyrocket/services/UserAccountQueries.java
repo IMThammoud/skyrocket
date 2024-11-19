@@ -23,8 +23,11 @@ public class UserAccountQueries {
         preparedStatement.setString(2, userAccount.getEmail());
         preparedStatement.setString(3, userAccount.getPassword());
         preparedStatement.setString(4, userAccount.getSessionId());
+
         preparedStatement.execute();
         LOG.info("Inserted new user successfully");
+
+        preparedStatement.close();
         } catch (Exception e) {
             LOG.info("Inserting user failed, REASON: "+ e.getMessage());
         }

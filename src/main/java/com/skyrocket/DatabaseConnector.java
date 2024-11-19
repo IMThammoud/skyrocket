@@ -43,6 +43,19 @@ public class DatabaseConnector{
         public static void prepareTables(){
             try{
                 PreparedStatement statement = connection.prepareStatement("""
+                        CREATE TABLE IF NOT EXISTS user_account(
+                            pk_id varchar(64) NOT NULL,
+                            email varchar(64) NOT NULL,
+                            user_password varchar(64) NOT NULL,
+                            session_id varchar(100) NOT NULL,
+                            created_at timestamp DEFAULT current_timestamp NOT NULL,
+                            UNIQUE(email),
+                            PRIMARY KEY(pk_id)
+                        )""");
+                LOG.info("Preparing user_account table.");
+                statement.execute();
+
+                statement = connection.prepareStatement("""
                         CREATE TABLE IF NOT EXISTS
                           `shelve` (
                             `pk_shelve_id` varchar(64) NOT NULL,
@@ -50,24 +63,17 @@ public class DatabaseConnector{
                             `category` varchar(100) NOT NULL,
                             `is_for_services` tinyint(1) NOT NULL,
                             `fk_user_account_id` varchar(100) NOT NULL,
-                            PRIMARY KEY (`pk_shelve_id`)
+                            PRIMARY KEY (`pk_shelve_id`),
+                            CONSTRAINT FK_USER_SHELVE FOREIGN KEY(fk_user_account_id) REFERENCES user_account(pk_id)
                           ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci""");
 
                 LOG.info("Preparing shelve table.");
                 statement.execute();
 
-                statement = connection.prepareStatement("""
-                        CREATE TABLE IF NOT EXISTS user_account(
-                            pk_id varchar(64) NOT NULL,
-                            email varchar(64) NOT NULL,
-                            user_password varchar(64) NOT NULL,
-                            session_id varchar(100) NOT NULL,
-                            created_at timestamp DEFAULT current_timestamp NOT NULL
-                        )""");
-                LOG.info("Preparing user_account table.");
-                statement.execute();
+
 
                 LOG.info("PREPARED DATABASE TABLES SUCCESSFULLY");
+                statement.close();
 
         } catch(Exception e){
             LOG.info("Preparing Database-tables failed, REASON: "+ e.getMessage());}

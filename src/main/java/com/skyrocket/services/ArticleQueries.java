@@ -27,6 +27,11 @@ public class ArticleQueries {
             statement.setString(14, notebook.getKeyboardLayout());
             statement.setString(15, notebook.getSideNote());
             statement.setString(16, notebook.getShelveIdAsForeignKey().toString());
+
+            statement.execute();
+            LOG.info("Inserted Notebook successfully");
+
+            statement.close();
         } catch (Exception e) {
             LOG.info("Adding notebook failed, REASON: "+ e.getMessage());
         }
