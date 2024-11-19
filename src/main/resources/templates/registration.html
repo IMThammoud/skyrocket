@@ -15,20 +15,31 @@
         </ul></nav>
 </header>
 
+<main>
+    <h4 style="text-align: center">Registrierung</h4>
 <fieldset>
     <form action="/register" method="post">
-        <label for="email">E-Mail-Adresse</label>
-        <input type="email" placeholder="Frederik@Beispiel.de" name="email" id="email" required>
+        <label for="email">E-Mail-Adresse <br>
+        <input type="email" placeholder="Jeff@Beispiel.de" name="email" id="email" required>
+            </label>
 
 
         <label for="password">Passwort</label>
         <input type="password" placeholder="Passwort" name="password" id="password" required>
         <br>
+        <label for="password-confirm">Passwort wiederholen
         <input type="password" placeholder="Passwort wiederholen" name="password-confirm" id="password-confirm" required>
+            </label>
         <br>
+        <br>
+        <div style="text-align: center">
         <input type="submit" value="Registrieren">
+            </div>
     </form>
 </fieldset>
-
+</main>
+<footer>
+    Inventarisierung leicht gemacht -- Hosted on Uberspace -- feinschliff durch simplecss
+</footer>
 </body>
 </html>

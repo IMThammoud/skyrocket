@@ -15,9 +15,10 @@
       <li><a>Kontakt</a></li>
     </ul></nav>
 </header>
-<h3>
+<main>
+<h4>
   Regal Erstellen
-</h3>
+</h4>
 <div>
   <form action="/shelve/submit" method="POST">
     <label for="shelve_name">Name des Regals <br><input type="text" placeholder="Notebooks, Smartphones" name="shelve_name" id="shelve_name"></label>
@@ -39,14 +40,18 @@
     </select></label>
     <br>
     <div id="article-selection-div">
+      <label for="article-selection">Bitte auswählen:
       <select name="article_selection" id="article-selection">
       <option value="notebook">Laptop / Notebook</option>
       <option value="smartphone">Smartphone</option>
     </select>
+        </label>
     </div>
     <br>
     <input type="submit" value="Erstellen">
   </form>
 </div>
+  </main>
+<footer>Inventarisierung leicht gemacht -- Hosted on Uberspace -- feinschliff durch simplecss</footer>
 </body>
 </html>
