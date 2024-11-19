@@ -8,6 +8,9 @@ public class Shelve {
     private String name;
     private String category;
     private boolean isForServices;
+    private String type;
+    private String fkUserAccount;
+
 
     public String getType() {
         return type;
@@ -18,10 +21,7 @@ public class Shelve {
         return this;
     }
 
-    private String type;
-    private UUID fkUserAccount;
-
-    public Shelve(UUID id, String name, String category, boolean isForServices, String type,UUID fkUserAccount) {
+    public Shelve(UUID id, String name, String category, boolean isForServices, String type,String fkUserAccount) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -71,11 +71,11 @@ public class Shelve {
         return this;
     }
 
-    public UUID getFkUserAccount() {
+    public String getFkUserAccount() {
         return fkUserAccount;
     }
 
-    public void setFkUserAccount(UUID fkUserAccount) {
+    public void setFkUserAccount(String fkUserAccount) {
         this.fkUserAccount = fkUserAccount;
     }
 

@@ -4,6 +4,7 @@ import com.skyrocket.model.UserAccount;
 import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.UUID;
 
 import static com.skyrocket.DatabaseConnector.DBConnector.connection;
@@ -11,6 +12,81 @@ import static com.skyrocket.controller.PageController.LOG;
 
 @Service
 public class UserAccountQueries {
+
+    public Boolean userExists(String email, String password) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                SELECT email, user_password
+                FROM user_account
+                WHERE email = ? AND user_password = ?""");
+
+            statement.setString(1, email);
+            statement.setString(2, password);
+            ResultSet results = statement.executeQuery();
+            results.next();
+
+            if (results.getString("email").equals(email) && results.getString("user_password").equals(password)) {
+                LOG.info("User exists");
+                statement.close();
+                return true;
+            }
+
+
+        } catch (Exception e) {
+            LOG.info("User not found, REASON: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean emailAlreadyExists(String email) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                SELECT email
+                FROM user_account
+                WHERE email = ?""");
+
+            statement.setString(1, email);
+            ResultSet results = statement.executeQuery();
+
+            if (results.next()) {
+                if (results.getString("email").equals(email)) {
+                    LOG.info("Email already exists");
+                    statement.close();
+                    return true;
+                }
+
+            }
+
+
+        } catch (Exception e) {
+            LOG.info("User not found, REASON: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean updatedSessionIdForUser(String email, String password, String sessionId) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                
+                UPDATE user_account
+                SET session_id = ?
+                WHERE email=? AND user_password=?""");
+
+            statement.setString(1, sessionId);
+            statement.setString(2, email);
+            statement.setString(3, password);
+
+            if (statement.executeUpdate() == 1 ) {
+                LOG.info("SessionID was overwritten for user because of login.");
+                statement.close();
+                return true;
+            }
+        } catch (Exception e) {
+            LOG.info("Overwriting SessionID for User FAILED, REASON: " + e.getMessage());
+        }
+        return false;
+    }
+
     public void insertUser(UserAccount userAccount) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("""

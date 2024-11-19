@@ -4,9 +4,7 @@ import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSessionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +35,7 @@ public class PageController {
         return "landing-page";
     }
 
-    @GetMapping("/registration-page")
+    @GetMapping("/registration")
     public String registrationPage(){
         return "registration";
     }
@@ -49,16 +47,34 @@ public class PageController {
                            ){
 
         UserAccount newUser = new UserAccount(UUID.randomUUID(), email, password, session.getId());
-
+        if ( userAccountQueries.emailAlreadyExists(email) || userAccountQueries.userExists(email, password)) {
+            return "registration";
+        }
         LOG.info("Registering new user: " + newUser.toString());
-        LOG.info("same sessionID: " + session.getId());
+        LOG.info("sessionID of newly created user: " + session.getId());
         userAccountQueries.insertUser(newUser);
-        return "login-site";
+        return "registration-successful";
     }
 
-    @GetMapping("/shelve/dashboard")
+    @GetMapping("/login-page")
+    public String loginPage(){
+        return "login-page";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestParam(name = "email")String email,
+                        @RequestParam(name = "password")String password){
+        if(userAccountQueries.userExists(email, password)){
+            userAccountQueries.updatedSessionIdForUser(email, password, session.getId());
+            LOG.info("User logged in with session :"+ session.getId());
+            return "shelves";
+        }
+        return "login-page";
+    }
+
+    @GetMapping("/shelve/shelves")
     public String showShelveDashboard(){
-        return "shelve-dashboard";
+        return "shelves";
     }
 
     @GetMapping("/shelve/create")
@@ -74,10 +90,10 @@ public class PageController {
                                    @RequestParam(name = "article_selection")String type){
         LOG.info("Received Request.");
         isForService = isForServiceAsString.equals("yes");
-        shelve = new Shelve(UUID.randomUUID(), shelveName, shelveCategory, isForService,type, UUID.randomUUID());
+        shelve = new Shelve(UUID.randomUUID(), shelveName, shelveCategory, isForService,type, "placeholder");
 
-        shelveQueries.insertShelve(shelve);
+        shelveQueries.insertShelve(shelve, session);
         // Add Javascript Modal saying added Shelve or not with Thymeleaf Rendering
-        return "shelve-dashboard";
+        return "shelves";
     }
 }

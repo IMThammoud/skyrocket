@@ -10,7 +10,7 @@
   <div><img src="/imgs/logo-400px-90px.svg" alt="Hippo-logo"></div>
   <nav>
     <ul>
-      <li><a href="/shelve/dashboard">Dashboard</a></li>
+      <li><a href="/shelve/shelves">Regale</a></li>
       <li><a aria-current="true">Regal erstellen</a></li>
       <li><a>Kontakt</a></li>
     </ul></nav>
@@ -25,13 +25,15 @@
 
     <br>
     <br>
-    <div>
+    <label for="shelve-type"> Bitte auswählen:
+    <div id="shelve-type">
     <label for="article-radio-button">Artikel
-      <input type="radio" name="is_for_service" id="article-radio-button" value="no"></label>
+      <input type="radio" name="is_for_service" id="article-radio-button" value="no" required></label>
     <label for="service-radio-button">Dienstleistung
-      <input type="radio" name="is_for_service" id="service-radio-button" value="yes">
+      <input type="radio" name="is_for_service" id="service-radio-button" value="yes" required>
     </label>
     </div>
+      </label>
     <br>
     <label for="category"> Kategorie <br>
     <select name="category" id="category">
@@ -39,14 +41,15 @@
       <option value="selfmade">Eigene Produktion</option>
     </select></label>
     <br>
-    <div id="article-selection-div">
-      <label for="article-selection">Bitte auswählen:
+    <label for="article-selection">Auswahl: <br>
+      <div id="article-selection-div">
       <select name="article_selection" id="article-selection">
       <option value="notebook">Laptop / Notebook</option>
       <option value="smartphone">Smartphone</option>
     </select>
-        </label>
+
     </div>
+      </label>
     <br>
     <input type="submit" value="Erstellen">
   </form>

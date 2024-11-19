@@ -8,35 +8,28 @@
 <body style="color: #483e37ff;">
 <header>
     <div><img src="/imgs/logo-400px-90px.svg" alt="Hippo-logo"></div>
-    <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a>Kontakt</a></li>
-        </ul></nav>
 </header>
-
 <main>
+    <fieldset>
     <h4 style="text-align: center">Registrierung</h4>
-<fieldset>
     <form action="/register" method="post">
-        <label for="email">E-Mail-Adresse: <br>
+        <label for="email">E-Mail-Adresse:</label>
         <input type="email" placeholder="Jeff@Beispiel.de" name="email" id="email" required>
-            </label>
 
 
         <label for="password">Passwort:</label>
         <input type="password" placeholder="Passwort" name="password" id="password" required>
         <br>
-        <label for="password-confirm">Passwort wiederholen: <br>
+        <label for="password-confirm">Passwort wiederholen:</label>
         <input type="password" placeholder="Passwort wiederholen" name="password-confirm" id="password-confirm" required>
-            </label>
+
         <br>
         <br>
         <div style="text-align: center">
         <input type="submit" value="Registrieren">
             </div>
     </form>
-</fieldset>
+        </fieldset>
 </main>
 <footer>
     Inventarisierung leicht gemacht -- Hosted on Uberspace -- feinschliff durch simplecss
