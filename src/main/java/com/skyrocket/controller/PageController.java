@@ -5,7 +5,6 @@ import com.skyrocket.model.UserAccount;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +51,9 @@ public class PageController {
         LOG.info("Registering new user: " + newUser.toString());
         LOG.info("sessionID of newly created user: " + session.getId());
         userAccountQueries.insertUser(newUser);
+
+        userAccountQueries.deleteUserSessionId(session.getId());
+        LOG.info("Changed Session_ID after registration to avoid login skip.");
         return "registration-successful";
     }
 
@@ -72,8 +74,9 @@ public class PageController {
     }
     @GetMapping("/logout")
     public String logout(){
+        userAccountQueries.deleteUserSessionId(session.getId());
         session.invalidate();
-        LOG.info("invalidated Session");
+        LOG.info("invalidated the userSession on server");
         return "redirect:/";
     }
 
@@ -108,7 +111,7 @@ public class PageController {
 
             shelveQueries.insertShelve(shelve, session);
             // Add Javascript Modal saying added Shelve or not with Thymeleaf Rendering
-            return "shelves";
+            return "redirect:/shelves";
         }
         return "redirect:/logout";
     }

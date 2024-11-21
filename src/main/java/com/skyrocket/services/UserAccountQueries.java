@@ -13,6 +13,23 @@ import static com.skyrocket.controller.PageController.LOG;
 @Service
 public class UserAccountQueries {
 
+    public void deleteUserSessionId(String sessionId){
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                    UPDATE user_account
+                    SET session_id = ?
+                    WHERE session_id = ?""");
+            statement.setString(1, UUID.randomUUID().toString());
+            statement.setString(2, sessionId);
+
+            if(statement.executeUpdate()==1){
+                LOG.info("UserSessionID invalidated on Logout and replaced with random UUID.");
+            };
+        } catch (Exception e) {
+            LOG.info("UserSessionID could not be deleted on Logout, REASON: " + e.getMessage());
+        }
+    }
+
     public boolean checkSessionId(String sessionId) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("""
