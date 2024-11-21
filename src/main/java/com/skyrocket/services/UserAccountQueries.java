@@ -13,6 +13,27 @@ import static com.skyrocket.controller.PageController.LOG;
 @Service
 public class UserAccountQueries {
 
+    public boolean checkSessionId(String sessionId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("""
+                SELECT session_id
+                FROM user_account
+                WHERE session_id = ?""");
+            preparedStatement.setString(1, sessionId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            if (resultSet.getString("session_id").equals(sessionId)) {
+                LOG.info("SessionId check successful");
+                return true;
+            }
+        } catch(Exception e){
+            LOG.info("SessionId check failed, Reason: " + e.getMessage());
+            return false;
+        }
+        LOG.info("SessionId check failed");
+        return false;
+    }
+
     public Boolean userExists(String email, String password) {
         try {
             PreparedStatement statement = connection.prepareStatement("""
