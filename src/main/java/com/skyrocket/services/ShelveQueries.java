@@ -1,7 +1,6 @@
 package com.skyrocket.services;
 
 import com.skyrocket.model.Shelve;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
@@ -14,7 +13,7 @@ import static com.skyrocket.controller.PageController.LOG;
 @Service
 public class ShelveQueries {
 
-    public void insertShelve(Shelve shelve, HttpSession session) {
+    public void insertShelve(Shelve shelve, String session) {
         try {
             /*
             At first the id of the logged in user has to be retrieved
@@ -24,7 +23,7 @@ public class ShelveQueries {
             PreparedStatement searchForUserID = connection.prepareStatement("""
                     SELECT pk_id from user_account
                     WHERE session_id = ?""");
-            searchForUserID.setString(1, session.getId());
+            searchForUserID.setString(1, session);
             ResultSet results = searchForUserID.executeQuery();
 
             // Necessary to get the first row
@@ -34,13 +33,14 @@ public class ShelveQueries {
 
             searchForUserID.close();
 
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO shelve (pk_shelve_id, name, category, is_for_services, fk_user_account_id)" +
-                    "VALUES (?,?,?,?,?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO shelve (pk_shelve_id, name, category, is_for_services, type, fk_user_account_id)" +
+                    "VALUES (?,?,?,?,?,?)");
             statement.setString(1, shelve.getId().toString());
             statement.setString(2, shelve.getName());
             statement.setString(3, shelve.getCategory());
             statement.setBoolean(4, shelve.getIsForService());
-            statement.setString(5, UserID);
+            statement.setString(5, shelve.getType());
+            statement.setString(6, UserID);
 
             statement.execute();
 

@@ -11,15 +11,18 @@
   <nav>
     <ul>
       <li><a href="/shelve/shelves">Regale</a></li>
-      <li><a aria-current="true">Regal erstellen</a></li>
+      <li><a aria-current="true"  href="/shelve/create">Regal erstellen</a></li>
+      <li><a href="/add/article">Artikel hinzufügen</a></li>
       <li><a>Kontakt</a></li>
     </ul></nav>
 </header>
 <main>
-<h4>
+<h4 id="heading">
   Regal Erstellen
 </h4>
-<div>
+  <script src="/js/testjs.js"></script>
+  <button type="submit" onclick="sendDummy()">Js-Test</button>
+  <div>
   <form action="/shelve/submit" method="POST">
     <label for="shelve_name">Name des Regals <br><input type="text" placeholder="Notebooks, Smartphones" name="shelve_name" id="shelve_name"></label>
 

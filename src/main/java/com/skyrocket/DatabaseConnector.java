@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Properties;
 
 import static com.skyrocket.controller.PageController.LOG;
@@ -62,6 +61,7 @@ public class DatabaseConnector{
                             `name` varchar(64) NOT NULL,
                             `category` varchar(100) NOT NULL,
                             `is_for_services` tinyint(1) NOT NULL,
+                            `type` varchar(64) NOT NULL,
                             `fk_user_account_id` varchar(100) NOT NULL,
                             PRIMARY KEY (`pk_shelve_id`),
                             CONSTRAINT FK_USER_SHELVE FOREIGN KEY(fk_user_account_id) REFERENCES user_account(pk_id)

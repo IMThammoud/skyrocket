@@ -10,7 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.swing.text.View;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Controller
@@ -96,6 +100,14 @@ public class PageController {
         return "redirect:/logout";
     }
 
+    @GetMapping("/add/article")
+    public String addArticle(@CookieValue(name = "JSESSIONID") String sessionId){
+        if (userAccountQueries.checkSessionId(sessionId)) {
+            return "add-article";
+        }
+        return "redirect:/logout";
+    }
+
 
     @PostMapping("/shelve/submit")
     public String receiveNewShelve(@RequestParam(name = "shelve_name")String shelveName,
@@ -109,9 +121,9 @@ public class PageController {
             isForService = isForServiceAsString.equals("yes");
             shelve = new Shelve(UUID.randomUUID(), shelveName, shelveCategory, isForService, type, "placeholder");
 
-            shelveQueries.insertShelve(shelve, session);
+            shelveQueries.insertShelve(shelve, sessionId);
             // Add Javascript Modal saying added Shelve or not with Thymeleaf Rendering
-            return "redirect:/shelves";
+            return "redirect:/shelve/shelves";
         }
         return "redirect:/logout";
     }

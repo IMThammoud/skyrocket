@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static com.skyrocket.DatabaseConnector.DBConnector.connection;
@@ -12,6 +13,31 @@ import static com.skyrocket.controller.PageController.LOG;
 
 @Service
 public class UserAccountQueries {
+
+    public ArrayList retrieveShelves(String sessionId){
+        try{
+            ArrayList<String> resultsList = new ArrayList<>();
+
+            PreparedStatement statement = connection.prepareStatement("""
+                    SELECT shelveAlias.name
+                    FROM shelve AS shelveAlias
+                    INNER JOIN user_account AS user_accountAlias ON user_accountAlias.pk_id = shelveAlias.fk_user_account_id
+                    WHERE session_id = ?""");
+            statement.setString(1, sessionId);
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                resultsList.add(resultSet.getString("name"));
+                LOG.info("Added Shelve to List");
+            }
+
+            statement.close();
+            return resultsList;
+
+        } catch (Exception e) {
+            LOG.info("Couldnt retrieve Shelves for user with use of his SessionID, Reason: " + e.getMessage());
+            return null;
+        }
+    }
 
     public void deleteUserSessionId(String sessionId){
         try {
