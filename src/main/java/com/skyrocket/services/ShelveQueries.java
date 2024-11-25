@@ -35,8 +35,7 @@ public class ShelveQueries {
             statement.close();
 
             Gson gson = new Gson();
-            String JsonResults = gson.toJson(resultsList);
-            return JsonResults;
+            return gson.toJson(resultsList);
 
         } catch (Exception e) {
             LOG.info("Couldnt retrieve Shelves for user with use of his SessionID, Reason: " + e.getMessage());

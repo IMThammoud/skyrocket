@@ -5,7 +5,7 @@
     <title>Regale Dashboard</title>
     <link rel="stylesheet" href="/css/simple.css">
 </head>
-<body style="color:#483e37ff">
+<body onload="retrieveShelves()" style="color:#483e37ff">
 <header>
     <div><img src="/imgs/logo-400px-90px.svg" alt="Hippo-logo"></div>
     <nav>
@@ -18,17 +18,9 @@
 </header>
 <main>
 <h4> Regale - Dashboard</h4>
-    <script src="/js/"></script>
-<table>
-    <tr>
-        <td>Regal-1</td>
-    </tr>
-    <tr>
-        <td>Regal-2</td>
-    </tr>
-    <tr>
-        <td >Regal-3</td>
-    </tr>
+    <script src="/js/retrieveshelves.js"></script>
+<table id="shelve-table">
+
 </table>
 </main>
 <footer>Inventarisierung leicht gemacht -- Hosted on Uberspace -- feinschliff durch simplecss</footer>

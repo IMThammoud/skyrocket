@@ -24,6 +24,7 @@ public class UserAccountQueries {
             statement.setString(2, sessionId);
 
             if(statement.executeUpdate()==1){
+                LOG.info(sessionId+" Was removed and replaced");
                 LOG.info("UserSessionID invalidated on Logout and replaced with random UUID.");
             };
         } catch (Exception e) {
