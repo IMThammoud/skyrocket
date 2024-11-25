@@ -1,17 +1,48 @@
 package com.skyrocket.services;
 
+import com.google.gson.Gson;
+import com.skyrocket.model.RetrievedShelves;
 import com.skyrocket.model.Shelve;
 import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static com.skyrocket.DatabaseConnector.DBConnector.connection;
 import static com.skyrocket.controller.PageController.LOG;
 
 @Service
 public class ShelveQueries {
+
+    public String retrieveShelves(String sessionId){
+        try{
+            ArrayList<RetrievedShelves> resultsList = new ArrayList<>();
+
+            PreparedStatement statement = connection.prepareStatement("""
+                    SELECT shelveAlias.name, shelveAlias.pk_shelve_id
+                    FROM shelve AS shelveAlias
+                    INNER JOIN user_account AS user_accountAlias ON user_accountAlias.pk_id = shelveAlias.fk_user_account_id
+                    WHERE session_id = ?""");
+            statement.setString(1, sessionId);
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                resultsList.add(new RetrievedShelves(resultSet.getString("name"), resultSet.getString("pk_shelve_id")));
+                LOG.info("Added Shelve to List");
+            }
+
+            statement.close();
+
+            Gson gson = new Gson();
+            String JsonResults = gson.toJson(resultsList);
+            return JsonResults;
+
+        } catch (Exception e) {
+            LOG.info("Couldnt retrieve Shelves for user with use of his SessionID, Reason: " + e.getMessage());
+            return null;
+        }
+    }
 
     public void insertShelve(Shelve shelve, String session) {
         try {
