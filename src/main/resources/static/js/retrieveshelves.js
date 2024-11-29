@@ -1,3 +1,5 @@
+// Don't forget to set the IPv4 of the server into the fetch request later
+
 async function retrieveShelves() {
     let request =   await fetch("http://localhost:8080/shelve/retrieve", {
                                 method : "POST",

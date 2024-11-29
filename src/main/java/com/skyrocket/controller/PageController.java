@@ -1,3 +1,10 @@
+/*
+This Controller handles the Pages that the user sees.
+After Login there is a SessionID check for every action to authenticate the User.
+A Users SessionID gets invalidated and replaced by a randomUUID on server after Logout
+So using the site without logging in again should not be possible/allowed
+ */
+
 package com.skyrocket.controller;
 
 import com.skyrocket.model.Shelve;

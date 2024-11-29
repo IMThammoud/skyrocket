@@ -14,7 +14,7 @@ import static com.skyrocket.controller.PageController.LOG;
 
 public class DatabaseConnector{
 
-
+    //This static Connector is being used through the whole Project
     public static class DBConnector {
         private String url;
         private String name;

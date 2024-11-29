@@ -1,8 +1,13 @@
+/*
+This class sets the main attributes of an offered service
+in german we say "Dienstleistung"
+ */
+
 package com.skyrocket.model;
 
 import java.util.UUID;
 
-public class OfferedService {
+public class ServiceOffer {
     private UUID id;
     private String name;
     private int hoursNeeded;
@@ -10,7 +15,7 @@ public class OfferedService {
     private double materialCost;
     private double sellingPrice;
 
-    public OfferedService(UUID id, String name, int hoursNeeded, String description, double materialCost, double sellingPrice) {
+    public ServiceOffer(UUID id, String name, int hoursNeeded, String description, double materialCost, double sellingPrice) {
         this.id = id;
         this.name = name;
         this.hoursNeeded = hoursNeeded;
@@ -23,7 +28,7 @@ public class OfferedService {
         return id;
     }
 
-    public OfferedService setId(UUID id) {
+    public ServiceOffer setId(UUID id) {
         this.id = id;
         return this;
     }
@@ -32,7 +37,7 @@ public class OfferedService {
         return name;
     }
 
-    public OfferedService setName(String name) {
+    public ServiceOffer setName(String name) {
         this.name = name;
         return this;
     }
@@ -41,7 +46,7 @@ public class OfferedService {
         return hoursNeeded;
     }
 
-    public OfferedService setHoursNeeded(int hoursNeeded) {
+    public ServiceOffer setHoursNeeded(int hoursNeeded) {
         this.hoursNeeded = hoursNeeded;
         return this;
     }
@@ -50,7 +55,7 @@ public class OfferedService {
         return description;
     }
 
-    public OfferedService setDescription(String description) {
+    public ServiceOffer setDescription(String description) {
         this.description = description;
         return this;
     }
@@ -59,7 +64,7 @@ public class OfferedService {
         return sellingPrice;
     }
 
-    public OfferedService setSellingPrice(double sellingPrice) {
+    public ServiceOffer setSellingPrice(double sellingPrice) {
         this.sellingPrice = sellingPrice;
         return this;
     }
@@ -68,12 +73,12 @@ public class OfferedService {
         return materialCost;
     }
 
-    public OfferedService setMaterialCost(double materialCost) {
+    public ServiceOffer setMaterialCost(double materialCost) {
         this.materialCost = materialCost;
         return this;
     }
 
-    public OfferedService build(){
+    public ServiceOffer build(){
         return this;
     }
 }

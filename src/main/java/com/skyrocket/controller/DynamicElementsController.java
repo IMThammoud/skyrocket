@@ -1,3 +1,8 @@
+/*
+This Controller manages Requests from Javascript and returns mainly JSON
+for things like rendering the shelves of a user dynamically in a table
+ */
+
 package com.skyrocket.controller;
 
 import com.skyrocket.services.ShelveQueries;
