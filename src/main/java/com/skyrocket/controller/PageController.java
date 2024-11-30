@@ -12,12 +12,15 @@ import com.skyrocket.model.UserAccount;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
+import jdk.jfr.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -73,14 +76,15 @@ public class PageController {
         return "login-page";
     }
 
-    @PostMapping("/login")
-    public String login(@RequestParam(name = "email")String email,
-                        @RequestParam(name = "password")String password){
-        if(userAccountQueries.userExists(email, password)){
-            userAccountQueries.updatedSessionIdForUser(email, password, session.getId());
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes="application/json")
+    public String login(@RequestBody Map<String,String> fromLoginForm){
+        if(userAccountQueries.userExists(fromLoginForm.get("email"), fromLoginForm.get("password"))){
+            userAccountQueries.updatedSessionIdForUser(fromLoginForm.get("email"), fromLoginForm.get("password"), session.getId());
             LOG.info("User logged in with session :"+ session.getId());
             return "redirect:/shelve/shelves";
         }
+
         return "login-page";
     }
     @GetMapping("/logout")
