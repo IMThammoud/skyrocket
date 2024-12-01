@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.skyrocket.DatabaseConnector.DBConnector.connection;
 import static com.skyrocket.controller.PageController.LOG;
@@ -16,19 +17,55 @@ import static com.skyrocket.controller.PageController.LOG;
 @Service
 public class ShelveQueries {
 
+    // Uses sessionID to collect all shelves of the currently logged in User as JSON
+    public String getShelvesOfUser(String sessionid){
+        try {
+            List<RetrievedShelves> shelves = new ArrayList<>();
+
+            PreparedStatement statement = connection.prepareStatement("""
+                    SELECT aliasShelves.pk_shelve_id 
+                    FROM shelves AS aliasShelves
+                    INNER JOIN user_account AS aliasuser_account
+                    ON aliasuser_account.pk_id = aliasShelves.fk_user_account_id
+                    WHERE session_id = ?
+                    """);
+
+            statement.setString(1, sessionid);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                shelves.add(new RetrievedShelves(rs.getString("name"),
+                        rs.getString("pk_shelve_id"),
+                        rs.getString("type"),
+                        rs.getString("category")));
+            }
+
+            Gson gson = new Gson();
+            LOG.info("Shelves that a User has with the given SessionID: " + gson.toJson(shelves));
+
+            return gson.toJson(shelves);
+        } catch (SQLException e) {
+            LOG.info("getShelvesOfUser() failed, REASON:" + e.getMessage());
+            return null;
+        }
+    }
+
+    // The shelve attributes you want to render can be added here before JSON creation
     public String retrieveShelves(String sessionId){
         try{
             ArrayList<RetrievedShelves> resultsList = new ArrayList<>();
 
             PreparedStatement statement = connection.prepareStatement("""
-                    SELECT shelveAlias.name, shelveAlias.pk_shelve_id
+                    SELECT shelveAlias.name, shelveAlias.pk_shelve_id, shelveAlias.type, shelveAlias.category
                     FROM shelve AS shelveAlias
                     INNER JOIN user_account AS user_accountAlias ON user_accountAlias.pk_id = shelveAlias.fk_user_account_id
                     WHERE session_id = ?""");
             statement.setString(1, sessionId);
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
-                resultsList.add(new RetrievedShelves(resultSet.getString("name"), resultSet.getString("pk_shelve_id")));
+                resultsList.add(new RetrievedShelves(resultSet.getString("name"),
+                        resultSet.getString("pk_shelve_id"),
+                        resultSet.getString("type"),
+                        resultSet.getString("category")));
                 LOG.info("Added Shelve to List");
             }
 
