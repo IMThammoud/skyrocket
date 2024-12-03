@@ -1,3 +1,6 @@
+// This class connects the Application to the MARIADB-Container and prepares/checks for
+// required needed tables on each restart
+
 package com.skyrocket;
 
 import java.io.IOException;
