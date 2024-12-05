@@ -7,13 +7,14 @@ package com.skyrocket.controller;
 
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Map;
+
+import static com.skyrocket.controller.PageController.LOG;
 
 @RestController
 public class DynamicElementsController {
@@ -40,6 +41,16 @@ public class DynamicElementsController {
             return retrievedShelves;
         }
         return null;
+    }
+    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes="application/json")
+    public String login(@RequestBody Map<String,String> fromLoginForm, HttpSession session){
+        if(userAccountQueries.userExists(fromLoginForm.get("email"), fromLoginForm.get("password"))){
+            userAccountQueries.updatedSessionIdForUser(fromLoginForm.get("email"), fromLoginForm.get("password"), session.getId());
+            LOG.info("User logged in with session :"+ session.getId());
+            return "true";
+        }
+
+        return "login-page";
     }
 
 }

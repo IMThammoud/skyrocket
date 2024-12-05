@@ -76,17 +76,6 @@ public class PageController {
         return "login-page";
     }
 
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes="application/json")
-    public String login(@RequestBody Map<String,String> fromLoginForm){
-        if(userAccountQueries.userExists(fromLoginForm.get("email"), fromLoginForm.get("password"))){
-            userAccountQueries.updatedSessionIdForUser(fromLoginForm.get("email"), fromLoginForm.get("password"), session.getId());
-            LOG.info("User logged in with session :"+ session.getId());
-            return "redirect:/shelve/shelves";
-        }
-
-        return "login-page";
-    }
     @GetMapping("/logout")
     public String logout(){
         userAccountQueries.deleteUserSessionId(session.getId());

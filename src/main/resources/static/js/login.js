@@ -14,8 +14,8 @@
 
     })
 
-     if (request.url == "http://localhost:8080/shelve/shelves") {
-         window.location.replace(request.url)
+     if (await request.text() === "true") {
+         window.location.replace("http://localhost:8080/shelve/shelves")
      } else {
          alert("Anmeldung fehlgeschlagen. Bitte laden sie die Seite neu und versuchen sie es noch einmal.")
      }
