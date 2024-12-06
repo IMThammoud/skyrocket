@@ -1,7 +1,7 @@
 // Don't forget to set the IPv4 of the server into the fetch request later
 // Dont forget to implement a cap of Shelves because there shouldt be 100 Shelves rendered
 // on one Page. Would be better to dynamically load them on button press "Next" or something
-async function retrieveShelves() {
+async function showShelvesAsTable() {
     let request =   await fetch("http://localhost:8080/shelve/retrieve", {
                                 method : "POST",
     })

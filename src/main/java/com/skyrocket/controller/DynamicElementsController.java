@@ -50,7 +50,7 @@ public class DynamicElementsController {
             return "true";
         }
 
-        return "login-page";
+        return "false";
     }
 
 }
