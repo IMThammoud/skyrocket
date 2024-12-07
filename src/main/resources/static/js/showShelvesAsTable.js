@@ -17,12 +17,10 @@ async function showShelvesAsTable() {
 
 
         let cell_name = row.insertCell(0)
-        let cell_id = row.insertCell(1)
-        let cell_type = row.insertCell(2)
-        let cell_category = row.insertCell(3)
+        let cell_type = row.insertCell(1)
+        let cell_category = row.insertCell(2)
 
         cell_name.innerText = response_array[i]["name"]
-        cell_id.innerText = response_array[i]["id"]
         cell_type.innerText = response_array[i]["type"]
         cell_category.innerText = response_array[i]["category"]
 
@@ -33,13 +31,11 @@ async function showShelvesAsTable() {
     let header_first =  header_row.insertCell(0)
     let header_second = header_row.insertCell(1)
     let header_third = header_row.insertCell(2)
-    let header_fourth = header_row.insertCell(3)
 
     header_row.style.fontWeight = "bold"
     header_first.innerText = "Regal"
-    header_second.innerText = "ID"
-    header_third.innerText = "Typ"
-    header_fourth.innerText = "Kategorie"
+    header_second.innerText = "Typ"
+    header_third.innerText = "Kategorie"
 
 
 
