@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link rel="stylesheet" href="/css/simple.css">
+</head>
+<body>
+<header>
+  <div><img src="/imgs/logo-400px-90px.svg" alt="Hippo-logo"></div>
+  <nav>
+    <ul>
+      <li><a href="/shelve/shelves">Regale</a></li>
+      <li><a  href="/shelve/create">Regal erstellen</a></li>
+      <li><a aria-current="true"  href="/add/article">Artikel hinzufügen</a></li>
+      <li><a>Kontakt</a></li>
+      <li> <a style="color: darkred; border: none" href="/logout">Abmelden</a></li>
+    </ul></nav>
+</header>
+<h4>Artikel hinzufügen</h4>
+<form action="" method="post">
+  <input type="reset" value="Felder Zurücksetzen">
+
+  <label>Name</label>
+  <input type="text" name="" id="name" placeholder="Thinkpad T14..">
+
+  <label>Anzahl</label>
+  <input type="number" name="" id="" placeholder="1...1000">
+
+  <!-- Make this set and not editable -->
+  <label>Typ</label>
+  <input type="text" value="notebook" name="type" placeholder="notebook" contenteditable="false">
+
+  <label>Kurze Beschreibung des Artikels</label>
+  <input type="text" name="description" id="description" placeholder="Robust and trustworthy Notebook..">
+
+  <label>Einkaufspreis pro Artikel (€)</label>
+  <input type="number" name="price_when_bought" id="price_when_bought" placeholder="415,99.."> &nbsp €
+
+  <label>Gewünschter Verkaufspreis ()</label>
+  <input type="number" name="selling_price" id="selling_price" placeholder="515,99.."> &nbsp €
+
+</form>
+</body>
+</html>

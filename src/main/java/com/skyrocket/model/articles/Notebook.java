@@ -2,6 +2,8 @@ package com.skyrocket.model.articles;
 
 import com.skyrocket.Article;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Notebook extends Article {
@@ -15,6 +17,16 @@ public class Notebook extends Article {
     private double batteryCapacityHealth;
     private String keyboardLayout;
     private String sideNote;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    private LocalDateTime createdAt;
 
     @Override
     public String toString() {
@@ -39,6 +51,7 @@ public class Notebook extends Article {
                     String description,
                     double priceWhenBought,
                     double sellingPrice,
+                    UUID shelveIdAsForeignKey,
                     String brand,
                     String modelNr,
                     String cpu,
@@ -46,10 +59,9 @@ public class Notebook extends Article {
                     int storage,
                     double displaySize,
                     String keyboardLayout,
-                    String sideNote,
-                    UUID shelveIdAsForeinKey
+                    String sideNote
                     ) {
-        super(id, name, amount, type, description, priceWhenBought, sellingPrice, shelveIdAsForeinKey);
+        super(id, name, amount, type, description, priceWhenBought, sellingPrice, shelveIdAsForeignKey);
         this.brand = brand;
         this.modelNr = modelNr;
         this.cpu = cpu;

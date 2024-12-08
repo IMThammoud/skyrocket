@@ -2,31 +2,50 @@ package com.skyrocket.services;
 import com.skyrocket.model.articles.Notebook;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.UUID;
 
 import static com.skyrocket.DatabaseConnector.DBConnector.connection;
 import static com.skyrocket.controller.PageController.LOG;
 
 public class ArticleQueries {
-    public void insertNotebook(Notebook notebook){
+    public void insertNotebook(Notebook notebook, String sessionId, String shelveId){
         try {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO notebook(pk_shelve, name, amount, type, description, price_when_bought_unit, selling_price, manufacturer, model_number, cpu, ram, storage_drive, display_size, keyboard_layout, side_note, fk_shelve_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+            //Get the correct shelve and check if the shelveID that comes from frontend is actually there.
+            PreparedStatement theShelve = connection.prepareStatement("""
+                                    select pk_shelve_id
+                                    from shelve as AliasShelve inner join user_account as AliasUser_account
+                                    ON AliasUser_account.pk_id = AliasShelve.pk_shelve_id;
+                                    where AliasUser_account.session_id = ? AND AliasShelve.pk_shelve_id = ? """);
+            theShelve.setString(1, sessionId);
+            theShelve.setString(2, shelveId);
+            ResultSet rs = theShelve.executeQuery();
+
+            String correctShelve = rs.getString("pk_shelve_id");
+
+            theShelve.close();
+
+
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO notebook(pk_id, fk_shelve_id, name, amount, type, description, price_when_bought, selling_price, brand, model_nr, cpu, ram, storage_in_gb, display_size_inches, operating_system, battery_capacity_health, keyboard_layout, side_note) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             statement.setString(1, UUID.randomUUID().toString());
-            statement.setString(2, notebook.getName());
-            statement.setInt(3, notebook.getAmount());
-            statement.setString(4, notebook.getType());
-            statement.setString(5, notebook.getDescription());
-            statement.setDouble(6, notebook.getPriceWhenBought());
-            statement.setDouble(7, notebook.getSellingPrice());
-            statement.setString(8, notebook.getBrand());
-            statement.setString(9, notebook.getModelNr());
-            statement.setString(10, notebook.getCpu());
-            statement.setInt(11, notebook.getRam());
-            statement.setInt(12, notebook.getStorage());
-            statement.setDouble(13, notebook.getDisplaySize());
-            statement.setString(14, notebook.getKeyboardLayout());
-            statement.setString(15, notebook.getSideNote());
-            statement.setString(16, notebook.getShelveIdAsForeignKey().toString());
+            statement.setString(2, correctShelve);
+            statement.setString(3, notebook.getName());
+            statement.setInt(4, notebook.getAmount());
+            statement.setString(5, notebook.getType());
+            statement.setString(6, notebook.getDescription());
+            statement.setDouble(7, notebook.getPriceWhenBought());
+            statement.setDouble(8, notebook.getSellingPrice());
+            statement.setString(9, notebook.getBrand());
+            statement.setString(10, notebook.getModelNr());
+            statement.setString(11, notebook.getCpu());
+            statement.setInt(12, notebook.getRam());
+            statement.setDouble(13, notebook.getStorage());
+            statement.setDouble(14, notebook.getDisplaySize());
+            statement.setString(15, notebook.getOperatingSystem());
+            statement.setDouble(16, notebook.getBatteryCapacityHealth());
+            statement.setString(17, notebook.getKeyboardLayout());
+            statement.setString(18, notebook.getSideNote());
 
             statement.execute();
             LOG.info("Inserted Notebook successfully");

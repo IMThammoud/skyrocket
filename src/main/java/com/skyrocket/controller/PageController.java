@@ -127,4 +127,12 @@ public class PageController {
         }
         return "redirect:/logout";
     }
+
+    @GetMapping("/add/article-page")
+    public String addArticlePage(@CookieValue(name = "JSESSIONID") String sessionId){
+        if (userAccountQueries.checkSessionId(sessionId)) {
+            return "/electronics/add-notebook";
+        }
+        return "redirect:/logout";
+    }
 }
