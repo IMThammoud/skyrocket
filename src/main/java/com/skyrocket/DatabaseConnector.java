@@ -19,9 +19,6 @@ public class DatabaseConnector{
 
     //This static Connector is being used through the whole Project
     public static class DBConnector {
-        private String url;
-        private String name;
-        private String pw;
         static Properties props = new Properties();
         public static Connection connection;
 
@@ -73,7 +70,32 @@ public class DatabaseConnector{
                 LOG.info("Preparing shelve table.");
                 statement.execute();
 
+                statement = connection.prepareStatement("""
+                        create table notebook(
+                        	pk_id varchar(64) NOT NULL,
+                          fk_shelve_id varchar(64),
+                          name varchar(64) NOT NULL,
+                          amount smallint NOT NULL,
+                          type varchar(64) NOT NULL,
+                          description varchar(64),
+                          price_when_bought double NOT NULL,
+                          selling_price double,
+                          brand varchar(64) NOT NULL,
+                          model_nr varchar(64),
+                          cpu varchar(64) NOT NULL,
+                          ram smallint,
+                          storage_in_gb smallint,
+                          display_size_inches double,
+                          operating_system varchar(64) NOT NULL,
+                          battery_capacity_health double,
+                          keyboard_layout varchar(64),
+                          side_note varchar(100),
+                          FOREIGN KEY (`fk_shelve_id`) REFERENCES `shelve` (`pk_shelve_id`)
+                          )
+                          ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci""");
 
+                LOG.info("Preparing notebook table.");
+                statement.execute();
 
                 LOG.info("PREPARED DATABASE TABLES SUCCESSFULLY");
                 statement.close();

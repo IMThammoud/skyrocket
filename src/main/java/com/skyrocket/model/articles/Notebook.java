@@ -5,7 +5,7 @@ import com.skyrocket.Article;
 import java.util.UUID;
 
 public class Notebook extends Article {
-    private String manufacturer;
+    private String brand;
     private String modelNr;
     private String cpu;
     private int ram;
@@ -16,6 +16,22 @@ public class Notebook extends Article {
     private String keyboardLayout;
     private String sideNote;
 
+    @Override
+    public String toString() {
+        return "Notebook{" +
+                "brand='" + brand + '\'' +
+                ", modelNr='" + modelNr + '\'' +
+                ", cpu='" + cpu + '\'' +
+                ", ram=" + ram +
+                ", storage=" + storage +
+                ", displaySize=" + displaySize +
+                ", operatingSystem='" + operatingSystem + '\'' +
+                ", batteryCapacityHealth=" + batteryCapacityHealth +
+                ", keyboardLayout='" + keyboardLayout + '\'' +
+                ", sideNote='" + sideNote + '\'' +
+                '}';
+    }
+
     public Notebook(UUID id,
                     String name,
                     int amount,
@@ -23,7 +39,7 @@ public class Notebook extends Article {
                     String description,
                     double priceWhenBought,
                     double sellingPrice,
-                    String manufacturer,
+                    String brand,
                     String modelNr,
                     String cpu,
                     int ram,
@@ -34,7 +50,7 @@ public class Notebook extends Article {
                     UUID shelveIdAsForeinKey
                     ) {
         super(id, name, amount, type, description, priceWhenBought, sellingPrice, shelveIdAsForeinKey);
-        this.manufacturer = manufacturer;
+        this.brand = brand;
         this.modelNr = modelNr;
         this.cpu = cpu;
         this.ram = ram;
@@ -47,12 +63,12 @@ public class Notebook extends Article {
 
     }
 
-    public String getManufacturer() {
-        return manufacturer;
+    public String getBrand() {
+        return brand;
     }
 
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public String getModelNr() {

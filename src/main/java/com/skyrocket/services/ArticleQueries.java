@@ -18,7 +18,7 @@ public class ArticleQueries {
             statement.setString(5, notebook.getDescription());
             statement.setDouble(6, notebook.getPriceWhenBought());
             statement.setDouble(7, notebook.getSellingPrice());
-            statement.setString(8, notebook.getManufacturer());
+            statement.setString(8, notebook.getBrand());
             statement.setString(9, notebook.getModelNr());
             statement.setString(10, notebook.getCpu());
             statement.setInt(11, notebook.getRam());
