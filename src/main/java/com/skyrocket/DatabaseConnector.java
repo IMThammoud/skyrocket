@@ -71,7 +71,7 @@ public class DatabaseConnector{
                 statement.execute();
 
                 statement = connection.prepareStatement("""
-                        create table notebook(
+                        create table IF NOT EXISTS notebook(
                         	pk_id varchar(64) NOT NULL,
                           fk_shelve_id varchar(64),
                           name varchar(64) NOT NULL,
