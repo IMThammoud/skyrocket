@@ -14,4 +14,5 @@ async function loadShelves(){
         option.innerText = shelvesAsArray[shelvesAsArrayKey]["name"]
         document.getElementById("shelve").appendChild(option)
     }
+    console.log(option.tagName.toString())
 }

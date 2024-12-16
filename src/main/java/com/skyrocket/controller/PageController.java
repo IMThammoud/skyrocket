@@ -12,15 +12,12 @@ import com.skyrocket.model.UserAccount;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
-import jdk.jfr.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -134,5 +131,24 @@ public class PageController {
             return "/electronics/add-notebook";
         }
         return "redirect:/logout";
+    }
+
+    @PostMapping("/add/article/to_shelve")
+    public String addArticleToSpecificShelvePage(@CookieValue(name = "JSESSIONID") String sessionid,
+                                                 @RequestParam(name = "shelve")String shelveID) {
+        if(userAccountQueries.checkSessionId(sessionid)) {
+            // ShelveId will be carried through option into select element in html
+            // check the Shelve_ID and see what type it is
+            // Use Type with Switch Case to return right Template
+
+            // Add more switch cases as more types are available (notebook, smartphone, tablet, etcetc)
+            switch (shelveQueries.checkShelveType(sessionid, shelveID)) {
+                case "notebook":
+                    return "/electronics/add-notebook";
+                default:
+                    return "redirect:/logout";
+            }
+        }
+            return "redirect:/logout";
     }
 }

@@ -17,6 +17,38 @@ import static com.skyrocket.controller.PageController.LOG;
 @Service
 public class ShelveQueries {
 
+    // This is needed to return the right article template
+    // The JS-Function loadShelves() will save the ShelveID as value of each Shelve in Shelve-Selection (when adding new article)
+    // By pressing the button the form will be sent with the shelveID as value to this method
+    public String checkShelveType(String sessionID, String shelveID) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                    SELECT type
+                    FROM shelve AS A
+                    INNER JOIN user_account AS B ON B.pk_id = A.fk_user_account_id
+                    where A.pk_shelve_id = ? AND B.session_id = ?
+                    """);
+            statement.setString(1, shelveID);
+            statement.setString(2, sessionID);
+            ResultSet resultSet = statement.executeQuery();
+
+
+            resultSet.next();
+
+            String shelveType = resultSet.getString("type");
+
+            if(shelveType != null) {
+                LOG.info("Shelve Type : " + shelveType);
+                return shelveType;
+            }
+        return null;
+        } catch (Exception e) {
+            LOG.info("Could not retrieve type of shelve, REASON: " + e.getMessage());
+            return null;
+
+        }
+    }
+
     // Uses sessionID to collect all shelves of the currently logged in User as JSON
     public String getShelvesOfUser(String sessionid){
         try {
