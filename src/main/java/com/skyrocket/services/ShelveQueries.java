@@ -17,6 +17,36 @@ import static com.skyrocket.controller.PageController.LOG;
 @Service
 public class ShelveQueries {
 
+    // returns value of shelves is_for_service column
+    public boolean checkIsForService(String sessionID, String shelveID) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                    SELECT is_for_services
+                    FROM shelve AS A
+                    INNER JOIN user_account AS B ON B.pk_id = A.fk_user_account_id
+                    where A.pk_shelve_id = ? AND B.session_id = ?
+                    """);
+            statement.setString(1, shelveID);
+            statement.setString(2, sessionID);
+            ResultSet resultSet = statement.executeQuery();
+
+
+            resultSet.next();
+
+            boolean shelveIsForServices = resultSet.getBoolean("is_for_services");
+                if (shelveIsForServices) {
+                    LOG.info("Shelve is for Service ? : " + shelveIsForServices);
+                    return true;
+                } else {
+                    return false;}
+            } catch (Exception e) {
+            LOG.info("Could not retrieve is_for_service value of shelve, REASON: " + e.getMessage());
+            return false;
+
+        }
+    }
+
+
     // This is needed to return the right article template
     // The JS-Function loadShelves() will save the ShelveID as value of each Shelve in Shelve-Selection (when adding new article)
     // By pressing the button the form will be sent with the shelveID as value to this method

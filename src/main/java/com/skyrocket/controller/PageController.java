@@ -140,13 +140,16 @@ public class PageController {
             // ShelveId will be carried through option into select element in html
             // check the Shelve_ID and see what type it is
             // Use Type with Switch Case to return right Template
+            // Have to check for is_for_service too so i can render article or Service template <- important
 
             // Add more switch cases as more types are available (notebook, smartphone, tablet, etcetc)
-            switch (shelveQueries.checkShelveType(sessionid, shelveID)) {
-                case "notebook":
-                    return "/electronics/add-notebook";
-                default:
-                    return "redirect:/logout";
+            if(shelveQueries.checkIsForService(sessionid, shelveID) != true) {
+                switch (shelveQueries.checkShelveType(sessionid, shelveID)) {
+                    case "notebook":
+                        return "/electronics/add-notebook";
+                    default:
+                        return "redirect:/logout";
+                }
             }
         }
             return "redirect:/logout";
