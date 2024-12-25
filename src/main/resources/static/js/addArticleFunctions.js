@@ -13,6 +13,7 @@ async function loadShelves(){
         option.value = shelvesAsArray[shelvesAsArrayKey]["id"]
         option.innerText = shelvesAsArray[shelvesAsArrayKey]["name"]
         document.getElementById("shelve").appendChild(option)
+
+        console.log("Current retrieved Shelve: " + option.innerText)
     }
-    console.log(option.tagName.toString())
 }
