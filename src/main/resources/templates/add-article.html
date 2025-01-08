@@ -19,16 +19,17 @@
         </ul></nav>
 </header>
 <main>
-<h4>
+<h4 id ="hund">
     Artikel hinzufügen
 </h4>
+
     <script src="/js/addArticleFunctions.js"></script>
     <form action="/add/article/to_shelve" method="post">
         <label for="shelve">Auswahl:</label>
     <select name="shelve" id="shelve">
             <--! JS will generate existing shelves as options here -> >
         </select>
-        <input type="submit" value="Regal auswählen">
+        <button type="button" onclick="askForTemplateTypeUsingShelveID()">Regal auswählen</button>
     </form>
 
 </main>

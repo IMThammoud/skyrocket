@@ -27,7 +27,14 @@ public abstract class Article {
     private UUID shelveIdAsForeignKey;
 
 
-    public Article(UUID id, String name, int amount, String type, String description, double priceWhenBought, double sellingPrice, UUID shelveIdAsForeignKey) {
+    public Article(UUID id,
+                   String name,
+                   int amount,
+                   String type,
+                   String description,
+                   double priceWhenBought,
+                   double sellingPrice,
+                   UUID shelveIdAsForeignKey) {
         this.id = id;
         this.name = name;
         this.amount = amount;

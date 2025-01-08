@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import static com.skyrocket.controller.PageController.LOG;
@@ -32,6 +31,31 @@ public class DynamicElementsController {
     @GetMapping("/testjs")
     public String testjs(){
         return "This was returned from testJS endpoint";
+    }
+
+
+    @PostMapping("/add/article/to_shelve")
+
+    public String renderArticleFormBasedOnShelveType(@CookieValue(name = "JSESSIONID") String sessionid,
+                                                     @RequestBody Map<String, String> jsBody) {
+        if(userAccountQueries.checkSessionId(sessionid)) {
+            // ShelveId will be carried through option into select element in html
+            // check the Shelve_ID and see what type it is
+            // Use Type with Switch Case to return right Template
+            // Have to check for is_for_service too so i can render article or Service template <- important
+
+            // Add more switch cases as more types are available (notebook, smartphone, tablet, etcetc)
+            if(shelveQueries.checkIsForService(sessionid, jsBody.get("shelve")) != true) {
+                switch (shelveQueries.checkShelveType(sessionid, jsBody.get("shelve"))) {
+                    case "notebook":
+                        // Returning notebook as string to JS so it can render notebook form
+                        return "notebook";
+                    default:
+                        return "redirect:/logout";
+                }
+            }
+        }
+        return "redirect:/logout";
     }
 
     @PostMapping("/shelve/retrieve")
