@@ -18,12 +18,14 @@
             <li> <a style="color: darkred; border: none" href="/logout">Abmelden</a></li>
         </ul></nav>
 </header>
-<main>
-<h4 id ="hund">
+<h4>
     Artikel hinzufügen
 </h4>
-
+<main id="main-element">
     <script src="/js/addArticleFunctions.js"></script>
+
+    <!-- A function will replace this div block with the template depending on the shelve type (using shelveid) -->
+    <div id="replaceableWithJS">
     <form action="/add/article/to_shelve" method="post">
         <label for="shelve">Auswahl:</label>
     <select name="shelve" id="shelve">
@@ -31,7 +33,7 @@
         </select>
         <button type="button" onclick="askForTemplateTypeUsingShelveID()">Regal auswählen</button>
     </form>
-
+    </div>
 </main>
     <footer>Inventarisierung leicht gemacht -- Hosted on Uberspace -- feinschliff durch simplecss</footer>
 </body>
