@@ -73,39 +73,57 @@ async function askForTemplateTypeUsingShelveID() {
         notebookName.placeholder = "Thinkpad T14 Gen5"
         notebookName.type = "text"
 
+        let label_notebookAmount = document.createElement("label")
+        label_notebookAmount.innerText = "Anzahl"
+        label_notebookAmount.htmlFor = "notebook-amount"
         let notebookAmount = document.createElement("input")
         notebookAmount.id = "notebook-amount"
         notebookAmount.placeholder = "1..10.."
-        notebookAmount.size = 50
+        notebookAmount.size = 20
         notebookAmount.type = "number"
 
         // Need to add selection with types for the typefield
+        let label_notebookType = document.createElement("label")
+        label_notebookType.innerText = "Typ"
+        label_notebookType.htmlFor = "notebook-typ"
         let notebookType = document.createElement("select")
         notebookType.id = "notebook-type"
         notebookType.placeholder = "Standard, Convertable"
-        notebookType.type = "text"
+        notebookType.type = "select-one"
         let optionStandard = document.createElement("option")
+        optionStandard.innerText = "Standard"
         optionStandard.value = "standard"
         let optionConvertable = document.createElement("option")
+        optionConvertable.innerText = "Convertable"
         optionConvertable.value = "convertable"
         let optionTwoInOneTablet = document.createElement("option")
+        optionTwoInOneTablet.innerText = "2-in-1-tablet"
         optionTwoInOneTablet.value = "2-in-1-tablet"
         notebookType.appendChild(optionStandard)
         notebookType.appendChild(optionConvertable)
         notebookType.appendChild(optionTwoInOneTablet)
 
+        let label_notebookDescription = document.createElement("label")
+        label_notebookDescription.innerText = "Kurze Beschreibung"
+        label_notebookDescription.htmlFor = "notebook-description"
         let notebookDescription = document.createElement("textarea")
         notebookDescription.id = "notebook-description"
         notebookDescription.placeholder = "Light and portable Workstation that works efficient and has all-day batterylife."
         notebookDescription.type = "text"
 
+        let label_notebookPriceWhenBought = document.createElement("label")
+        label_notebookPriceWhenBought.innerText = "Einkaufspreis"
+        label_notebookPriceWhenBought.htmlFor = "notebook-price-when-bought"
         let notebookPriceWhenBought = document.createElement("input")
-        notebookPriceWhenBought.id = "notebook-price"
-        notebookPriceWhenBought.placeholder = "329,99€"
+        notebookPriceWhenBought.id = "notebook-price-when-bought"
+        notebookPriceWhenBought.placeholder = "429,99€"
         notebookPriceWhenBought.min = 0
         notebookPriceWhenBought.size = 100
         notebookPriceWhenBought.type = "number"
 
+        let label_notebookSellingPrice = document.createElement("label")
+        label_notebookSellingPrice.innerText = "Listenverkaufspreis"
+        label_notebookSellingPrice.htmlFor = "notebook-selling-price"
         let notebookSellingPrice = document.createElement("input")
         notebookSellingPrice.id = "notebook-selling-price"
         notebookSellingPrice.placeholder = "429,99€"
@@ -113,26 +131,38 @@ async function askForTemplateTypeUsingShelveID() {
         notebookSellingPrice.size = 100
         notebookSellingPrice.type = "number"
 
+        let label_notebookModelNumber = document.createElement("label")
+        label_notebookModelNumber.innerText = "Modellnummer"
+        label_notebookModelNumber.htmlFor = "notebook-modelnumber"
         let notebookModelNumber = document.createElement("input")
         notebookModelNumber.id = "notebook-modelnumber"
         notebookModelNumber.placeholder = "20SUB-QSYYC"
-        notebookModelNumber.size = 200
+        notebookModelNumber.size = 100
         notebookModelNumber.type = "text"
 
+        let label_notebookCpu = document.createElement("label")
+        label_notebookCpu.innerText = "CPU / Prozessor"
+        label_notebookCpu.htmlFor = "notebook-cpu"
         let notebookCpu = document.createElement("input")
         notebookCpu.id = "notebook-cpu"
         notebookCpu.placeholder = "Intel Core i5 or i5 1235u"
-        notebookCpu.size = 300
+        notebookCpu.size = 200
         notebookCpu.type = "text"
 
+        let label_notebookRam = document.createElement("label")
+        label_notebookRam.innerText = "RAM / Arbeitsspeicher in GBs"
+        label_notebookRam.htmlFor = "notebook-ram"
         let notebookRam = document.createElement("input")
-        notebookRam.id = "notebook-name"
+        notebookRam.id = "notebook-ram"
         notebookRam.placeholder = "16"
         notebookRam.min = 0
         notebookRam.max = 1000
         notebookRam.size = 50
         notebookRam.type = "number"
 
+        let label_notebookStorageInGigs = document.createElement("label")
+        label_notebookStorageInGigs.innerText = "Festplatte / SSD / HDD Speicher"
+        label_notebookStorageInGigs.htmlFor = "notebook-storage"
         let notebookStorageInGigs = document.createElement("input")
         notebookStorageInGigs.id = "notebook-storage"
         notebookStorageInGigs.placeholder = "1000GB"
@@ -195,17 +225,37 @@ async function askForTemplateTypeUsingShelveID() {
         // attach the elements to an element by using id in "add-article.html"
         templateForm.appendChild(label_notebookbrand)
         templateForm.appendChild(notebookBrand)
+
         templateForm.appendChild(label_notebookname)
         templateForm.appendChild(notebookName)
+
+        templateForm.appendChild(label_notebookAmount)
         templateForm.appendChild(notebookAmount)
+
+        templateForm.appendChild(label_notebookType)
         templateForm.appendChild(notebookType)
+
+        templateForm.appendChild(label_notebookDescription)
         templateForm.appendChild(notebookDescription)
+
+        templateForm.appendChild(label_notebookPriceWhenBought)
         templateForm.appendChild(notebookPriceWhenBought)
+
+        templateForm.appendChild(label_notebookSellingPrice)
         templateForm.appendChild(notebookSellingPrice)
+
+        templateForm.appendChild(label_notebookModelNumber)
         templateForm.appendChild(notebookModelNumber)
+
+        templateForm.appendChild(label_notebookCpu)
         templateForm.appendChild(notebookCpu)
+
+        templateForm.appendChild(label_notebookRam)
         templateForm.appendChild(notebookRam)
+
+        templateForm.appendChild(label_notebookStorageInGigs)
         templateForm.appendChild(notebookStorageInGigs)
+
         templateForm.appendChild(notebookDisplaySizeInInches)
         templateForm.appendChild(notebookOS)
         templateForm.appendChild(notebookBatteryHealth)
