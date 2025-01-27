@@ -26,8 +26,8 @@ async function loadShelves(){
 // Asking for returning shelvetype of given shelveid, based on that i render the template with js then.
 async function askForTemplateTypeUsingShelveID() {
 
-
-    let request = await fetch("http://localhost:8080/add/article/to_shelve",
+    // When clicking on add article to shelve on UI
+    let request = await fetch("http://localhost:8080/add/article/check-shelve-type",
         {
             headers : {"content-type" : "application/json;charset=UTF8"},
             method : "POST",
@@ -35,6 +35,7 @@ async function askForTemplateTypeUsingShelveID() {
         })
     let response = await request.text()
     switch (response) {
+        // Add some other cases in future and mirror the cases with the endpoint on the server
         case "notebook":
             shelveIdOfSelectedShelve = document.getElementById("shelve").value
             console.log("ShelveID of selected shelve:" + shelveIdOfSelectedShelve)
@@ -55,11 +56,18 @@ async function askForTemplateTypeUsingShelveID() {
         let templateForm = document.createElement("form")
         templateForm.id = "template-form"
 
+        // Create label and link its for property to the input form
+        let label_notebookbrand = document.createElement("label")
+        label_notebookbrand.innerText = "Marke"
+        label_notebookbrand.htmlFor = "notebook-brand"
         let notebookBrand = document.createElement("input")
         notebookBrand.id = "notebook-brand"
         notebookBrand.placeholder = "Lenovo"
         notebookBrand.type = "text"
 
+        let label_notebookname = document.createElement("label")
+        label_notebookname.innerText = "Name"
+        label_notebookname.htmlFor = "notebook-name"
         let notebookName = document.createElement("input")
         notebookName.id = "notebook-name"
         notebookName.placeholder = "Thinkpad T14 Gen5"
@@ -185,7 +193,9 @@ async function askForTemplateTypeUsingShelveID() {
 
 
         // attach the elements to an element by using id in "add-article.html"
+        templateForm.appendChild(label_notebookbrand)
         templateForm.appendChild(notebookBrand)
+        templateForm.appendChild(label_notebookname)
         templateForm.appendChild(notebookName)
         templateForm.appendChild(notebookAmount)
         templateForm.appendChild(notebookType)

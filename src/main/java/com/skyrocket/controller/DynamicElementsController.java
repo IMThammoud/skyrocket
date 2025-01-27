@@ -5,6 +5,7 @@ for things like rendering the shelves of a user dynamically in a table
 
 package com.skyrocket.controller;
 
+import com.skyrocket.model.articles.Notebook;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
@@ -33,9 +34,14 @@ public class DynamicElementsController {
         return "This was returned from testJS endpoint";
     }
 
+    @PostMapping("/add/article/receiveArticle")
+    public String receiveArticle(@CookieValue(name = "JSESSIONID") String cookie,
+                                 @RequestBody Notebook notebook) {
 
-    @PostMapping("/add/article/to_shelve")
+        return null;
+    }
 
+    @PostMapping("/add/article/check-shelve-type")
     public String renderArticleFormBasedOnShelveType(@CookieValue(name = "JSESSIONID") String sessionid,
                                                      @RequestBody Map<String, String> jsBody) {
         if(userAccountQueries.checkSessionId(sessionid)) {
@@ -43,8 +49,7 @@ public class DynamicElementsController {
             // check the Shelve_ID and see what type it is
             // Use Type with Switch Case to return right Template
             // Have to check for is_for_service too so i can render article or Service template <- important
-
-            // Add more switch cases as more types are available (notebook, smartphone, tablet, etcetc)
+            // Add more switch cases as more types are available (notebook, smartphone, tablet, etc.)
             if(shelveQueries.checkIsForService(sessionid, jsBody.get("shelve")) != true) {
                 switch (shelveQueries.checkShelveType(sessionid, jsBody.get("shelve"))) {
                     case "notebook":
