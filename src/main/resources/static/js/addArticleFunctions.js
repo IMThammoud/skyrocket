@@ -93,14 +93,14 @@ async function askForTemplateTypeUsingShelveID() {
         let optionStandard = document.createElement("option")
         optionStandard.innerText = "Standard"
         optionStandard.value = "standard"
-        let optionConvertable = document.createElement("option")
-        optionConvertable.innerText = "Convertable"
-        optionConvertable.value = "convertable"
+        let optionConvertible = document.createElement("option")
+        optionConvertible.innerText = "Convertible"
+        optionConvertible.value = "convertible"
         let optionTwoInOneTablet = document.createElement("option")
         optionTwoInOneTablet.innerText = "2-in-1-tablet"
         optionTwoInOneTablet.value = "2-in-1-tablet"
         notebookType.appendChild(optionStandard)
-        notebookType.appendChild(optionConvertable)
+        notebookType.appendChild(optionConvertible)
         notebookType.appendChild(optionTwoInOneTablet)
 
         let label_notebookDescription = document.createElement("label")
