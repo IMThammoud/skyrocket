@@ -1,6 +1,26 @@
 // This renders the shelves as options on the selection when adding a new article
 // It fetches a json array uses its key value pairs for the options in selection tab of "add-article.html"
 let shelveIdOfSelectedShelve
+let notebookObject = {
+    pk_id,
+    fk_shelve_id,
+    name,
+    amount,
+    type,
+    description,
+    price_when_bought,
+    selling_price,
+    brand,
+    model_nr,
+    cpu,
+    ram,
+    storage_in_gb,
+    display_size_inches,
+    operating_system,
+    battery_capacity_health,
+    keyboard_layout,
+    side_note
+}
 
 async function loadShelves(){
     let request = await fetch("http://localhost:8080/shelve/retrieve",
@@ -43,7 +63,7 @@ async function askForTemplateTypeUsingShelveID() {
             build_notebook_form()
 
         default:
-            return null;
+            break
     }
 
     function build_notebook_form(){
@@ -170,11 +190,18 @@ async function askForTemplateTypeUsingShelveID() {
         notebookStorageInGigs.size = 100
         notebookStorageInGigs.type = "number"
 
+        let label_notebookDisplaySizeInInches = document.createElement("label")
+        label_notebookDisplaySizeInInches.innerText = "Display in Zoll"
+        label_notebookDisplaySizeInInches.htmlFor = "notebook-displaySize"
         let notebookDisplaySizeInInches = document.createElement("input")
         notebookDisplaySizeInInches.id = "notebook-displaySize"
         notebookDisplaySizeInInches.placeholder = "14"
         notebookDisplaySizeInInches.size = 50
         notebookDisplaySizeInInches.type = "number"
+
+        let label_notebookOS = document.createElement("label")
+        label_notebookOS.innerText = "Betriebssystem"
+        label_notebookOS.htmlFor = "notebook-os"
 
         let notebookOS = document.createElement("select")
         notebookOS.id = "notebook-os"
@@ -182,7 +209,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookOS.innerHTML = "Betriebssystem"
         let osOptionWindows10 = document.createElement("option")
         osOptionWindows10.value = "Windows10"
-        osOptionWindows10.text = "Windows10"
+        osOptionWindows10.innerText = "Windows10"
         let osOptionWindows11 = document.createElement("option")
         osOptionWindows11.value = "Windows11"
         osOptionWindows11.innerText = "Windows11"
@@ -192,7 +219,14 @@ async function askForTemplateTypeUsingShelveID() {
         let osOptionLinux = document.createElement("option")
         osOptionLinux.value = "LinuxOS"
         osOptionLinux.innerText = "LinuxOS"
+        notebookOS.appendChild(osOptionWindows10)
+        notebookOS.appendChild(osOptionWindows11)
+        notebookOS.appendChild(osOptionMac)
+        notebookOS.appendChild(osOptionLinux)
 
+        let label_notebookBatteryHealth = document.createElement("label")
+        label_notebookBatteryHealth.innerText = "Batteryhealth in %"
+        label_notebookBatteryHealth.htmlFor = "notebook-batteryhealth"
         let notebookBatteryHealth = document.createElement("input")
         notebookBatteryHealth.id = "notebook-batteryhealth"
         notebookBatteryHealth.placeholder = "80%"
@@ -201,27 +235,31 @@ async function askForTemplateTypeUsingShelveID() {
         notebookBatteryHealth.min = 1
         notebookBatteryHealth.type = "number"
 
+        let label_notebookKeyboardLayout = document.createElement("label")
+        label_notebookKeyboardLayout.innerText = "Keyboard Layout"
+        label_notebookKeyboardLayout.htmlFor = "notebook-keyboardlayout"
         let notebookKeyboardLayout = document.createElement("input")
         notebookKeyboardLayout.id = "notebook-keyboardlayout"
         notebookKeyboardLayout.placeholder = "Deutsch"
         notebookKeyboardLayout.size = 300
         notebookKeyboardLayout.type = "text"
 
+        let label_notebookSideNote = document.createElement("label")
+        label_notebookSideNote.innerText = "Bemerkung, Notiz"
+        label_notebookSideNote.id = "notebook-sidenote"
         let notebookSideNote = document.createElement("textarea")
-        notebookSideNote.id = "notebook-displaySize"
+        notebookSideNote.id = "notebook-sidenote"
         notebookSideNote.placeholder = "Hier mehr infos hinterlassen falls noch etwas offen ist."
         notebookSideNote.size = 300
         notebookSideNote.type = "text"
 
         let submitNotebookButton = document.createElement("button")
+        submitNotebookButton.style = "margin-top: 5%"
         submitNotebookButton.innerHTML = "Artikel speichern"
+        // submitNotebookButton.onclick
+        submitNotebookButton.onclick = submitArticleAndWaitForResponse()
 
-
-
-
-
-
-
+        //////////////////////////////////////////////////////////////////////
         // attach the elements to an element by using id in "add-article.html"
         templateForm.appendChild(label_notebookbrand)
         templateForm.appendChild(notebookBrand)
@@ -256,11 +294,21 @@ async function askForTemplateTypeUsingShelveID() {
         templateForm.appendChild(label_notebookStorageInGigs)
         templateForm.appendChild(notebookStorageInGigs)
 
+        templateForm.appendChild(label_notebookDisplaySizeInInches)
         templateForm.appendChild(notebookDisplaySizeInInches)
+
+        templateForm.appendChild(label_notebookOS)
         templateForm.appendChild(notebookOS)
+
+        templateForm.appendChild(label_notebookBatteryHealth)
         templateForm.appendChild(notebookBatteryHealth)
+
+        templateForm.appendChild(label_notebookKeyboardLayout)
         templateForm.appendChild(notebookKeyboardLayout)
+
+        templateForm.appendChild(label_notebookSideNote)
         templateForm.appendChild(notebookSideNote)
+
         templateForm.appendChild(submitNotebookButton)
 
         formDiv.appendChild(templateForm)
@@ -268,6 +316,9 @@ async function askForTemplateTypeUsingShelveID() {
     }
 
     async function submitArticleAndWaitForResponse() {
-
+        let request = await fetch("https://localhost:8080/add/article/receiveArticle", {
+            method: "POST",
+            body: JSON.stringify({})
+        })
     }
 }
