@@ -2,24 +2,24 @@
 // It fetches a json array uses its key value pairs for the options in selection tab of "add-article.html"
 let shelveIdOfSelectedShelve
 let notebookObject = {
-    pk_id,
-    fk_shelve_id,
-    name,
-    amount,
-    type,
-    description,
-    price_when_bought,
-    selling_price,
-    brand,
-    model_nr,
-    cpu,
-    ram,
-    storage_in_gb,
-    display_size_inches,
-    operating_system,
-    battery_capacity_health,
-    keyboard_layout,
-    side_note
+    "pk_id":"",
+    "name":"",
+    "amount":"",
+    "type":"",
+    "description":"",
+    "price_when_bought":"",
+    "selling_price":"",
+    "fk_shelve_id":"",
+    "brand":"",
+    "model_nr":"",
+    "cpu":"",
+    "ram":"",
+    "storage_in_gb":"",
+    "display_size_inches":"",
+    "operating_system":"",
+    "battery_capacity_health":"",
+    "keyboard_layout":"",
+    "side_note":""
 }
 
 async function loadShelves(){
@@ -72,6 +72,7 @@ async function askForTemplateTypeUsingShelveID() {
         formDiv.id = "Js-built-form"
 
         let mainElement = document.getElementById("main-element")
+        let buttonSpace = document.getElementById("Button-space-in-form")
 
         let templateForm = document.createElement("form")
         templateForm.id = "template-form"
@@ -137,8 +138,8 @@ async function askForTemplateTypeUsingShelveID() {
         let notebookPriceWhenBought = document.createElement("input")
         notebookPriceWhenBought.id = "notebook-price-when-bought"
         notebookPriceWhenBought.placeholder = "429,99€"
-        notebookPriceWhenBought.min = 0
-        notebookPriceWhenBought.size = 100
+        notebookPriceWhenBought.min = "0"
+        notebookPriceWhenBought.size = 30
         notebookPriceWhenBought.type = "number"
 
         let label_notebookSellingPrice = document.createElement("label")
@@ -147,8 +148,8 @@ async function askForTemplateTypeUsingShelveID() {
         let notebookSellingPrice = document.createElement("input")
         notebookSellingPrice.id = "notebook-selling-price"
         notebookSellingPrice.placeholder = "429,99€"
-        notebookPriceWhenBought.min = 0
-        notebookSellingPrice.size = 100
+        notebookSellingPrice.min = "0"
+        notebookSellingPrice.size = 30
         notebookSellingPrice.type = "number"
 
         let label_notebookModelNumber = document.createElement("label")
@@ -157,7 +158,7 @@ async function askForTemplateTypeUsingShelveID() {
         let notebookModelNumber = document.createElement("input")
         notebookModelNumber.id = "notebook-modelnumber"
         notebookModelNumber.placeholder = "20SUB-QSYYC"
-        notebookModelNumber.size = 100
+        notebookModelNumber.size = 50
         notebookModelNumber.type = "text"
 
         let label_notebookCpu = document.createElement("label")
@@ -166,7 +167,7 @@ async function askForTemplateTypeUsingShelveID() {
         let notebookCpu = document.createElement("input")
         notebookCpu.id = "notebook-cpu"
         notebookCpu.placeholder = "Intel Core i5 or i5 1235u"
-        notebookCpu.size = 200
+        notebookCpu.size = 30
         notebookCpu.type = "text"
 
         let label_notebookRam = document.createElement("label")
@@ -177,7 +178,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookRam.placeholder = "16"
         notebookRam.min = 0
         notebookRam.max = 1000
-        notebookRam.size = 50
+        notebookRam.size = 30
         notebookRam.type = "number"
 
         let label_notebookStorageInGigs = document.createElement("label")
@@ -187,16 +188,19 @@ async function askForTemplateTypeUsingShelveID() {
         notebookStorageInGigs.id = "notebook-storage"
         notebookStorageInGigs.placeholder = "1000GB"
         notebookStorageInGigs.min = 0
-        notebookStorageInGigs.size = 100
+        notebookStorageInGigs.size = 30
         notebookStorageInGigs.type = "number"
+        //notebookStorageInGigs.pattern = "[0-9]{3}-[0-9]{3}-[0-9]{4}"
+
 
         let label_notebookDisplaySizeInInches = document.createElement("label")
         label_notebookDisplaySizeInInches.innerText = "Display in Zoll"
         label_notebookDisplaySizeInInches.htmlFor = "notebook-displaySize"
         let notebookDisplaySizeInInches = document.createElement("input")
         notebookDisplaySizeInInches.id = "notebook-displaySize"
+        notebookDisplaySizeInInches.min = "0"
         notebookDisplaySizeInInches.placeholder = "14"
-        notebookDisplaySizeInInches.size = 50
+        notebookDisplaySizeInInches.size = 30
         notebookDisplaySizeInInches.type = "number"
 
         let label_notebookOS = document.createElement("label")
@@ -254,10 +258,33 @@ async function askForTemplateTypeUsingShelveID() {
         notebookSideNote.type = "text"
 
         let submitNotebookButton = document.createElement("button")
+        submitNotebookButton.id = "submitNotebookButton"
         submitNotebookButton.style = "margin-top: 5%"
         submitNotebookButton.innerHTML = "Artikel speichern"
+
         // submitNotebookButton.onclick
-        submitNotebookButton.onclick = submitArticleAndWaitForResponse()
+        //Adding eventlistener is necessary to lock all values into notebookObject and submit it
+        submitNotebookButton.addEventListener("click", function() {
+            notebookObject.pk_id = ""
+            notebookObject.fk_shelve_id = shelveIdOfSelectedShelve
+            notebookObject.name = notebookName.value
+            notebookObject.amount = notebookAmount.value
+            notebookObject.type = notebookType.value
+            notebookObject.description = notebookDescription.value
+            notebookObject.price_when_bought = notebookPriceWhenBought.value
+            notebookObject.selling_price = notebookSellingPrice.value
+            notebookObject.brand = notebookBrand.value
+            notebookObject.model_nr = notebookModelNumber.value
+            notebookObject.cpu = notebookCpu.value
+            notebookObject.ram = notebookRam.value
+            notebookObject.storage_in_gb = notebookStorageInGigs.value
+            notebookObject.display_size_inches = notebookDisplaySizeInInches.value
+            notebookObject.operating_system = notebookOS.value
+            notebookObject.battery_capacity_health = notebookBatteryHealth.value
+            notebookObject.keyboard_layout = notebookKeyboardLayout.value
+            notebookObject.side_note = notebookSideNote.value;
+            submitArticleAndWaitForResponse(notebookObject);}
+        );
 
         //////////////////////////////////////////////////////////////////////
         // attach the elements to an element by using id in "add-article.html"
@@ -309,16 +336,24 @@ async function askForTemplateTypeUsingShelveID() {
         templateForm.appendChild(label_notebookSideNote)
         templateForm.appendChild(notebookSideNote)
 
-        templateForm.appendChild(submitNotebookButton)
-
         formDiv.appendChild(templateForm)
+        formDiv.appendChild(submitNotebookButton)
+
         mainElement.appendChild(formDiv)
     }
 
-    async function submitArticleAndWaitForResponse() {
-        let request = await fetch("https://localhost:8080/add/article/receiveArticle", {
+    async function submitArticleAndWaitForResponse(notebookObject) {
+        console.log(notebookObject)
+        let request =  await fetch("http://localhost:8080/add/article/receiveArticle", {
+            headers: {"Content-Type": "application/json"},
             method: "POST",
-            body: JSON.stringify({})
+            body: JSON.stringify(notebookObject)
         })
+        let response = await request.text()
+        if (response === "success") {
+            alert("Article added to shelve")
+        } else {
+            alert("something is off with the click event handler right now")
+        }
     }
 }

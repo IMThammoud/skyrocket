@@ -3,7 +3,6 @@ import com.skyrocket.model.articles.Notebook;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.UUID;
 
 import static com.skyrocket.DatabaseConnector.DBConnector.connection;
 import static com.skyrocket.controller.PageController.LOG;
@@ -15,20 +14,36 @@ public class ArticleQueries {
             //Get the correct shelve and check if the shelveID that comes from frontend is actually there.
             PreparedStatement theShelve = connection.prepareStatement("""
                                     select pk_shelve_id
-                                    from shelve as AliasShelve inner join user_account as AliasUser_account
-                                    ON AliasUser_account.pk_id = AliasShelve.pk_shelve_id;
-                                    where AliasUser_account.session_id = ? AND AliasShelve.pk_shelve_id = ? """);
+                                    from shelve inner join user_account
+                                    ON user_account.pk_id = shelve.fk_user_account_id
+                                    where user_account.session_id = ? AND shelve.pk_shelve_id = ?""");
             theShelve.setString(1, sessionId);
             theShelve.setString(2, shelveId);
             ResultSet rs = theShelve.executeQuery();
-
+            rs.next();
+            LOG.info("right after executing query to search shelve id.");
             String correctShelve = rs.getString("pk_shelve_id");
 
-            theShelve.close();
+            LOG.info(correctShelve.toString());
 
-
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO notebook(pk_id, fk_shelve_id, name, amount, type, description, price_when_bought, selling_price, brand, model_nr, cpu, ram, storage_in_gb, display_size_inches, operating_system, battery_capacity_health, keyboard_layout, side_note) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            statement.setString(1, UUID.randomUUID().toString());
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO notebook(pk_id," +
+                    " fk_shelve_id," +
+                    " name," +
+                    " amount," +
+                    " type," +
+                    " description," +
+                    " price_when_bought," +
+                    " selling_price, brand," +
+                    " model_nr," +
+                    " cpu," +
+                    " ram," +
+                    " storage_in_gb," +
+                    " display_size_inches," +
+                    " operating_system," +
+                    " battery_capacity_health," +
+                    " keyboard_layout," +
+                    " side_note) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
+            statement.setString(1, notebook.getId().toString());
             statement.setString(2, correctShelve);
             statement.setString(3, notebook.getName());
             statement.setInt(4, notebook.getAmount());

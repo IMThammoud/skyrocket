@@ -6,6 +6,7 @@ for things like rendering the shelves of a user dynamically in a table
 package com.skyrocket.controller;
 
 import com.skyrocket.model.articles.Notebook;
+import com.skyrocket.services.ArticleQueries;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
@@ -13,20 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static com.skyrocket.controller.PageController.LOG;
 
 @RestController
 public class DynamicElementsController {
 
-    @Autowired
     private final UserAccountQueries userAccountQueries;
-    @Autowired
     private final ShelveQueries shelveQueries;
+    private final ArticleQueries articleQueries;
 
     public DynamicElementsController(UserAccountQueries userAccountQueries, ShelveQueries shelveQueries) {
         this.userAccountQueries = userAccountQueries;
         this.shelveQueries = shelveQueries;
+        this.articleQueries = new ArticleQueries();
     }
 
     @GetMapping("/testjs")
@@ -36,9 +38,33 @@ public class DynamicElementsController {
 
     @PostMapping("/add/article/receiveArticle")
     public String receiveArticle(@CookieValue(name = "JSESSIONID") String cookie,
-                                 @RequestBody Notebook notebook) {
-
-        return null;
+                                 @RequestBody Map<String,String> notebook) {
+        LOG.info("Received notebook: " + notebook.toString());
+        if (userAccountQueries.checkSessionId(cookie)) {
+            Notebook newNotebook = new Notebook(UUID.randomUUID(),
+                    notebook.get("name"),
+                    Integer.parseInt(notebook.get("amount")),
+                    notebook.get("type"),
+                    notebook.get("description"),
+                    Double.parseDouble(notebook.get("price_when_bought")),
+                    Double.parseDouble(notebook.get("selling_price")),
+                    UUID.fromString(notebook.get("fk_shelve_id")),
+                    notebook.get("brand"),
+                    notebook.get("model_nr"),
+                    notebook.get("cpu"),
+                    Integer.parseInt(notebook.get("ram")),
+                    Integer.parseInt(notebook.get("storage_in_gb")),
+                    Integer.parseInt(notebook.get("display_size_inches")),
+                    notebook.get("operating_system"),
+                    Integer.parseInt(notebook.get("battery_capacity_health")),
+                    notebook.get("keyboard_layout"),
+                    notebook.get("side_note")
+                    );
+            articleQueries.insertNotebook(newNotebook, cookie, newNotebook.getShelveIdAsForeignKey().toString());
+            return "success";
+        } else {
+            return "something went wrong with the notebook inserting method";
+        }
     }
 
     @PostMapping("/add/article/check-shelve-type")

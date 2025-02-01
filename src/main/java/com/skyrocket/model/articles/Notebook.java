@@ -58,6 +58,8 @@ public class Notebook extends Article {
                     int ram,
                     int storage,
                     double displaySize,
+                    String operatingSystem,
+                    double batteryCapacityHealth,
                     String keyboardLayout,
                     String sideNote
                     ) {
@@ -68,6 +70,8 @@ public class Notebook extends Article {
         this.ram = ram;
         this.storage = storage;
         this.displaySize = displaySize;
+        this.operatingSystem = operatingSystem;
+        this.batteryCapacityHealth = batteryCapacityHealth;
         this.keyboardLayout = keyboardLayout;
         this.sideNote = sideNote;
 
