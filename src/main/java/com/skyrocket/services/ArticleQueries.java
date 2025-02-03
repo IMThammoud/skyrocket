@@ -3,11 +3,34 @@ import com.skyrocket.model.articles.Notebook;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static com.skyrocket.DatabaseConnector.DBConnector.connection;
 import static com.skyrocket.controller.PageController.LOG;
 
 public class ArticleQueries {
+
+    public int getArticleCountInShelveIfTypeNotebook(String shelveId) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                                    select count(*)
+                                    from notebook
+                                    where fk_shelve_id = ?
+                                    """);
+            statement.setString(1,shelveId);
+
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+
+            // get count of articles in that shelve
+            return resultSet.getInt(1);
+
+        } catch(SQLException e) {
+            LOG.error(e.getMessage());
+            return 0;
+        }
+    }
+
     public void insertNotebook(Notebook notebook, String sessionId, String shelveId){
         try {
 

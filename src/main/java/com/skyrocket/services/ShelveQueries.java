@@ -124,6 +124,7 @@ public class ShelveQueries {
             statement.setString(1, sessionId);
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
+                // Important, im adding each shelve as list entry to an arraylist, check field names
                 resultsList.add(new RetrievedShelves(resultSet.getString("name"),
                         resultSet.getString("pk_shelve_id"),
                         resultSet.getString("type"),

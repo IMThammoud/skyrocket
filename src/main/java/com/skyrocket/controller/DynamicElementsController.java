@@ -10,7 +10,7 @@ import com.skyrocket.services.ArticleQueries;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -34,6 +34,23 @@ public class DynamicElementsController {
     @GetMapping("/testjs")
     public String testjs(){
         return "This was returned from testJS endpoint";
+    }
+
+    @PostMapping("/shelve/articleCount")
+    public int getArticleCountInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
+                                          @RequestBody Map<String, String> shelveIdAndShelveTypeInMap) {
+        if (userAccountQueries.checkSessionId(sessionId)) {
+            switch (shelveIdAndShelveTypeInMap.get("shelve_type")){
+                case "notebook":
+                    LOG.info("Counting Articles in notebook shelve of shelve:"+ shelveIdAndShelveTypeInMap.get("shelve_id"));
+                    return articleQueries.getArticleCountInShelveIfTypeNotebook(shelveIdAndShelveTypeInMap.get("shelve_id"));
+
+                default:
+                    LOG.info("Default case was met in switch statement.. breaking");
+                    break;
+            }
+        }
+        return 0;
     }
 
     @PostMapping("/add/article/receiveArticle")
