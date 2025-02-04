@@ -55,15 +55,22 @@ async function askForTemplateTypeUsingShelveID() {
         })
     let response = await request.text()
     switch (response) {
-        // Add some other cases in future and mirror the cases with the endpoint on the server
+        // Add some other cases in future and mirror the cases with the endpoint on the server, storing global ShelveID to use it in request function
         case "notebook":
             shelveIdOfSelectedShelve = document.getElementById("shelve").value
             console.log("ShelveID of selected shelve:" + shelveIdOfSelectedShelve)
             document.getElementById("replaceableWithJS").remove()
             build_notebook_form()
 
+        case "smartphone":
+            shelveIdOfSelectedShelve = document.getElementById("shelve").value
+            console.log("ShelveID of selected shelve:" + shelveIdOfSelectedShelve)
+            document.getElementById("replaceableWithJS").remove()
+            build_smartphone_form()
+
         default:
-            break
+            console.log("No suitable type returned by the server for template generation.")
+            break;
     }
 
     function build_notebook_form(){
@@ -342,6 +349,10 @@ async function askForTemplateTypeUsingShelveID() {
         mainElement.appendChild(formDiv)
     }
 
+    function build_smartphone_form() {
+        return "build smartphone form here."
+    }
+
     async function submitArticleAndWaitForResponse(notebookObject) {
         console.log(notebookObject)
         let request =  await fetch("http://localhost:8080/add/article/receiveArticle", {
@@ -353,7 +364,7 @@ async function askForTemplateTypeUsingShelveID() {
         if (response === "success") {
             alert("Article added to shelve")
         } else {
-            alert("something is off with the click event handler right now")
+            alert("Server does not like your form. ")
         }
     }
 }

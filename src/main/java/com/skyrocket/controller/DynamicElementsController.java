@@ -98,6 +98,9 @@ public class DynamicElementsController {
                     case "notebook":
                         // Returning notebook as string to JS so it can render notebook form
                         return "notebook";
+
+                    case "smartphone":
+                        return "smartphone";
                     default:
                         return "redirect:/logout";
                 }
