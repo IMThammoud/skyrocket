@@ -7,6 +7,7 @@ package com.skyrocket.controller;
 
 import com.skyrocket.model.articles.Notebook;
 import com.skyrocket.services.ArticleQueries;
+import com.skyrocket.services.JsonMethods;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
@@ -24,6 +25,7 @@ public class DynamicElementsController {
     private final UserAccountQueries userAccountQueries;
     private final ShelveQueries shelveQueries;
     private final ArticleQueries articleQueries;
+    private final JsonMethods jsonMethods = new JsonMethods();
 
     public DynamicElementsController(UserAccountQueries userAccountQueries, ShelveQueries shelveQueries) {
         this.userAccountQueries = userAccountQueries;
@@ -126,6 +128,23 @@ public class DynamicElementsController {
         }
 
         return "false";
+    }
+
+    // Return 200 if deletion was successful
+    @DeleteMapping("/shelve/delete")
+    public ResponseStatus deleteShelve(@CookieValue(name = "JSESSIONID") String cookie,
+                                       String shelveId) {
+        if (userAccountQueries.checkSessionId(cookie)) {
+
+        }
+        return null;
+    }
+
+    @PostMapping("/shelve/get-articles")
+    public String getArticlesInShelve(String sessionId, String shelveId) {
+        if (userAccountQueries.checkSessionId(sessionId)) {
+            return jsonMethods.StringifyListOfNotebooks(articleQueries.getArticlesFromShelve(shelveId, sessionId));
+        } else return "empty";
     }
 
 }

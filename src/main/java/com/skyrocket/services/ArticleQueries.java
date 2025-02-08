@@ -4,11 +4,51 @@ import com.skyrocket.model.articles.Notebook;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 
 import static com.skyrocket.DatabaseConnector.DBConnector.connection;
 import static com.skyrocket.controller.PageController.LOG;
 
 public class ArticleQueries {
+
+    public ArrayList<Notebook> getArticlesFromShelve(String sessionId, String shelveId) {
+        // This stores the List of Articles that are extracted from a shelve like "notebook" using the shelve_id as fk_shelve_id
+        ArrayList<Notebook> notebooks = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                                    SELECT notebook.*
+                                    FROM notebook
+                                    WHERE fk_shelve_id = ?""");
+            statement.setString(1, shelveId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                notebooks.add(new Notebook(UUID.fromString(resultSet.getString("pk_id")),
+                        resultSet.getString("name"),
+                        resultSet.getInt("amount"),
+                        resultSet.getString("type"),
+                        resultSet.getString("description"),
+                        resultSet.getDouble("price_when_bought"),
+                        resultSet.getDouble("selling_price"),
+                        UUID.fromString(resultSet.getString("fk_shelve_id")),
+                        resultSet.getString("branch"),
+                        resultSet.getString("model_nr"),
+                        resultSet.getString("cpu"),
+                        resultSet.getInt("ram"),
+                        resultSet.getInt("storage_in_gb"),
+                        resultSet.getInt("display_size_inches"),
+                        resultSet.getString("operating_system"),
+                        resultSet.getInt("battery_capacity_health"),
+                        resultSet.getString("keyboard_layout"),
+                        resultSet.getString("side_note")));
+            }
+
+            return notebooks;
+
+        } catch(SQLException e) {
+            LOG.error(e.getMessage());
+            return null;
+        }
+    }
 
     public int getArticleCountInShelveIfTypeNotebook(String shelveId) {
         try {

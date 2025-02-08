@@ -4,7 +4,8 @@
 let global_response_array;
 let extra_button = document.createElement("button");
 extra_button.id = "extra_button";
-extra_button.innerHTML = '<img style ="width: 30px" src="/icons/icons-skyrocket/eye-solid.svg" alt="listing-button">';
+// extra_button.innerHTML = '<img style ="width: 30px" src="/icons/icons-skyrocket/eye-solid.svg" alt="listing-button">';
+extra_button.innerText = "View Articles";
 async function showShelvesAsTable() {
     let request =   await fetch("http://localhost:8080/shelve/retrieve", {
                                 method : "POST",
@@ -44,11 +45,16 @@ async function showShelvesAsTable() {
         let responseCount = await askForArticleCount.json()
 
         cell_articleCount.innerText = responseCount;
-        extra_button.value = response_array[i]["id"];
-        cell_extra_button.innerHTML = extra_button.innerHTML
-        extra_button.addEventListener("click", function(){
+        cell_extra_button.value = response_array[i]["id"];
+        let button_to_view_articles = document.createElement('button');
+        button_to_view_articles.innerText = "einsehen";
+        button_to_view_articles.addEventListener("click", function(){
             // Submit ShelveID through button and get Listing template for shelve.
+            console.log("Clicked on button for row: "+ cell_extra_button.value);
         })
+        cell_extra_button.append(button_to_view_articles)
+
+
 
 
     }

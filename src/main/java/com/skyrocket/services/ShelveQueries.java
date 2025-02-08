@@ -17,6 +17,41 @@ import static com.skyrocket.controller.PageController.LOG;
 @Service
 public class ShelveQueries {
 
+    public void checkIfShelveIsEmptyForNotebook(String shelveId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("""
+                    SELECT *
+                    FROM notebook
+                    WHERE fk_shelve_id = ? """);
+
+            preparedStatement.setString(1, shelveId);
+            preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            LOG.error(e.getMessage());
+        }
+    }
+
+    // This only works if the shelve was cleared from all Articles or offeredServices
+    public void deleteShelveRow(String sessionID, String shelveId) {
+        try {
+            // Join UserAccount and Shelve table and delete rows where sessionID and shelveID match
+            // On the current User who triggered this endpoint.
+            PreparedStatement statement = connection.prepareStatement("""
+                    DELETE shelve
+                    FROM shelve
+                    INNER JOIN user_account ON user_account.pk_id = shelve.fk_user_account_id
+                    WHERE user_account.session_id = ? AND shelve.pk_shelve_id = ?;""");
+
+            statement.setString(1, sessionID);
+            statement.setString(2, shelveId);
+            LOG.info("Deleting shelve row: " + shelveId);
+            statement.executeUpdate();
+
+        } catch(SQLException e) {
+            LOG.error(e.getMessage());
+        }
+    }
+
     // returns value of shelves is_for_service column
     public boolean checkIsForService(String sessionID, String shelveID) {
         try {
@@ -86,7 +121,7 @@ public class ShelveQueries {
 
             PreparedStatement statement = connection.prepareStatement("""
                     SELECT aliasShelves.pk_shelve_id 
-                    FROM shelves AS aliasShelves
+                    FROM shelve AS aliasShelves
                     INNER JOIN user_account AS aliasuser_account
                     ON aliasuser_account.pk_id = aliasShelves.fk_user_account_id
                     WHERE session_id = ?
