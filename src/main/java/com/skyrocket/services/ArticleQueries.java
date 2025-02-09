@@ -30,7 +30,7 @@ public class ArticleQueries {
                         resultSet.getDouble("price_when_bought"),
                         resultSet.getDouble("selling_price"),
                         UUID.fromString(resultSet.getString("fk_shelve_id")),
-                        resultSet.getString("branch"),
+                        resultSet.getString("brand"),
                         resultSet.getString("model_nr"),
                         resultSet.getString("cpu"),
                         resultSet.getInt("ram"),

@@ -2,6 +2,7 @@
 // Dont forget to implement a cap of Shelves because there shouldt be 100 Shelves rendered
 // on one Page. Would be better to dynamically load them on button press "Next" or something
 let global_response_array;
+let global_article_array
 let extra_button = document.createElement("button");
 extra_button.id = "extra_button";
 // extra_button.innerHTML = '<img style ="width: 30px" src="/icons/icons-skyrocket/eye-solid.svg" alt="listing-button">';
@@ -48,9 +49,11 @@ async function showShelvesAsTable() {
         cell_extra_button.value = response_array[i]["id"];
         let button_to_view_articles = document.createElement('button');
         button_to_view_articles.innerText = "einsehen";
-        button_to_view_articles.addEventListener("click", function(){
+        button_to_view_articles.addEventListener("click", async function () {
             // Submit ShelveID through button and get Listing template for shelve.
-            console.log("Clicked on button for row: "+ cell_extra_button.value);
+            let data_articles = await listArticles(cell_extra_button)
+            console.log(data_articles)
+            replaceShelveDashboardWithArticleList(Object.keys(data_articles).length);
         })
         cell_extra_button.append(button_to_view_articles)
 
@@ -73,4 +76,30 @@ async function showShelvesAsTable() {
     header_third.innerText = "Kategorie"
     header_fourth.innerText = "Einträge"
     header_fifth.innerText = "Auflisten"
+}
+
+async function listArticles(cell_extra_button){
+    let request = await fetch("http://localhost:8080/shelve/get-articles", {
+        headers : {"content-type": "application/json"},
+        method : "POST",
+        body : JSON.stringify({"shelve_id" : cell_extra_button.value}),
+    })
+    let response =  await request.json();
+    return response;
+}
+
+function replaceShelveDashboardWithArticleList(i) {
+    document.getElementById("shelve-table").remove()
+    let new_table = document.createElement("table")
+    for (let j  = 0; j < i; j++) {
+        console.log("j:"+ j)
+        console.log("i:"+ i)
+        let row = new_table.insertRow();
+
+        row.insertCell().innerText= "cell3";
+        row.insertCell().innerText= "cell2";
+        row.insertCell().innerText= "cell3";
+    }
+    document.getElementById("table-article").append(new_table);
+
 }

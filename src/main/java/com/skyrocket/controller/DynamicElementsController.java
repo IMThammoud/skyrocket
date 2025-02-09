@@ -5,6 +5,7 @@ for things like rendering the shelves of a user dynamically in a table
 
 package com.skyrocket.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.skyrocket.model.articles.Notebook;
 import com.skyrocket.services.ArticleQueries;
 import com.skyrocket.services.JsonMethods;
@@ -25,7 +26,7 @@ public class DynamicElementsController {
     private final UserAccountQueries userAccountQueries;
     private final ShelveQueries shelveQueries;
     private final ArticleQueries articleQueries;
-    private final JsonMethods jsonMethods = new JsonMethods();
+    JsonMethods jsonMethods;
 
     public DynamicElementsController(UserAccountQueries userAccountQueries, ShelveQueries shelveQueries) {
         this.userAccountQueries = userAccountQueries;
@@ -141,9 +142,11 @@ public class DynamicElementsController {
     }
 
     @PostMapping("/shelve/get-articles")
-    public String getArticlesInShelve(String sessionId, String shelveId) {
+    public String getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
+                                      @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
         if (userAccountQueries.checkSessionId(sessionId)) {
-            return jsonMethods.StringifyListOfNotebooks(articleQueries.getArticlesFromShelve(shelveId, sessionId));
+            jsonMethods = new JsonMethods();
+            return jsonMethods.StringifyListOfNotebooks(articleQueries.getArticlesFromShelve(sessionId, shelveId.get("shelve_id")));
         } else return "empty";
     }
 

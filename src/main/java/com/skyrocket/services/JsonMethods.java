@@ -3,22 +3,22 @@
 
 package com.skyrocket.services;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skyrocket.Article;
 import com.skyrocket.model.articles.Notebook;
 
 import java.util.ArrayList;
 
 public class JsonMethods {
-    Gson gson = new Gson();
-    public JsonMethods() {};
+    ObjectMapper objectMapper = new ObjectMapper();
 
-    public String StringifyOneArticle(Article article) {
-        return gson.toJson(article);
+    public String StringifyOneArticle(Article article) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(article);
     }
 
     // Return list of Articles
-    public String StringifyListOfNotebooks(ArrayList<Notebook> listOfArticles) {
-        return gson.toJson(listOfArticles);
+    public String StringifyListOfNotebooks(ArrayList<Notebook> listOfArticles) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(listOfArticles);
     }
 }
