@@ -93,13 +93,20 @@ async function listArticles(cell_extra_button){
 function replaceShelveDashboardWithArticleList(number_of_keys, data_articles) {
     document.getElementById("shelve-table").remove()
     let new_table = document.createElement("table")
+    document.getElementById("table-article").style.fontSize = "75%"
+    // Amount of keys (columns) based on shelve type.
     let keys_amount = Object.keys(data_articles[0]).length;
+    // To have a collection of keys so i can cycle through them if needed.
     let keys = Object.keys(data_articles[0])
     for (let j  = 0; j < number_of_keys; j++) {
         console.log("j:"+ j)
         let row = new_table.insertRow(j);
 
         for (let i = 0; i < keys_amount ; i++) {
+            // Insert cells into each row based on amount of Keys(columns) of a shelvetype like notebook
+            // Example: Notebook shelve has 19-Columns so it creates 19 cells in a row.
+            // "j" iterates through the objects that i get from data_articles while keys[i] iterates through each key
+            // This builds each entry in the table view under the HeaderRow.
             row.insertCell(i).innerText = data_articles[j][keys[i]];
         }
     }
