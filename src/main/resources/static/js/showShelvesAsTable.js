@@ -53,7 +53,9 @@ async function showShelvesAsTable() {
             // Submit ShelveID through button and get Listing template for shelve.
             let data_articles = await listArticles(cell_extra_button)
             console.log(data_articles)
-            replaceShelveDashboardWithArticleList(Object.keys(data_articles).length);
+            console.log("amount of keys (columns): ", Object.keys(data_articles[0]).length);
+            replaceShelveDashboardWithArticleList(Object.keys(data_articles).length, data_articles);
+
         })
         cell_extra_button.append(button_to_view_articles)
 
@@ -88,17 +90,24 @@ async function listArticles(cell_extra_button){
     return response;
 }
 
-function replaceShelveDashboardWithArticleList(i) {
+function replaceShelveDashboardWithArticleList(number_of_keys, data_articles) {
     document.getElementById("shelve-table").remove()
     let new_table = document.createElement("table")
-    for (let j  = 0; j < i; j++) {
+    let keys_amount = Object.keys(data_articles[0]).length;
+    let keys = Object.keys(data_articles[0])
+    for (let j  = 0; j < number_of_keys; j++) {
         console.log("j:"+ j)
-        console.log("i:"+ i)
-        let row = new_table.insertRow();
+        let row = new_table.insertRow(j);
 
-        row.insertCell().innerText= "cell3";
-        row.insertCell().innerText= "cell2";
-        row.insertCell().innerText= "cell3";
+        for (let i = 0; i < keys_amount ; i++) {
+            row.insertCell(i).innerText = data_articles[j][keys[i]];
+        }
+    }
+    // Creating TableHeaderRow at end with index=0 so all other rows move up the index +1
+    // Doing this, the header will stay on top.
+    let headerRow = new_table.insertRow(0);
+    for (let i = 0; i < Object.keys(data_articles[0]).length; i++) {
+        headerRow.insertCell(i).innerText = Object.keys(data_articles[0]).at(i);
     }
     document.getElementById("table-article").append(new_table);
 
