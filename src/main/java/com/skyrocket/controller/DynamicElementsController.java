@@ -144,7 +144,7 @@ public class DynamicElementsController {
     @PostMapping("/shelve/get-articles")
     public String getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                       @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (userAccountQueries.checkSessionId(sessionId) && shelveQueries.checkIfShelveMatchesUser(shelveId.get("shelve_id"), sessionId)) {
             jsonMethods = new JsonMethods();
             return jsonMethods.StringifyListOfNotebooks(articleQueries.getArticlesFromShelve(sessionId, shelveId.get("shelve_id")));
         } else return "empty";

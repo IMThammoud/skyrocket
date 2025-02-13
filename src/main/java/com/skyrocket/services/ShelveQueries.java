@@ -3,6 +3,7 @@ package com.skyrocket.services;
 import com.google.gson.Gson;
 import com.skyrocket.model.RetrievedShelves;
 import com.skyrocket.model.Shelve;
+import org.apache.juli.logging.Log;
 import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
@@ -16,6 +17,33 @@ import static com.skyrocket.controller.PageController.LOG;
 
 @Service
 public class ShelveQueries {
+
+    // Checks if the current Logged in User owns the shelves.
+    // Should be called on every article addition
+    public boolean checkIfShelveMatchesUser(String shelveId, String sessionId) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                    SELECT *
+                    FROM shelve
+                    INNER JOIN user_account ON shelve.fk_user_account_id = user_account.pk_id
+                    where pk_shelve_id = ? AND session_id = ?;
+                    """);
+            statement.setString(1, shelveId);
+            statement.setString(2, sessionId);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                LOG.info("Shelve matches user and belongs to him.");
+                return true;
+            } else {
+                LOG.info("Shelve does not match user.");
+                return false;
+            }
+        } catch (SQLException e) {
+            LOG.info(e.getMessage());
+            return false;
+        }
+    }
 
     public void checkIfShelveIsEmptyForNotebook(String shelveId) {
         try {
