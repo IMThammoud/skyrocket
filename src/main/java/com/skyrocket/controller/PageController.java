@@ -132,4 +132,11 @@ public class PageController {
         }
         return "redirect:/logout";
     }
+
+    @GetMapping("/invoice/dashboard")
+    public String showInvoiceDashboard(@CookieValue(name = "JSESSIONID") String sessionId){
+        if (userAccountQueries.checkSessionId(sessionId)) {
+            return "invoice-dashboard";
+        } else return "redirect:/logout";
+    }
 }

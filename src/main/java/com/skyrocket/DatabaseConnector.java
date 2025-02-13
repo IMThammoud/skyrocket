@@ -3,6 +3,8 @@
 
 package com.skyrocket;
 
+import org.apache.juli.logging.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -50,7 +52,7 @@ public class DatabaseConnector{
                             created_at timestamp DEFAULT current_timestamp NOT NULL,
                             UNIQUE(email),
                             PRIMARY KEY(pk_id)
-                        )""");
+                        ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci""");
                 LOG.info("Preparing user_account table.");
                 statement.execute();
 
@@ -63,6 +65,7 @@ public class DatabaseConnector{
                             `is_for_services` tinyint(1) NOT NULL,
                             `type` varchar(64) NOT NULL,
                             `fk_user_account_id` varchar(100) NOT NULL,
+                            `created_at` timestamp DEFAULT current_timestamp NOT NULL,
                             PRIMARY KEY (`pk_shelve_id`),
                             CONSTRAINT FK_USER_SHELVE FOREIGN KEY(fk_user_account_id) REFERENCES user_account(pk_id)
                           ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci""");
@@ -72,7 +75,7 @@ public class DatabaseConnector{
 
                 statement = connection.prepareStatement("""
                         create table IF NOT EXISTS notebook(
-                        	pk_id varchar(64) NOT NULL,
+                          pk_id varchar(64) NOT NULL,
                           fk_shelve_id varchar(64),
                           name varchar(64) NOT NULL,
                           amount smallint NOT NULL,
@@ -90,11 +93,28 @@ public class DatabaseConnector{
                           battery_capacity_health double,
                           keyboard_layout varchar(64),
                           side_note varchar(100),
-                          FOREIGN KEY (`fk_shelve_id`) REFERENCES `shelve` (`pk_shelve_id`)
+                          created_at timestamp DEFAULT current_timestamp NOT NULL,
+                          PRIMARY KEY (pk_id),
+                          FOREIGN KEY (fk_shelve_id) REFERENCES shelve (pk_shelve_id)
                           )
                           ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci""");
 
                 LOG.info("Preparing notebook table.");
+                statement.execute();
+
+                statement = connection.prepareStatement("""
+                        create table IF NOT EXISTS notebook_sold(
+                          pk_id varchar(64) NOT NULL,
+                          fk_notebook_id varchar(64) NOT NULL ,
+                          amount smallint NOT NULL,
+                          side_note varchar(100),
+                          created_at timestamp DEFAULT current_timestamp NOT NULL,
+                          PRIMARY KEY (pk_id),
+                          FOREIGN KEY (fk_notebook_id) REFERENCES notebook(pk_id)
+                          )
+                          ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci""");
+
+                LOG.info("Preparing notebook_sold table.");
                 statement.execute();
 
                 LOG.info("PREPARED DATABASE TABLES SUCCESSFULLY");
