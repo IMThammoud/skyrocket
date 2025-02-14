@@ -51,10 +51,16 @@ async function showShelvesAsTable() {
         button_to_view_articles.innerText = "einsehen";
         button_to_view_articles.addEventListener("click", async function () {
             // Submit ShelveID through button and get Listing template for shelve.
+            // check if there are even Articles for that shelve
             let data_articles = await listArticles(cell_extra_button)
-            console.log(data_articles)
-            console.log("amount of keys (columns): ", Object.keys(data_articles[0]).length);
-            replaceShelveDashboardWithArticleList(Object.keys(data_articles).length, data_articles);
+            if (data_articles.length == 0){
+                console.log("No articles found for this shelve")
+                alert("Es sind keine Artikel in diesem Regal vorhanden.")
+            } else {
+                console.log(data_articles)
+                console.log("amount of keys (columns): ", Object.keys(data_articles[0]).length);
+                replaceShelveDashboardWithArticleList(Object.keys(data_articles).length, data_articles);
+            }
 
         })
         cell_extra_button.append(button_to_view_articles)
@@ -80,6 +86,7 @@ async function showShelvesAsTable() {
     header_fifth.innerText = "Auflisten"
 }
 
+// Server sends ArrayList of Articles back (for this shelve)
 async function listArticles(cell_extra_button){
     let request = await fetch("http://localhost:8080/shelve/get-articles", {
         headers : {"content-type": "application/json"},
