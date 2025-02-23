@@ -3,8 +3,6 @@
 
 package com.skyrocket;
 
-import org.apache.juli.logging.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -33,7 +31,7 @@ public class DatabaseConnector{
                 System.out.println("Unable to read envs.txt file");
             }
             try {
-                connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/"+ props.get("MARIADB_DATABASE") +"?user="+ props.get("MARIADB_USERNAME") +"&password="+ props.get("MARIADB_PASSWORD"));
+                connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/"+ props.get("MARIADB_DATABASE") +"?user="+ props.get("MARIADB_USER") +"&password="+ props.get("MARIADB_PASSWORD"));
                 LOG.info("CONNECTION TO DATABASE SUCCESSFUL");
             } catch (Exception e) {
                 LOG.info("DATABASE CONNECTION FAILED, REASON: "+ e.getMessage());
