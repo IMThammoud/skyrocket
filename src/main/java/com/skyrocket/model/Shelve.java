@@ -1,15 +1,27 @@
 package com.skyrocket.model;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.util.UUID;
 
+@Entity
 public class Shelve {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
     private String category;
     private boolean isForServices;
     private String type;
     private String fkUserAccount;
+
+    public Shelve() {
+
+    }
 
 
     public String getType() {

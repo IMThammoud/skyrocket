@@ -9,20 +9,27 @@ package com.skyrocket.controller;
 
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
+import com.skyrocket.repository.UserAccountRepository;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
+import jdk.jfr.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Controller
 public class PageController {
-
+    @Autowired
+    UserAccountRepository userAccountRepository;
 
     public final static Logger LOG = LoggerFactory.getLogger(PageController.class);
     Shelve shelve;
@@ -50,21 +57,20 @@ public class PageController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestParam(name = "email")String email,
-                           @RequestParam(name = "password")String password,
-                           @RequestParam(name = "password-confirm")String passwordConfirmation
-                           ){
+    public String register(@RequestParam(name = "email") String email,
+                           @RequestParam(name = "password") String password){
 
-        UserAccount newUser = new UserAccount(UUID.randomUUID(), email, password, session.getId());
-        if ( userAccountQueries.emailAlreadyExists(email)) {
-            return "redirect:/registration";
-        }
-        LOG.info("Registering new user: " + newUser.toString());
-        LOG.info("sessionID of newly created user: " + session.getId());
-        userAccountQueries.insertUser(newUser);
+        UserAccount userAccount = new UserAccount(email, password, LocalDateTime.now());
 
-        userAccountQueries.deleteUserSessionId(session.getId());
-        LOG.info("Changed Session_ID after registration to avoid login skip.");
+        userAccount.setId(UUID.randomUUID());
+        userAccount.setSessionId(UUID.randomUUID().toString());
+
+        LOG.info("Change Session_ID on registration to avoid login skip.");
+        LOG.info("Registering new user: " + userAccount.getEmail().toString());
+        LOG.info("sessionID of newly created user: " + userAccount.getSessionId());
+        userAccountRepository.save(userAccount);
+
+
         return "registration-successful";
     }
 

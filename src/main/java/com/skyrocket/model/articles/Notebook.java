@@ -1,12 +1,20 @@
 package com.skyrocket.model.articles;
 
 import com.skyrocket.Article;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Notebook extends Article {
+    // Primary_KEY is being inherited from superclass
+
     private String brand;
     private String modelNr;
     private String cpu;
@@ -17,6 +25,10 @@ public class Notebook extends Article {
     private double batteryCapacityHealth;
     private String keyboardLayout;
     private String sideNote;
+
+    public Notebook() {
+        super();
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -78,6 +90,14 @@ public class Notebook extends Article {
 
 
     }
+
+    // to make the superclass ID primary_key
+    /*@Id
+    @Override
+    public UUID getId() {
+        return super.getId();
+    }
+    */
 
     public String getBrand() {
         return brand;

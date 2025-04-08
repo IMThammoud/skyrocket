@@ -1,13 +1,32 @@
 package com.skyrocket.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
+@Entity
 public class UserAccount {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String email;
     private String password;
-    private Date creationDate;
+    private LocalDateTime creationDate;
+
+    public UserAccount() {
+
+    }
+
+    public UserAccount(String email, String password, LocalDateTime creationDate) {
+        this.email = email;
+        this.password = password;
+        this.creationDate = creationDate;
+    }
 
     public String getSessionId() {
         return sessionId;
@@ -57,11 +76,11 @@ public class UserAccount {
         return this;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public UserAccount setCreationDate(Date creationDate) {
+    public UserAccount setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
         return this;
     }

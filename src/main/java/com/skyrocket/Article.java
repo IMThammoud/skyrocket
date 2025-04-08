@@ -5,9 +5,17 @@ have all Attributes from this abstract class.
 
 package com.skyrocket;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+
 import java.util.UUID;
 
+@MappedSuperclass
 public abstract class Article {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
     private int amount;
@@ -15,6 +23,10 @@ public abstract class Article {
     private String description;
     private double priceWhenBought;
     private double sellingPrice;
+
+    public Article() {
+
+    }
 
     public UUID getShelveIdAsForeignKey() {
         return shelveIdAsForeignKey;
