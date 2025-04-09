@@ -1,13 +1,11 @@
 package com.skyrocket.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
+import java.util.List;
 
 @Entity
 public class UserAccount {
@@ -17,6 +15,12 @@ public class UserAccount {
     private String email;
     private String password;
     private LocalDateTime creationDate;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userAccount")
+    public SessionStore sessionStore;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAccount")
+    public List<Shelve> shelve;
 
     public UserAccount() {
 

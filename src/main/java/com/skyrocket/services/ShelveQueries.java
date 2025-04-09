@@ -3,7 +3,6 @@ package com.skyrocket.services;
 import com.google.gson.Gson;
 import com.skyrocket.model.RetrievedShelves;
 import com.skyrocket.model.Shelve;
-import org.apache.juli.logging.Log;
 import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
@@ -206,13 +205,15 @@ public class ShelveQueries {
         }
     }
 
+    /*
     public void insertShelve(Shelve shelve, String session) {
+
         try {
             /*
             At first the id of the logged in user has to be retrieved
             so the new shelve can be linked to the user.
             The same procedure is needed when linking articles or services to Shelves
-             */
+
             PreparedStatement searchForUserID = connection.prepareStatement("""
                     SELECT pk_id from user_account
                     WHERE session_id = ?""");
@@ -222,7 +223,7 @@ public class ShelveQueries {
             // Necessary to get the first row
             results.next();
             String UserID = results.getString("pk_id");
-            shelve.setFkUserAccount(UserID);
+            shelve.setUserAccount(UserID);
 
             searchForUserID.close();
 
@@ -243,8 +244,7 @@ public class ShelveQueries {
 
         } catch (SQLException e) {
             LOG.info("Shelve insert failed, REASON: "+ e.getMessage());
-        }
+        }*/
 
 
     }
-}

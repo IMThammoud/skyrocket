@@ -1,10 +1,7 @@
 package com.skyrocket.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -17,7 +14,10 @@ public class Shelve {
     private String category;
     private boolean isForServices;
     private String type;
-    private String fkUserAccount;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_user_account")
+    public UserAccount userAccount;
 
     public Shelve() {
 
@@ -33,13 +33,13 @@ public class Shelve {
         return this;
     }
 
-    public Shelve(UUID id, String name, String category, boolean isForServices, String type,String fkUserAccount) {
+    public Shelve(UUID id, String name, String category, boolean isForServices, String type,UserAccount userAccount) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.isForServices = isForServices;
         this.type = type;
-        this.fkUserAccount = fkUserAccount;
+        this.userAccount = userAccount;
     }
 
 
@@ -83,12 +83,12 @@ public class Shelve {
         return this;
     }
 
-    public String getFkUserAccount() {
-        return fkUserAccount;
+    public UserAccount getUserAccount() {
+        return userAccount;
     }
 
-    public void setFkUserAccount(String fkUserAccount) {
-        this.fkUserAccount = fkUserAccount;
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
     }
 
     public Shelve build(){

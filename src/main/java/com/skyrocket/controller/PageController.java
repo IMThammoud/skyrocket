@@ -122,9 +122,9 @@ public class PageController {
 
             LOG.info("Received Request.");
             isForService = isForServiceAsString.equals("yes");
-            shelve = new Shelve(UUID.randomUUID(), shelveName, shelveCategory, isForService, type, "placeholder");
+      //      shelve = new Shelve(UUID.randomUUID(), shelveName, shelveCategory, isForService, type, "placeholder");
 
-            shelveQueries.insertShelve(shelve, sessionId);
+            //shelveQueries.insertShelve(shelve, sessionId);
             // Add Javascript Modal saying added Shelve or not with Thymeleaf Rendering
             return "redirect:/shelve/shelves";
         }

@@ -6,15 +6,21 @@ for things like rendering the shelves of a user dynamically in a table
 package com.skyrocket.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.skyrocket.model.SessionStore;
+import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.Notebook;
+import com.skyrocket.repository.SessionStoreRepository;
+import com.skyrocket.repository.UserAccountRepository;
 import com.skyrocket.services.ArticleQueries;
 import com.skyrocket.services.JsonMethods;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,7 +28,10 @@ import static com.skyrocket.controller.PageController.LOG;
 
 @RestController
 public class DynamicElementsController {
-
+    @Autowired
+    private UserAccountRepository userAccountRepository;
+    @Autowired
+    private SessionStoreRepository sessionStoreRepository;
     private final UserAccountQueries userAccountQueries;
     private final ShelveQueries shelveQueries;
     private final ArticleQueries articleQueries;
@@ -121,10 +130,28 @@ public class DynamicElementsController {
         return null;
     }
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes="application/json")
-    public String login(@RequestBody Map<String,String> fromLoginForm, HttpSession session){
-        if(userAccountQueries.userExists(fromLoginForm.get("email"), fromLoginForm.get("password"))){
+    public String login(@RequestBody UserAccount userAccount,
+                        HttpSession session) {
+        /* if(userAccountQueries.userExists(fromLoginForm.get("email"), fromLoginForm.get("password"))){
             userAccountQueries.updatedSessionIdForUser(fromLoginForm.get("email"), fromLoginForm.get("password"), session.getId());
             LOG.info("User logged in with session :"+ session.getId());
+            return "true";
+        }
+
+         */
+        List<UserAccount> foundEmailInTable = userAccountRepository.getByEmail(userAccount.getEmail());
+
+        if (foundEmailInTable.get(0).getPassword().equals(userAccount.getPassword())) {
+            System.out.println("Found e-mail" + userAccount.getEmail());
+            System.out.println("Found PW" + userAccount.getPassword());
+
+            userAccountRepository.save(userAccount);
+
+            SessionStore sessionStore = new SessionStore();
+            sessionStore.setUserAccount(userAccount);
+            sessionStore.setSessionToken(session.getId());
+
+            sessionStoreRepository.save(sessionStore);
             return "true";
         }
 

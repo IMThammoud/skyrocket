@@ -1,9 +1,6 @@
 package com.skyrocket.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -11,11 +8,15 @@ import java.util.UUID;
 public class SessionStore {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID idFromAccount;
+    private UUID id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_user_account_id")
+    private UserAccount userAccount;
     private String sessionToken;
 
-    public SessionStore(UUID idFromAccount, String sessionToken) {
-        this.idFromAccount = idFromAccount;
+    public SessionStore(UserAccount userAccount, String sessionToken) {
+        this.userAccount = userAccount;
         this.sessionToken = sessionToken;
     }
 
@@ -23,12 +24,12 @@ public class SessionStore {
 
     }
 
-    public UUID getIdFromAccount() {
-        return idFromAccount;
+    public UserAccount getUserAccount() {
+        return userAccount;
     }
 
-    public SessionStore setIdFromAccount(UUID idFromAccount) {
-        this.idFromAccount = idFromAccount;
+    public SessionStore setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
         return this;
     }
 
