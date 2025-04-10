@@ -9,27 +9,29 @@ package com.skyrocket.controller;
 
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
+import com.skyrocket.repository.SessionStoreRepository;
+import com.skyrocket.repository.ShelveRepository;
 import com.skyrocket.repository.UserAccountRepository;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
-import jdk.jfr.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Controller
 public class PageController {
     @Autowired
     UserAccountRepository userAccountRepository;
+    @Autowired
+    SessionStoreRepository sessionStoreRepository;
+    @Autowired
+    ShelveRepository shelveRepository;
 
     public final static Logger LOG = LoggerFactory.getLogger(PageController.class);
     Shelve shelve;
@@ -89,9 +91,15 @@ public class PageController {
 
     @GetMapping("/shelve/shelves")
     public String showShelveDashboard(@CookieValue(name = "JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        /* if (userAccountQueries.checkSessionId(sessionId)) {
             return "shelves";
         }
+        */
+         if (!sessionStoreRepository.getSessionStoresBySessionToken(sessionId).isEmpty()) {
+             LOG.info("Authenticated in Shelve Dashboard endpoint with SessionID");
+             LOG.info("Found sessionstore objects based on sessionID " + sessionStoreRepository.getSessionStoresBySessionToken(sessionId).get(0).toString());
+            return "shelves";
+         }
         return "redirect:/logout";
     }
 

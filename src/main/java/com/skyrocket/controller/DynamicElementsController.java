@@ -123,7 +123,7 @@ public class DynamicElementsController {
 
     @PostMapping("/shelve/retrieve")
     public String getShelves(@CookieValue(name ="JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.getSessionStoresBySessionToken(sessionId).isEmpty()) {
             String retrievedShelves = shelveQueries.retrieveShelves(sessionId);
             return retrievedShelves;
         }
@@ -142,8 +142,8 @@ public class DynamicElementsController {
         List<UserAccount> foundEmailInTable = userAccountRepository.getByEmail(userAccount.getEmail());
 
         if (foundEmailInTable.get(0).getPassword().equals(userAccount.getPassword())) {
-            System.out.println("Found e-mail" + userAccount.getEmail());
-            System.out.println("Found PW" + userAccount.getPassword());
+            System.out.println("Found e-mail: " + userAccount.getEmail());
+            System.out.println("Found PW: " + userAccount.getPassword());
 
             userAccountRepository.save(userAccount);
 

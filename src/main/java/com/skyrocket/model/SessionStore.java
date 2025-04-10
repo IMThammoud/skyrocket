@@ -45,4 +45,13 @@ public class SessionStore {
     public SessionStore build(){
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "SessionStore{" +
+                "id=" + id +
+                ", userAccount=" + userAccount +
+                ", sessionToken='" + sessionToken + '\'' +
+                '}';
+    }
 }
