@@ -82,10 +82,11 @@ public class PageController {
     }
 
     @GetMapping("/logout")
-    public String logout(){
-        userAccountQueries.deleteUserSessionId(session.getId());
+    public String logout(@CookieValue(name = "JSESSIONID") String sessionId){
+        // userAccountQueries.deleteUserSessionId(session.getId());
+        sessionStoreRepository.delete(sessionStoreRepository.findBySessionToken(sessionId));
+        LOG.info("invalidated this userSession on server: " + sessionId);
         session.invalidate();
-        LOG.info("invalidated the userSession on server");
         return "redirect:/";
     }
 
@@ -95,7 +96,7 @@ public class PageController {
             return "shelves";
         }
         */
-         if (!sessionStoreRepository.getSessionStoresBySessionToken(sessionId).isEmpty()) {
+         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
              LOG.info("Authenticated in Shelve Dashboard endpoint with SessionID");
              LOG.info("Found sessionstore objects based on sessionID " + sessionStoreRepository.getSessionStoresBySessionToken(sessionId).get(0).toString());
             return "shelves";
@@ -105,7 +106,7 @@ public class PageController {
 
     @GetMapping("/shelve/create")
     public String createNewShelve(@CookieValue("JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "add-shelve";
         }
         return "redirect:/logout";
@@ -113,7 +114,7 @@ public class PageController {
 
     @GetMapping("/add/article")
     public String addArticle(@CookieValue(name = "JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "add-article";
         }
         return "redirect:/logout";
@@ -126,7 +127,7 @@ public class PageController {
                                    @RequestParam(name = "category")String shelveCategory,
                                    @RequestParam(name = "article_selection")String type,
                                    @CookieValue(name = "JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
 
             LOG.info("Received Request.");
             isForService = isForServiceAsString.equals("yes");
@@ -141,7 +142,7 @@ public class PageController {
 
     @GetMapping("/add/article-page")
     public String addArticlePage(@CookieValue(name = "JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "/electronics/add-notebook";
         }
         return "redirect:/logout";
@@ -149,7 +150,7 @@ public class PageController {
 
     @GetMapping("/invoice/dashboard")
     public String showInvoiceDashboard(@CookieValue(name = "JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "invoice-dashboard";
         } else return "redirect:/logout";
     }

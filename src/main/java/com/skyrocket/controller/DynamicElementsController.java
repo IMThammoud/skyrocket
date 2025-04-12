@@ -51,7 +51,7 @@ public class DynamicElementsController {
     @PostMapping("/shelve/articleCount")
     public int getArticleCountInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                           @RequestBody Map<String, String> shelveIdAndShelveTypeInMap) {
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             switch (shelveIdAndShelveTypeInMap.get("shelve_type")){
                 case "notebook":
                     LOG.info("Counting Articles in notebook shelve of shelve:"+ shelveIdAndShelveTypeInMap.get("shelve_id"));
@@ -66,10 +66,10 @@ public class DynamicElementsController {
     }
 
     @PostMapping("/add/article/receiveArticle")
-    public String receiveArticle(@CookieValue(name = "JSESSIONID") String cookie,
+    public String receiveArticle(@CookieValue(name = "JSESSIONID") String sessionId,
                                  @RequestBody Map<String,String> notebook) {
         LOG.info("Received notebook: " + notebook.toString());
-        if (userAccountQueries.checkSessionId(cookie)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             Notebook newNotebook = new Notebook(UUID.randomUUID(),
                     notebook.get("name"),
                     Integer.parseInt(notebook.get("amount")),
@@ -89,7 +89,7 @@ public class DynamicElementsController {
                     notebook.get("keyboard_layout"),
                     notebook.get("side_note")
                     );
-            articleQueries.insertNotebook(newNotebook, cookie, newNotebook.getShelveIdAsForeignKey().toString());
+            articleQueries.insertNotebook(newNotebook, sessionId, newNotebook.getShelveIdAsForeignKey().toString());
             return "success";
         } else {
             return "something went wrong with the notebook inserting method";
@@ -97,16 +97,16 @@ public class DynamicElementsController {
     }
 
     @PostMapping("/add/article/check-shelve-type")
-    public String renderArticleFormBasedOnShelveType(@CookieValue(name = "JSESSIONID") String sessionid,
+    public String renderArticleFormBasedOnShelveType(@CookieValue(name = "JSESSIONID") String sessionId,
                                                      @RequestBody Map<String, String> jsBody) {
-        if(userAccountQueries.checkSessionId(sessionid)) {
+        if(sessionStoreRepository.existsBySessionToken(sessionId)) {
             // ShelveId will be carried through option into select element in html
             // check the Shelve_ID and see what type it is
             // Use Type with Switch Case to return right Template
             // Have to check for is_for_service too so i can render article or Service template <- important
             // Add more switch cases as more types are available (notebook, smartphone, tablet, etc.)
-            if(shelveQueries.checkIsForService(sessionid, jsBody.get("shelve")) != true) {
-                switch (shelveQueries.checkShelveType(sessionid, jsBody.get("shelve"))) {
+            if(shelveQueries.checkIsForService(sessionId, jsBody.get("shelve")) != true) {
+                switch (shelveQueries.checkShelveType(sessionId, jsBody.get("shelve"))) {
                     case "notebook":
                         // Returning notebook as string to JS so it can render notebook form
                         return "notebook";
@@ -123,32 +123,28 @@ public class DynamicElementsController {
 
     @PostMapping("/shelve/retrieve")
     public String getShelves(@CookieValue(name ="JSESSIONID") String sessionId){
-        if (sessionStoreRepository.getSessionStoresBySessionToken(sessionId).isEmpty()) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             String retrievedShelves = shelveQueries.retrieveShelves(sessionId);
             return retrievedShelves;
         }
         return null;
     }
+
+    // When logging in: new sessionStore entry for user is created.
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes="application/json")
     public String login(@RequestBody UserAccount userAccount,
                         HttpSession session) {
-        /* if(userAccountQueries.userExists(fromLoginForm.get("email"), fromLoginForm.get("password"))){
-            userAccountQueries.updatedSessionIdForUser(fromLoginForm.get("email"), fromLoginForm.get("password"), session.getId());
-            LOG.info("User logged in with session :"+ session.getId());
-            return "true";
-        }
+        // Fetch entry out of DB
+        UserAccount foundUserAccountByEmail = userAccountRepository.getByEmail(userAccount.getEmail());
 
-         */
-        List<UserAccount> foundEmailInTable = userAccountRepository.getByEmail(userAccount.getEmail());
-
-        if (foundEmailInTable.get(0).getPassword().equals(userAccount.getPassword())) {
+        if (foundUserAccountByEmail != null && foundUserAccountByEmail.getPassword().equals(userAccount.getPassword())) {
+            // logging for testing purposes
             System.out.println("Found e-mail: " + userAccount.getEmail());
             System.out.println("Found PW: " + userAccount.getPassword());
 
-            userAccountRepository.save(userAccount);
-
             SessionStore sessionStore = new SessionStore();
-            sessionStore.setUserAccount(userAccount);
+            // Important: Always use the object that was fetched from DB and dont use the parameter Object when referencing.
+            sessionStore.setUserAccount(foundUserAccountByEmail);
             sessionStore.setSessionToken(session.getId());
 
             sessionStoreRepository.save(sessionStore);
@@ -160,9 +156,9 @@ public class DynamicElementsController {
 
     // Return 200 if deletion was successful
     @DeleteMapping("/shelve/delete")
-    public ResponseStatus deleteShelve(@CookieValue(name = "JSESSIONID") String cookie,
+    public ResponseStatus deleteShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                        String shelveId) {
-        if (userAccountQueries.checkSessionId(cookie)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
 
         }
         return null;
@@ -171,7 +167,7 @@ public class DynamicElementsController {
     @PostMapping("/shelve/get-articles")
     public String getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                       @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
-        if (userAccountQueries.checkSessionId(sessionId) && shelveQueries.checkIfShelveMatchesUser(shelveId.get("shelve_id"), sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId) && shelveQueries.checkIfShelveMatchesUser(shelveId.get("shelve_id"), sessionId)) {
             jsonMethods = new JsonMethods();
             return jsonMethods.StringifyListOfNotebooks(articleQueries.getArticlesFromShelve(sessionId, shelveId.get("shelve_id")));
         } else return "empty";

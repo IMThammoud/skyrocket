@@ -16,8 +16,8 @@ public class UserAccount {
     private String password;
     private LocalDateTime creationDate;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userAccount")
-    public SessionStore sessionStore;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAccount")
+    public List<SessionStore> sessionStore;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAccount")
     public List<Shelve> shelve;

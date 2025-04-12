@@ -10,5 +10,5 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Intege
 
     boolean getUserAccountByPassword(String password);
 
-    List<UserAccount> getByEmail(String email);
+    UserAccount getByEmail(String email);
 }

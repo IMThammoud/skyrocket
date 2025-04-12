@@ -10,7 +10,8 @@ public class SessionStore {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    // ON LOGIN: New entries are stored so 1 UserAccount can have multiple sessionStore entries. Only 1 entry has to match
+    @ManyToOne
     @JoinColumn(name = "fk_user_account_id")
     private UserAccount userAccount;
     private String sessionToken;
