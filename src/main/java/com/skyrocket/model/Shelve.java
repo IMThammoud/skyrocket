@@ -1,8 +1,10 @@
 package com.skyrocket.model;
 
 
+import com.skyrocket.model.articles.Notebook;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,8 +21,19 @@ public class Shelve {
     @JoinColumn(name = "fk_user_account")
     public UserAccount userAccount;
 
-    public Shelve() {
+    @OneToMany(mappedBy = "shelve")
+    List<Notebook> notebooks;
 
+    public Shelve() {
+    }
+
+    public Shelve(UUID id, String name, String category, boolean isForServices, String type,UserAccount userAccount) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.isForServices = isForServices;
+        this.type = type;
+        this.userAccount = userAccount;
     }
 
 
@@ -31,15 +44,6 @@ public class Shelve {
     public Shelve setType(String type) {
         this.type = type;
         return this;
-    }
-
-    public Shelve(UUID id, String name, String category, boolean isForServices, String type,UserAccount userAccount) {
-        this.id = id;
-        this.name = name;
-        this.category = category;
-        this.isForServices = isForServices;
-        this.type = type;
-        this.userAccount = userAccount;
     }
 
 

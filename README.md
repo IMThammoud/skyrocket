@@ -15,3 +15,12 @@
 + Displaying Item/Article/Service as View
 + functioning login system
 + an API connection (eBay or PayPal or something similar)
+
+#### ORM Migration in progress
+- ~~Registration done~~
+- ~~SessionID check on navigation done~~
+- ~~Make Shelve creation work~~
+- ~~listing shelves with new endpoints~~
+- Make Article creation work
+- Show article count in shelve view
+- listing articles with new endpoints on the dashboard

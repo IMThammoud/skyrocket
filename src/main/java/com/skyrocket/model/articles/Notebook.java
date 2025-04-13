@@ -1,10 +1,8 @@
 package com.skyrocket.model.articles;
 
 import com.skyrocket.Article;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import com.skyrocket.model.Shelve;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,6 +23,11 @@ public class Notebook extends Article {
     private double batteryCapacityHealth;
     private String keyboardLayout;
     private String sideNote;
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "shelve_id")
+    private Shelve shelve;
 
     public Notebook() {
         super();

@@ -28,15 +28,7 @@ public abstract class Article {
 
     }
 
-    public UUID getShelveIdAsForeignKey() {
-        return shelveIdAsForeignKey;
-    }
-
-    public void setShelveIdAsForeignKey(UUID shelveIdAsForeignKey) {
-        this.shelveIdAsForeignKey = shelveIdAsForeignKey;
-    }
-
-    private UUID shelveIdAsForeignKey;
+    // private UUID shelveIdAsForeignKey;
 
 
     public Article(UUID id,
@@ -54,7 +46,6 @@ public abstract class Article {
         this.description = description;
         this.priceWhenBought = priceWhenBought;
         this.sellingPrice = sellingPrice;
-        this.shelveIdAsForeignKey = shelveIdAsForeignKey;
     }
 
     public UUID getId() {

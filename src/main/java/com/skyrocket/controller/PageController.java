@@ -65,11 +65,11 @@ public class PageController {
         UserAccount userAccount = new UserAccount(email, password, LocalDateTime.now());
 
         userAccount.setId(UUID.randomUUID());
-        userAccount.setSessionId(UUID.randomUUID().toString());
+        //userAccount.setSessionId(UUID.randomUUID().toString());
 
         LOG.info("Change Session_ID on registration to avoid login skip.");
         LOG.info("Registering new user: " + userAccount.getEmail().toString());
-        LOG.info("sessionID of newly created user: " + userAccount.getSessionId());
+        LOG.info("SessionID will be generated and stored on next login of the user.");
         userAccountRepository.save(userAccount);
 
 
@@ -131,10 +131,11 @@ public class PageController {
 
             LOG.info("Received Request.");
             isForService = isForServiceAsString.equals("yes");
-      //      shelve = new Shelve(UUID.randomUUID(), shelveName, shelveCategory, isForService, type, "placeholder");
 
-            //shelveQueries.insertShelve(shelve, sessionId);
-            // Add Javascript Modal saying added Shelve or not with Thymeleaf Rendering
+            UserAccount fetchedUserAccount = userAccountRepository.findById(sessionStoreRepository.findBySessionToken(sessionId).getUserAccount().getId());
+            Shelve shelve = new Shelve(UUID.randomUUID(), shelveName, shelveCategory, isForService, type, fetchedUserAccount);
+
+            shelveRepository.save(shelve);
             return "redirect:/shelve/shelves";
         }
         return "redirect:/logout";

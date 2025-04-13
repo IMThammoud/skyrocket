@@ -32,15 +32,6 @@ public class UserAccount {
         this.creationDate = creationDate;
     }
 
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    private String sessionId;
 
     public UserAccount(UUID id,
                        String email,
@@ -50,7 +41,6 @@ public class UserAccount {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.sessionId = sessionId;
     }
 
     public UUID getId() {
@@ -100,7 +90,6 @@ public class UserAccount {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", creationDate=" + creationDate +
-                ", sessionId='" + sessionId + '\'' +
                 '}';
     }
 }

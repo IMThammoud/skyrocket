@@ -7,9 +7,11 @@ package com.skyrocket.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.skyrocket.model.SessionStore;
+import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.Notebook;
 import com.skyrocket.repository.SessionStoreRepository;
+import com.skyrocket.repository.ShelveRepository;
 import com.skyrocket.repository.UserAccountRepository;
 import com.skyrocket.services.ArticleQueries;
 import com.skyrocket.services.JsonMethods;
@@ -32,10 +34,13 @@ public class DynamicElementsController {
     private UserAccountRepository userAccountRepository;
     @Autowired
     private SessionStoreRepository sessionStoreRepository;
+    @Autowired
+    private ShelveRepository shelveRepository;
+
     private final UserAccountQueries userAccountQueries;
     private final ShelveQueries shelveQueries;
     private final ArticleQueries articleQueries;
-    JsonMethods jsonMethods;
+    JsonMethods jsonMethods = new JsonMethods();
 
     public DynamicElementsController(UserAccountQueries userAccountQueries, ShelveQueries shelveQueries) {
         this.userAccountQueries = userAccountQueries;
@@ -55,7 +60,8 @@ public class DynamicElementsController {
             switch (shelveIdAndShelveTypeInMap.get("shelve_type")){
                 case "notebook":
                     LOG.info("Counting Articles in notebook shelve of shelve:"+ shelveIdAndShelveTypeInMap.get("shelve_id"));
-                    return articleQueries.getArticleCountInShelveIfTypeNotebook(shelveIdAndShelveTypeInMap.get("shelve_id"));
+
+                    //return articleQueries.getArticleCountInShelveIfTypeNotebook(shelveIdAndShelveTypeInMap.get("shelve_id"));
 
                 default:
                     LOG.info("Default case was met in switch statement.. breaking");
@@ -89,7 +95,7 @@ public class DynamicElementsController {
                     notebook.get("keyboard_layout"),
                     notebook.get("side_note")
                     );
-            articleQueries.insertNotebook(newNotebook, sessionId, newNotebook.getShelveIdAsForeignKey().toString());
+           // articleQueries.insertNotebook(newNotebook, sessionId, newNotebook.getShelveIdAsForeignKey().toString());
             return "success";
         } else {
             return "something went wrong with the notebook inserting method";
@@ -121,12 +127,21 @@ public class DynamicElementsController {
         return "redirect:/logout";
     }
 
+    // Return List of Shelves in JSON
+    // Serialization happens automatically due to Jackson and Springboot Super duper Magic
     @PostMapping("/shelve/retrieve")
-    public String getShelves(@CookieValue(name ="JSESSIONID") String sessionId){
+    public List<Shelve> getShelves(@CookieValue(name ="JSESSIONID") String sessionId) throws JsonProcessingException {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-            String retrievedShelves = shelveQueries.retrieveShelves(sessionId);
-            return retrievedShelves;
+           UserAccount fetchedUserAccount = userAccountRepository.findById(sessionStoreRepository.findBySessionToken(sessionId).getUserAccount().getId());
+           LOG.info("Fetched user account: " + fetchedUserAccount.toString());
+
+           List<Shelve> shelveListOfUser = shelveRepository.findByUserAccount(fetchedUserAccount);
+           LOG.info("Fetched shelves list: " + shelveListOfUser.toString());
+
+            // return jsonMethods.StringifyShelves(shelveListOfUser);
+            return shelveListOfUser;
         }
+        LOG.info("No shelves were returned");
         return null;
     }
 
