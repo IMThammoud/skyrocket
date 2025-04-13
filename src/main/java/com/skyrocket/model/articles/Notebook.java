@@ -26,7 +26,7 @@ public class Notebook extends Article {
     private String sideNote;
 
     @JsonIdentityReference(alwaysAsId = true)
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "shelve_id")
     private Shelve shelve;
 
@@ -44,22 +44,6 @@ public class Notebook extends Article {
 
     private LocalDateTime createdAt;
 
-    @Override
-    public String toString() {
-        return "Notebook{" +
-                "brand='" + brand + '\'' +
-                ", modelNr='" + modelNr + '\'' +
-                ", cpu='" + cpu + '\'' +
-                ", ram=" + ram +
-                ", storage=" + storage +
-                ", displaySize=" + displaySize +
-                ", operatingSystem='" + operatingSystem + '\'' +
-                ", batteryCapacityHealth=" + batteryCapacityHealth +
-                ", keyboardLayout='" + keyboardLayout + '\'' +
-                ", sideNote='" + sideNote + '\'' +
-                '}';
-    }
-
     public Notebook(UUID id,
                     String name,
                     int amount,
@@ -67,7 +51,7 @@ public class Notebook extends Article {
                     String description,
                     double priceWhenBought,
                     double sellingPrice,
-                    UUID shelveIdAsForeignKey,
+                    Shelve shelve,
                     String brand,
                     String modelNr,
                     String cpu,
@@ -79,7 +63,8 @@ public class Notebook extends Article {
                     String keyboardLayout,
                     String sideNote
                     ) {
-        super(id, name, amount, type, description, priceWhenBought, sellingPrice, shelveIdAsForeignKey);
+        super(id, name, amount, type, description, priceWhenBought, sellingPrice);
+        this.shelve = shelve;
         this.brand = brand;
         this.modelNr = modelNr;
         this.cpu = cpu;
@@ -181,5 +166,23 @@ public class Notebook extends Article {
 
     public void setSideNote(String sideNote) {
         this.sideNote = sideNote;
+    }
+
+    @Override
+    public String toString() {
+        return "Notebook{" +
+                "brand='" + brand + '\'' +
+                ", modelNr='" + modelNr + '\'' +
+                ", cpu='" + cpu + '\'' +
+                ", ram=" + ram +
+                ", storage=" + storage +
+                ", displaySize=" + displaySize +
+                ", operatingSystem='" + operatingSystem + '\'' +
+                ", batteryCapacityHealth=" + batteryCapacityHealth +
+                ", keyboardLayout='" + keyboardLayout + '\'' +
+                ", sideNote='" + sideNote + '\'' +
+                ", shelve=" + shelve.getId() +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

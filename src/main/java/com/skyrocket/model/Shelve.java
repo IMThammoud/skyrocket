@@ -102,4 +102,17 @@ public class Shelve {
     public Shelve build(){
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "Shelve{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", isForServices=" + isForServices +
+                ", type='" + type + '\'' +
+                ", userAccount=" + userAccount +
+                ", notebooks=" + notebooks +
+                '}';
+    }
 }

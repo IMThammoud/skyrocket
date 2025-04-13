@@ -12,9 +12,8 @@ public class Akku extends Article {
                     String type,
                     String description,
                     double priceWhenBought,
-                    double sellingPrice,
-                    UUID shelveIdAsForeignKey){
-        super(id, name, amount, type, description, priceWhenBought, sellingPrice, shelveIdAsForeignKey);
+                    double sellingPrice){
+        super(id, name, amount, type, description, priceWhenBought, sellingPrice);
         
 
     }

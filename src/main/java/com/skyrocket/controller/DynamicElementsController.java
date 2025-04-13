@@ -10,9 +10,7 @@ import com.skyrocket.model.SessionStore;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.Notebook;
-import com.skyrocket.repository.SessionStoreRepository;
-import com.skyrocket.repository.ShelveRepository;
-import com.skyrocket.repository.UserAccountRepository;
+import com.skyrocket.repository.*;
 import com.skyrocket.services.ArticleQueries;
 import com.skyrocket.services.JsonMethods;
 import com.skyrocket.services.ShelveQueries;
@@ -36,11 +34,15 @@ public class DynamicElementsController {
     private SessionStoreRepository sessionStoreRepository;
     @Autowired
     private ShelveRepository shelveRepository;
+    @Autowired
+    private NotebookRepository notebookRepository;
 
     private final UserAccountQueries userAccountQueries;
     private final ShelveQueries shelveQueries;
     private final ArticleQueries articleQueries;
     JsonMethods jsonMethods = new JsonMethods();
+    @Autowired
+    private ArticleRepository articleRepository;
 
     public DynamicElementsController(UserAccountQueries userAccountQueries, ShelveQueries shelveQueries) {
         this.userAccountQueries = userAccountQueries;
@@ -57,11 +59,12 @@ public class DynamicElementsController {
     public int getArticleCountInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                           @RequestBody Map<String, String> shelveIdAndShelveTypeInMap) {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+            Shelve shelveToBeChecked = shelveRepository.findById(UUID.fromString(shelveIdAndShelveTypeInMap.get("shelve_id")));
             switch (shelveIdAndShelveTypeInMap.get("shelve_type")){
                 case "notebook":
                     LOG.info("Counting Articles in notebook shelve of shelve:"+ shelveIdAndShelveTypeInMap.get("shelve_id"));
 
-                    //return articleQueries.getArticleCountInShelveIfTypeNotebook(shelveIdAndShelveTypeInMap.get("shelve_id"));
+                    return notebookRepository.countByShelve_Id(shelveToBeChecked.getId());
 
                 default:
                     LOG.info("Default case was met in switch statement.. breaking");
@@ -76,6 +79,7 @@ public class DynamicElementsController {
                                  @RequestBody Map<String,String> notebook) {
         LOG.info("Received notebook: " + notebook.toString());
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+           Shelve shelveForArticle = shelveRepository.findById(UUID.fromString(notebook.get("fk_shelve_id")));
             Notebook newNotebook = new Notebook(UUID.randomUUID(),
                     notebook.get("name"),
                     Integer.parseInt(notebook.get("amount")),
@@ -83,7 +87,7 @@ public class DynamicElementsController {
                     notebook.get("description"),
                     Double.parseDouble(notebook.get("price_when_bought")),
                     Double.parseDouble(notebook.get("selling_price")),
-                    UUID.fromString(notebook.get("fk_shelve_id")),
+                    shelveForArticle,
                     notebook.get("brand"),
                     notebook.get("model_nr"),
                     notebook.get("cpu"),
@@ -95,7 +99,11 @@ public class DynamicElementsController {
                     notebook.get("keyboard_layout"),
                     notebook.get("side_note")
                     );
-           // articleQueries.insertNotebook(newNotebook, sessionId, newNotebook.getShelveIdAsForeignKey().toString());
+            LOG.info("Shelve for article: " + shelveForArticle.toString());
+            LOG.info("New notebook: " + newNotebook.toString());
+
+            notebookRepository.save(newNotebook);
+
             return "success";
         } else {
             return "something went wrong with the notebook inserting method";
@@ -111,8 +119,9 @@ public class DynamicElementsController {
             // Use Type with Switch Case to return right Template
             // Have to check for is_for_service too so i can render article or Service template <- important
             // Add more switch cases as more types are available (notebook, smartphone, tablet, etc.)
-            if(shelveQueries.checkIsForService(sessionId, jsBody.get("shelve")) != true) {
-                switch (shelveQueries.checkShelveType(sessionId, jsBody.get("shelve"))) {
+            Shelve shelveToBeChecked = shelveRepository.findById(UUID.fromString(jsBody.get("shelve")));
+            if(shelveToBeChecked.getIsForService() == false) {
+                switch (shelveToBeChecked.getType()) {
                     case "notebook":
                         // Returning notebook as string to JS so it can render notebook form
                         return "notebook";
@@ -128,7 +137,7 @@ public class DynamicElementsController {
     }
 
     // Return List of Shelves in JSON
-    // Serialization happens automatically due to Jackson and Springboot Super duper Magic
+    // Serialization happens automatically due to Jacksons Spring Web-Starter Super duper Magic
     @PostMapping("/shelve/retrieve")
     public List<Shelve> getShelves(@CookieValue(name ="JSESSIONID") String sessionId) throws JsonProcessingException {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
@@ -138,7 +147,6 @@ public class DynamicElementsController {
            List<Shelve> shelveListOfUser = shelveRepository.findByUserAccount(fetchedUserAccount);
            LOG.info("Fetched shelves list: " + shelveListOfUser.toString());
 
-            // return jsonMethods.StringifyShelves(shelveListOfUser);
             return shelveListOfUser;
         }
         LOG.info("No shelves were returned");
@@ -184,7 +192,8 @@ public class DynamicElementsController {
                                       @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
         if (sessionStoreRepository.existsBySessionToken(sessionId) && shelveQueries.checkIfShelveMatchesUser(shelveId.get("shelve_id"), sessionId)) {
             jsonMethods = new JsonMethods();
-            return jsonMethods.StringifyListOfNotebooks(articleQueries.getArticlesFromShelve(sessionId, shelveId.get("shelve_id")));
+            return null;
+            // return jsonMethods.StringifyListOfNotebooks(articleQueries.getArticlesFromShelve(sessionId, shelveId.get("shelve_id")));
         } else return "empty";
     }
 
