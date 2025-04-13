@@ -1,23 +1,42 @@
 package com.skyrocket.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
+import java.util.List;
 
+@Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class UserAccount {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String email;
     private String password;
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
-    public String getSessionId() {
-        return sessionId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAccount")
+    public List<SessionStore> sessionStore;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAccount")
+    public List<Shelve> shelve;
+
+    public UserAccount() {
+
     }
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
+    public UserAccount(String email, String password, LocalDateTime creationDate) {
+        this.email = email;
+        this.password = password;
+        this.creationDate = creationDate;
     }
 
-    private String sessionId;
 
     public UserAccount(UUID id,
                        String email,
@@ -27,7 +46,6 @@ public class UserAccount {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.sessionId = sessionId;
     }
 
     public UUID getId() {
@@ -57,11 +75,11 @@ public class UserAccount {
         return this;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public UserAccount setCreationDate(Date creationDate) {
+    public UserAccount setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
         return this;
     }
@@ -77,7 +95,6 @@ public class UserAccount {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", creationDate=" + creationDate +
-                ", sessionId='" + sessionId + '\'' +
                 '}';
     }
 }

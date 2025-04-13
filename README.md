@@ -2,12 +2,17 @@
 ### An Inventory App  (Codename Skyrocket)
 
 ### Requirements to run locally:
-- Run a MariaDB-Database and call it skyrocket
-- Create a file that stores environment variables -> "envs.txt" and put it in same dir as DatabaseConnector.class
-- If running mariadb in a container then these environment Variables should be there: MARIADB_ROOT_PASSWORD, MARIADB_DATABASE, MARIADB_USER, MARIADB_PASSWORD or equal the Placeholders of the DatabaseConnector.class
-- Log into the Container and grant all privileges on "skyrocket.*" to your User
-- Try to run the project, the logs will tell you if DB-Connection was successful.
-
+- MariaDB Container using these Envs: MARIADB_USER, MARIADB_PASSWORD, MARIADB_ROOT_PASSWORD, MARIADB_DATABASE
+- These application properties:
+```
+spring.datasource.driver-class-name= DB-Driver
+spring.datasource.name= mariadb-database
+spring.datasource.username= mariadb-user
+spring.datasource.password= mariadb-password
+spring.datasource.url= URL
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto= ddlmode
+```
 
 #### Functionalities in progress:
 + Inventory with different shelves, articles and services
@@ -15,3 +20,12 @@
 + Displaying Item/Article/Service as View
 + functioning login system
 + an API connection (eBay or PayPal or something similar)
+
+#### ORM Migration in progress
+- ~~Registration done~~
+- ~~SessionID check on navigation done~~
+- ~~Make Shelve creation work~~
+- ~~listing shelves with new endpoints~~
+- ~~Make Article creation work~~
+- ~~Show article count in shelve view~~
+- ~~listing articles with new endpoints on the dashboard~~

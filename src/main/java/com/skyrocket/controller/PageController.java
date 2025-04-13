@@ -9,6 +9,9 @@ package com.skyrocket.controller;
 
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
+import com.skyrocket.repository.SessionStoreRepository;
+import com.skyrocket.repository.ShelveRepository;
+import com.skyrocket.repository.UserAccountRepository;
 import com.skyrocket.services.ShelveQueries;
 import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
@@ -18,11 +21,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Controller
 public class PageController {
-
+    @Autowired
+    UserAccountRepository userAccountRepository;
+    @Autowired
+    SessionStoreRepository sessionStoreRepository;
+    @Autowired
+    ShelveRepository shelveRepository;
 
     public final static Logger LOG = LoggerFactory.getLogger(PageController.class);
     Shelve shelve;
@@ -50,21 +59,20 @@ public class PageController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestParam(name = "email")String email,
-                           @RequestParam(name = "password")String password,
-                           @RequestParam(name = "password-confirm")String passwordConfirmation
-                           ){
+    public String register(@RequestParam(name = "email") String email,
+                           @RequestParam(name = "password") String password){
 
-        UserAccount newUser = new UserAccount(UUID.randomUUID(), email, password, session.getId());
-        if ( userAccountQueries.emailAlreadyExists(email)) {
-            return "redirect:/registration";
-        }
-        LOG.info("Registering new user: " + newUser.toString());
-        LOG.info("sessionID of newly created user: " + session.getId());
-        userAccountQueries.insertUser(newUser);
+        UserAccount userAccount = new UserAccount(email, password, LocalDateTime.now());
 
-        userAccountQueries.deleteUserSessionId(session.getId());
-        LOG.info("Changed Session_ID after registration to avoid login skip.");
+        userAccount.setId(UUID.randomUUID());
+        //userAccount.setSessionId(UUID.randomUUID().toString());
+
+        LOG.info("Change Session_ID on registration to avoid login skip.");
+        LOG.info("Registering new user: " + userAccount.getEmail().toString());
+        LOG.info("SessionID will be generated and stored on next login of the user.");
+        userAccountRepository.save(userAccount);
+
+
         return "registration-successful";
     }
 
@@ -74,24 +82,31 @@ public class PageController {
     }
 
     @GetMapping("/logout")
-    public String logout(){
-        userAccountQueries.deleteUserSessionId(session.getId());
+    public String logout(@CookieValue(name = "JSESSIONID") String sessionId){
+        // userAccountQueries.deleteUserSessionId(session.getId());
+        sessionStoreRepository.delete(sessionStoreRepository.findBySessionToken(sessionId));
+        LOG.info("invalidated this userSession on server: " + sessionId);
         session.invalidate();
-        LOG.info("invalidated the userSession on server");
         return "redirect:/";
     }
 
     @GetMapping("/shelve/shelves")
     public String showShelveDashboard(@CookieValue(name = "JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        /* if (userAccountQueries.checkSessionId(sessionId)) {
             return "shelves";
         }
+        */
+         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+             LOG.info("Authenticated in Shelve Dashboard endpoint with SessionID");
+             LOG.info("Found sessionstore objects based on sessionID " + sessionStoreRepository.getSessionStoresBySessionToken(sessionId).get(0).toString());
+            return "shelves";
+         }
         return "redirect:/logout";
     }
 
     @GetMapping("/shelve/create")
     public String createNewShelve(@CookieValue("JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "add-shelve";
         }
         return "redirect:/logout";
@@ -99,7 +114,7 @@ public class PageController {
 
     @GetMapping("/add/article")
     public String addArticle(@CookieValue(name = "JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "add-article";
         }
         return "redirect:/logout";
@@ -112,14 +127,15 @@ public class PageController {
                                    @RequestParam(name = "category")String shelveCategory,
                                    @RequestParam(name = "article_selection")String type,
                                    @CookieValue(name = "JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
 
             LOG.info("Received Request.");
             isForService = isForServiceAsString.equals("yes");
-            shelve = new Shelve(UUID.randomUUID(), shelveName, shelveCategory, isForService, type, "placeholder");
 
-            shelveQueries.insertShelve(shelve, sessionId);
-            // Add Javascript Modal saying added Shelve or not with Thymeleaf Rendering
+            UserAccount fetchedUserAccount = userAccountRepository.findById(sessionStoreRepository.findBySessionToken(sessionId).getUserAccount().getId());
+            Shelve shelve = new Shelve(UUID.randomUUID(), shelveName, shelveCategory, isForService, type, fetchedUserAccount);
+
+            shelveRepository.save(shelve);
             return "redirect:/shelve/shelves";
         }
         return "redirect:/logout";
@@ -127,7 +143,7 @@ public class PageController {
 
     @GetMapping("/add/article-page")
     public String addArticlePage(@CookieValue(name = "JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "/electronics/add-notebook";
         }
         return "redirect:/logout";
@@ -135,7 +151,7 @@ public class PageController {
 
     @GetMapping("/invoice/dashboard")
     public String showInvoiceDashboard(@CookieValue(name = "JSESSIONID") String sessionId){
-        if (userAccountQueries.checkSessionId(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "invoice-dashboard";
         } else return "redirect:/logout";
     }

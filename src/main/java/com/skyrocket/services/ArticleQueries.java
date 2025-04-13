@@ -11,7 +11,7 @@ import static com.skyrocket.controller.PageController.LOG;
 
 public class ArticleQueries {
 
-    public ArrayList<Notebook> getArticlesFromShelve(String sessionId, String shelveId) {
+    /* public ArrayList<Notebook> getArticlesFromShelve(String sessionId, String shelveId) {
         // This stores the List of Articles that are extracted from a shelve like "notebook" using the shelve_id as fk_shelve_id
         ArrayList<Notebook> notebooks = new ArrayList<>();
         try {
@@ -49,6 +49,8 @@ public class ArticleQueries {
             return null;
         }
     }
+
+     */
 
     public int getArticleCountInShelveIfTypeNotebook(String shelveId) {
         try {

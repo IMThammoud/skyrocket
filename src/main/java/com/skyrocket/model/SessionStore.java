@@ -1,22 +1,39 @@
 package com.skyrocket.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import jakarta.persistence.*;
+
 import java.util.UUID;
 
+@Entity
 public class SessionStore {
-    private UUID idFromAccount;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    // ON LOGIN: New entries are stored so 1 UserAccount can have multiple sessionStore entries. Only 1 entry has to match
+    @JsonIdentityReference(alwaysAsId = true)
+    @ManyToOne
+    @JoinColumn(name = "fk_user_account_id")
+    private UserAccount userAccount;
     private String sessionToken;
 
-    public SessionStore(UUID idFromAccount, String sessionToken) {
-        this.idFromAccount = idFromAccount;
+    public SessionStore(UserAccount userAccount, String sessionToken) {
+        this.userAccount = userAccount;
         this.sessionToken = sessionToken;
     }
 
-    public UUID getIdFromAccount() {
-        return idFromAccount;
+    public SessionStore() {
+
     }
 
-    public SessionStore setIdFromAccount(UUID idFromAccount) {
-        this.idFromAccount = idFromAccount;
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public SessionStore setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
         return this;
     }
 
@@ -31,5 +48,14 @@ public class SessionStore {
 
     public SessionStore build(){
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "SessionStore{" +
+                "id=" + id +
+                ", userAccount=" + userAccount +
+                ", sessionToken='" + sessionToken + '\'' +
+                '}';
     }
 }

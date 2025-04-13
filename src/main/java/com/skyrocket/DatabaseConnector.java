@@ -1,3 +1,4 @@
+// DEPRECATED IN THIS BRANCH AS IM USING SPRING DATA JPA
 // This class connects the Application to the MARIADB-Container and prepares/checks for
 // required needed tables on each restart
 

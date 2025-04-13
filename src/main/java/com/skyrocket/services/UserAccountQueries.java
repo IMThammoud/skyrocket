@@ -127,6 +127,9 @@ public class UserAccountQueries {
         return false;
     }
 
+    public void InsertUser(String email, String password, String sessionId) {}
+
+    /*
     public void insertUser(UserAccount userAccount) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("""
@@ -148,4 +151,5 @@ public class UserAccountQueries {
             LOG.info("Inserting user failed, REASON: "+ e.getMessage());
         }
     }
+    */
 }

@@ -1,12 +1,19 @@
 package com.skyrocket.model.articles;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.skyrocket.Article;
+import com.skyrocket.model.Shelve;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Notebook extends Article {
+    // Primary_KEY is being inherited from superclass
+
     private String brand;
     private String modelNr;
     private String cpu;
@@ -18,6 +25,15 @@ public class Notebook extends Article {
     private String keyboardLayout;
     private String sideNote;
 
+    @JsonIdentityReference(alwaysAsId = true)
+    @ManyToOne
+    @JoinColumn(name = "shelve_id")
+    private Shelve shelve;
+
+    public Notebook() {
+        super();
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -28,22 +44,6 @@ public class Notebook extends Article {
 
     private LocalDateTime createdAt;
 
-    @Override
-    public String toString() {
-        return "Notebook{" +
-                "brand='" + brand + '\'' +
-                ", modelNr='" + modelNr + '\'' +
-                ", cpu='" + cpu + '\'' +
-                ", ram=" + ram +
-                ", storage=" + storage +
-                ", displaySize=" + displaySize +
-                ", operatingSystem='" + operatingSystem + '\'' +
-                ", batteryCapacityHealth=" + batteryCapacityHealth +
-                ", keyboardLayout='" + keyboardLayout + '\'' +
-                ", sideNote='" + sideNote + '\'' +
-                '}';
-    }
-
     public Notebook(UUID id,
                     String name,
                     int amount,
@@ -51,7 +51,7 @@ public class Notebook extends Article {
                     String description,
                     double priceWhenBought,
                     double sellingPrice,
-                    UUID shelveIdAsForeignKey,
+                    Shelve shelve,
                     String brand,
                     String modelNr,
                     String cpu,
@@ -63,7 +63,8 @@ public class Notebook extends Article {
                     String keyboardLayout,
                     String sideNote
                     ) {
-        super(id, name, amount, type, description, priceWhenBought, sellingPrice, shelveIdAsForeignKey);
+        super(id, name, amount, type, description, priceWhenBought, sellingPrice);
+        this.shelve = shelve;
         this.brand = brand;
         this.modelNr = modelNr;
         this.cpu = cpu;
@@ -78,6 +79,14 @@ public class Notebook extends Article {
 
 
     }
+
+    // to make the superclass ID primary_key
+    /*@Id
+    @Override
+    public UUID getId() {
+        return super.getId();
+    }
+    */
 
     public String getBrand() {
         return brand;
@@ -157,5 +166,23 @@ public class Notebook extends Article {
 
     public void setSideNote(String sideNote) {
         this.sideNote = sideNote;
+    }
+
+    @Override
+    public String toString() {
+        return "Notebook{" +
+                "brand='" + brand + '\'' +
+                ", modelNr='" + modelNr + '\'' +
+                ", cpu='" + cpu + '\'' +
+                ", ram=" + ram +
+                ", storage=" + storage +
+                ", displaySize=" + displaySize +
+                ", operatingSystem='" + operatingSystem + '\'' +
+                ", batteryCapacityHealth=" + batteryCapacityHealth +
+                ", keyboardLayout='" + keyboardLayout + '\'' +
+                ", sideNote='" + sideNote + '\'' +
+                ", shelve=" + shelve.getId() +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
