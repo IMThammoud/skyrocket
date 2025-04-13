@@ -21,6 +21,6 @@
 - ~~SessionID check on navigation done~~
 - ~~Make Shelve creation work~~
 - ~~listing shelves with new endpoints~~
-- Make Article creation work
-- Show article count in shelve view
-- listing articles with new endpoints on the dashboard
+- ~~Make Article creation work~~
+- ~~Show article count in shelve view~~
+- ~~listing articles with new endpoints on the dashboard~~

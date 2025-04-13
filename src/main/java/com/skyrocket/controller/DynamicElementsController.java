@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -187,14 +188,16 @@ public class DynamicElementsController {
         return null;
     }
 
+    // Return a list of Notebooks that have the ShelveID
     @PostMapping("/shelve/get-articles")
-    public String getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
+    public List<Notebook> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                       @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
-        if (sessionStoreRepository.existsBySessionToken(sessionId) && shelveQueries.checkIfShelveMatchesUser(shelveId.get("shelve_id"), sessionId)) {
-            jsonMethods = new JsonMethods();
-            return null;
-            // return jsonMethods.StringifyListOfNotebooks(articleQueries.getArticlesFromShelve(sessionId, shelveId.get("shelve_id")));
-        } else return "empty";
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+
+            Shelve fetchedShelve = shelveRepository.findById(UUID.fromString(shelveId.get("shelve_id")));
+
+            return notebookRepository.findByShelve(fetchedShelve);
+        } else return Collections.emptyList();
     }
 
 }
