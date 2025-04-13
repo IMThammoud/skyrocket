@@ -1,5 +1,6 @@
 package com.skyrocket.model.articles;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.skyrocket.Article;
 import com.skyrocket.model.Shelve;
 import jakarta.persistence.*;
@@ -24,7 +25,7 @@ public class Notebook extends Article {
     private String keyboardLayout;
     private String sideNote;
 
-
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "shelve_id")
     private Shelve shelve;

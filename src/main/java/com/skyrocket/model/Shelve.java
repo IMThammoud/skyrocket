@@ -1,6 +1,9 @@
 package com.skyrocket.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.skyrocket.model.articles.Notebook;
 import jakarta.persistence.*;
 
@@ -17,6 +20,7 @@ public class Shelve {
     private boolean isForServices;
     private String type;
 
+    @JsonIdentityReference(alwaysAsId = true)  // Only serialize the ID of UserAccount
     @ManyToOne
     @JoinColumn(name = "fk_user_account")
     public UserAccount userAccount;

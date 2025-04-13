@@ -1,5 +1,7 @@
 package com.skyrocket.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -11,6 +13,7 @@ public class SessionStore {
     private UUID id;
 
     // ON LOGIN: New entries are stored so 1 UserAccount can have multiple sessionStore entries. Only 1 entry has to match
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
     @JoinColumn(name = "fk_user_account_id")
     private UserAccount userAccount;
