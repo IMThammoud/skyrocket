@@ -29,11 +29,11 @@
     <!-- A function will replace this div block with the template depending on the shelve type (using shelveid) -->
     <div id="replaceableWithJS">
     <form action="/add/article/to_shelve" method="post">
-        <label for="shelve">Auswahl:</label>
+        <label for="shelve" id="labelForSelectElement">Auswahl:</label>
     <select name="shelve" id="shelve">
             <--! JS will generate existing shelves as options here -> >
         </select>
-        <button type="button" onclick="askForTemplateTypeUsingShelveID()">Regal auswählen</button>
+        <button type="button" onclick="askForTemplateTypeUsingShelveID()" id="buttonForAskingForTemplate">Regal auswählen</button>
         <div id="Button-space-in-form" style="margin-top: 2%"></div>
     </form>
     </div>

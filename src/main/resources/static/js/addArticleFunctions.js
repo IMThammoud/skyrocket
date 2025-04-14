@@ -29,16 +29,27 @@ async function loadShelves(){
         })
     let response = await request.text()
     let shelvesAsArray = JSON.parse(response)
+    console.log("Length of shelve-Array" + shelvesAsArray.length)
 
-    for (const shelvesAsArrayKey in shelvesAsArray) {
-        let option = document.createElement("option")
-        option.id = "optionIdentifier"
-        // Giving the option an ID so i can pass it to the server to get the right article-template back.
-        option.value = shelvesAsArray[shelvesAsArrayKey]["id"]
-        option.innerText = shelvesAsArray[shelvesAsArrayKey]["name"]
-        document.getElementById("shelve").appendChild(option)
+    if( shelvesAsArray.length > 0) {
+        for (const shelvesAsArrayKey in shelvesAsArray) {
+            let option = document.createElement("option")
+            option.id = "optionIdentifier"
+            console.log("testing if blockblabalbalab shelves should be created now haha!")
+            // Giving the option an ID so i can pass it to the server to get the right article-template back.
+            option.value = shelvesAsArray[shelvesAsArrayKey]["id"]
+            option.innerText = shelvesAsArray[shelvesAsArrayKey]["name"]
+            document.getElementById("shelve").appendChild(option)
 
-        console.log("Current retrieved Shelve: " + option.innerText)
+            console.log("Current retrieved Shelve: " + option.innerText)
+        }
+    } else {
+        document.getElementById("shelve").remove()
+        document.getElementById("buttonForAskingForTemplate").remove()
+        document.getElementById("labelForSelectElement").remove()
+        let whenNoShelvesFoundForTemplateCreation = document.createElement("h5")
+        whenNoShelvesFoundForTemplateCreation.innerText = "Please create a shelve first."
+        document.getElementById("replaceableWithJS").appendChild(whenNoShelvesFoundForTemplateCreation)
     }
 
 }
