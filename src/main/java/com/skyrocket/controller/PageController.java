@@ -81,10 +81,12 @@ public class PageController {
         return "login-page";
     }
 
+    // If sessionID exists
     @GetMapping("/logout")
-    public String logout(@CookieValue(name = "JSESSIONID") String sessionId){
-        // userAccountQueries.deleteUserSessionId(session.getId());
-        sessionStoreRepository.delete(sessionStoreRepository.findBySessionToken(sessionId));
+    public String logout(@CookieValue(name = "JSESSIONID", required = false) String sessionId){
+        if ( sessionId != null && sessionStoreRepository.existsBySessionToken(sessionId)) {
+            sessionStoreRepository.delete(sessionStoreRepository.findBySessionToken(sessionId));
+        }
         LOG.info("invalidated this userSession on server: " + sessionId);
         session.invalidate();
         return "redirect:/";
