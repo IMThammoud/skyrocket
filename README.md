@@ -1,5 +1,16 @@
 ![Alt-Text](src/main/resources/static/imgs/logo-600px.svg)
 ### An Inventory App  (Codename Skyrocket)
+Mister-Unternehmer (Skyrocket) ist eine WebApp, die dich bei deinem Unternehmertum unterstützt.
+Sie ist auf Unternehmer ausgerichtet, die mehrere Tools an einem Ort haben möchten.
+Geplant für die vollständige Veröffentlichung sind:
+- Inventarfuntkion
+- Rechnungserstellung (Mit & ohne Konto)
+- Hilfe in Steuern und Finanzen
+- PDF-integration von erstellen von Artikelauflistungen oder Regalen
+- Generierte Links die den aktuellen Stand des Lagers spiegeln und als HTML-Seite oder PDF zurückgegeben werden, um diesen weiterzugeben oder zu teilen.
+- Kreiren eigener Artikeltypen
+
+Mehr auf der [Website](mister-unternehmer.de)
 
 ### Requirements to run locally:
 - MariaDB Container using these Envs: MARIADB_USER, MARIADB_PASSWORD, MARIADB_ROOT_PASSWORD, MARIADB_DATABASE

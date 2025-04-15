@@ -1,10 +1,9 @@
 package com.skyrocket.services;
-import com.skyrocket.model.articles.Notebook;
+import com.skyrocket.model.articles.electronics.Notebook;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
 
 import static com.skyrocket.DatabaseConnector.DBConnector.connection;
 import static com.skyrocket.controller.PageController.LOG;

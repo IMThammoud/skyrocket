@@ -9,7 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.skyrocket.model.SessionStore;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
-import com.skyrocket.model.articles.Notebook;
+import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.repository.*;
 import com.skyrocket.services.ArticleQueries;
 import com.skyrocket.services.JsonMethods;
@@ -49,6 +49,11 @@ public class DynamicElementsController {
         this.userAccountQueries = userAccountQueries;
         this.shelveQueries = shelveQueries;
         this.articleQueries = new ArticleQueries();
+    }
+
+    @GetMapping("/category/get/list_of_article_types_based_on_category")
+    public List<String> getListOfArticleTypesBasedOnCategoryChosen() {
+        return null;
     }
 
     @GetMapping("/testjs")

@@ -1,11 +1,10 @@
-package com.skyrocket.model.articles;
+package com.skyrocket.model.articles.electronics;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.skyrocket.Article;
 import com.skyrocket.model.Shelve;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

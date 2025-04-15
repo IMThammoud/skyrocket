@@ -1,10 +1,8 @@
 package com.skyrocket.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.skyrocket.model.articles.Notebook;
+import com.skyrocket.model.articles.electronics.Notebook;
 import jakarta.persistence.*;
 
 import java.util.List;

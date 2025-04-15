@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.skyrocket.Article;
 import com.skyrocket.model.Shelve;
-import com.skyrocket.model.articles.Notebook;
+import com.skyrocket.model.articles.electronics.Notebook;
 
 import java.util.ArrayList;
 import java.util.List;

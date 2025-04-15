@@ -1,7 +1,7 @@
 package com.skyrocket.repository;
 
 import com.skyrocket.model.Shelve;
-import com.skyrocket.model.articles.Notebook;
+import com.skyrocket.model.articles.electronics.Notebook;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
