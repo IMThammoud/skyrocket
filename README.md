@@ -10,7 +10,7 @@ Geplant für die vollständige Veröffentlichung sind:
 - Generierte Links die den aktuellen Stand des Lagers spiegeln und als HTML-Seite oder PDF zurückgegeben werden, um diesen weiterzugeben oder zu teilen.
 - Kreiren eigener Artikeltypen
 
-Mehr auf der [Website](mister-unternehmer.de)
+Mehr auf der [Website](http://mister-unternehmer.de)
 
 ### Requirements to run locally:
 - MariaDB Container using these Envs: MARIADB_USER, MARIADB_PASSWORD, MARIADB_ROOT_PASSWORD, MARIADB_DATABASE
