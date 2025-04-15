@@ -2,7 +2,6 @@ package com.skyrocket.services;
 
 import com.google.gson.Gson;
 import com.skyrocket.model.RetrievedShelves;
-import com.skyrocket.model.Shelve;
 import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
