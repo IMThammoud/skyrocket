@@ -194,6 +194,7 @@ public class DynamicElementsController {
     }
 
     // Return a list of Notebooks that have the ShelveID
+    // This endpoint will be triggered too when a PDF for Notebooks will be generated.
     @PostMapping("/shelve/get-articles")
     public List<Notebook> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                       @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
