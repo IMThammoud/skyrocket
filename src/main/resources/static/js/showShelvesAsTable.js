@@ -3,6 +3,22 @@
 // on one Page. Would be better to dynamically load them on button press "Next" or something
 let global_response_array;
 let global_article_array
+let filtered_notebook_object_table_headrow = {
+    "name":"",
+    "amount":"",
+    "type":"",
+    "selling_price":"",
+    "brand":"",
+    "model_nr":"",
+    "cpu":"",
+    "ram":"",
+    "storage_in_gb":"",
+    "display_size_inches":"",
+    "operating_system":"",
+    "battery_capacity_health":"",
+    "keyboard_layout":"",
+    "side_note":""
+}
 let extra_button = document.createElement("button");
 extra_button.id = "extra_button";
 // extra_button.innerHTML = '<img style ="width: 30px" src="/icons/icons-skyrocket/eye-solid.svg" alt="listing-button">';
@@ -60,16 +76,13 @@ async function showShelvesAsTable() {
                     console.log("amount of keys (columns): ", Object.keys(data_articles[0]).length);
                     replaceShelveDashboardWithArticleList(Object.keys(data_articles).length, data_articles);
                 }
-
             })
             cell_extra_button.append(button_to_view_articles)
-
-
         }
-} else {
-        let headlineIfNoShelvesAreAvailable = document.createElement("h6")
-        headlineIfNoShelvesAreAvailable.innerText = "Please create a shelve first. They will be listed here."
-        document.getElementById("shelve-table").appendChild(headlineIfNoShelvesAreAvailable)
+    } else {
+        let headlineIfNoShelvesAreAvailable = document.createElement("h5")
+        headlineIfNoShelvesAreAvailable.innerText = "Please create a shelve first."
+        document.getElementById("ifNoShelvesFound").appendChild(headlineIfNoShelvesAreAvailable)
     }
     // Adding header cells to the table
     // Probably need to put this at the end otherwise the tableheaders are at the last row
@@ -102,7 +115,7 @@ async function listArticles(cell_extra_button){
 function replaceShelveDashboardWithArticleList(number_of_keys, data_articles) {
     document.getElementById("shelve-table").remove()
     let new_table = document.createElement("table")
-    document.getElementById("table-article").style.fontSize = "80%"
+    document.getElementById("table-article").style.fontSize = "75%"
     // Amount of keys (columns) based on shelve type.
     let keys_amount = Object.keys(data_articles[0]).length;
     // To have a collection of keys so i can cycle through them if needed.
@@ -122,6 +135,7 @@ function replaceShelveDashboardWithArticleList(number_of_keys, data_articles) {
     // Creating TableHeaderRow at end with index=0 so all other rows move up the index +1
     // Doing this, the header will stay on top.
     let headerRow = new_table.insertRow(0);
+    headerRow.style.fontWeight = "bold";
     for (let i = 0; i < Object.keys(data_articles[0]).length; i++) {
         headerRow.insertCell(i).innerText = Object.keys(data_articles[0]).at(i);
     }

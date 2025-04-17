@@ -11,10 +11,8 @@ import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.repository.*;
-import com.skyrocket.services.ArticleQueries;
-import com.skyrocket.services.JsonMethods;
-import com.skyrocket.services.ShelveQueries;
-import com.skyrocket.services.UserAccountQueries;
+import com.skyrocket.services.*;
+import com.skyrocket.utilityClasses.FilteredNotebookListForPDF;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,16 +191,31 @@ public class DynamicElementsController {
         return null;
     }
 
-    // Return a list of Notebooks that have the ShelveID
+    // Return a list of Notebooks that match the ShelveID
     // This endpoint will be triggered too when a PDF for Notebooks will be generated.
     @PostMapping("/shelve/get-articles")
-    public List<Notebook> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
+    public List<FilteredNotebookListForPDF> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                       @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
 
             Shelve fetchedShelve = shelveRepository.findById(UUID.fromString(shelveId.get("shelve_id")));
 
+            ConvertNotebookListForPDF NotebookFilter = new FilteredNotebookListForPDF();
+            return NotebookFilter.filterOutNotUsedColumnsAndCreateNewListForPDF(notebookRepository.findByShelve(fetchedShelve));
+
+        } else return Collections.emptyList();
+    }
+
+    // This returns the bigger unfiltered Notebook List
+    @PostMapping("/shelve/get-notebooks-unfiltered")
+    public List<Notebook> getArticlesInShelveUnfiltered(@CookieValue(name = "JSESSIONID") String sessionId,
+                                                                @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+
+            Shelve fetchedShelve = shelveRepository.findById(UUID.fromString(shelveId.get("shelve_id")));
+
             return notebookRepository.findByShelve(fetchedShelve);
+
         } else return Collections.emptyList();
     }
 
