@@ -191,9 +191,9 @@ public class DynamicElementsController {
         return null;
     }
 
-    // Return a list of Notebooks that match the ShelveID
-    // This endpoint will be triggered too when a PDF for Notebooks will be generated.
-    @PostMapping("/shelve/get-articles")
+    // Return a list of filtered Notebooks that match the ShelveID
+    // This endpoint should not be used when downloading the PDF because it lacks Info.
+    @PostMapping("/shelve/get-notebooks-filtered")
     public List<FilteredNotebookListForPDF> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                       @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
@@ -201,7 +201,7 @@ public class DynamicElementsController {
             Shelve fetchedShelve = shelveRepository.findById(UUID.fromString(shelveId.get("shelve_id")));
 
             ConvertNotebookListForPDF NotebookFilter = new FilteredNotebookListForPDF();
-            return NotebookFilter.filterOutNotUsedColumnsAndCreateNewListForPDF(notebookRepository.findByShelve(fetchedShelve));
+            return NotebookFilter.filterOutNotUsedColumnsAndCreateNewListForShelveViewDashboard(notebookRepository.findByShelve(fetchedShelve));
 
         } else return Collections.emptyList();
     }

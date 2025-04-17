@@ -66,7 +66,7 @@ public class FilteredNotebookListForPDF implements ConvertNotebookListForPDF {
     // There will be a new filteredNotebook for each notebook in the parameter Notebooklist and then
     // the new created filteredNotebooks will be added to a List and return that List for PDF Activities or for frontend Rendering:D
     @Override
-    public List<FilteredNotebookListForPDF> filterOutNotUsedColumnsAndCreateNewListForPDF(List<Notebook> notebookList) {
+    public List<FilteredNotebookListForPDF> filterOutNotUsedColumnsAndCreateNewListForShelveViewDashboard(List<Notebook> notebookList) {
         List<FilteredNotebookListForPDF> filteredNotebookListForPDF = new ArrayList<>();
         for (Notebook notebook : notebookList) {
             // I only get the necessary Fields here for the PDF

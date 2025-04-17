@@ -103,7 +103,7 @@ async function showShelvesAsTable() {
 
 // Server sends ArrayList of Articles back (for this shelve)
 async function listArticles(cell_extra_button){
-    let request = await fetch("http://localhost:8080/shelve/get-articles", {
+    let request = await fetch("http://localhost:8080/shelve/get-notebooks-filtered", {
         headers : {"content-type": "application/json"},
         method : "POST",
         body : JSON.stringify({"shelve_id" : cell_extra_button.value}),

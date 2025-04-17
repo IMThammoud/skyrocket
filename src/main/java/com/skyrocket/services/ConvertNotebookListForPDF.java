@@ -9,5 +9,5 @@ public interface ConvertNotebookListForPDF {
 
     // This will be implemented by a class that creates a new List without
     // unnecessary Fields like the id or createdAt attributes so i can render them easily on the PDF.
-    public List<FilteredNotebookListForPDF> filterOutNotUsedColumnsAndCreateNewListForPDF(List<Notebook> notebookList);
+    public List<FilteredNotebookListForPDF> filterOutNotUsedColumnsAndCreateNewListForShelveViewDashboard(List<Notebook> notebookList);
 }
