@@ -132,4 +132,12 @@ public class DynamicElementsController {
 
         return "false";
     }
+
+    @PostMapping("shelve/shelve-content-to-pdf")
+    public void getShelveContentToPDF() {
+        // I have to check the ShelveType here first so my PDF-Method knows which
+        // structure is needed for the PDF-Template (what columns to use for the table)
+        // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone ones..
+    }
+
 }

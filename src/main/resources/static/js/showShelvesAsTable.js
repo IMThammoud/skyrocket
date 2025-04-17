@@ -39,7 +39,10 @@ async function showShelvesAsTable() {
             console.log(shelve_id_of_current_iteration);
             let shelve_type_of_current_iteration = response_array[i]["type"];
 
+            let shelveTable = document.getElementById("shelve-table");
+            shelveTable.style = "margin:auto";
             let row = document.getElementById("shelve-table").insertRow(i);
+
 
             let cell_name = row.insertCell(0)
             let cell_type = row.insertCell(1)
