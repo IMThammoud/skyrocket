@@ -21,6 +21,8 @@ let filtered_notebook_object_table_headrow = {
 }
 let extra_button = document.createElement("button");
 extra_button.id = "extra_button";
+let extra_button_pdf = document.createElement("button");
+extra_button_pdf.id = "extra_button_pdf";
 // extra_button.innerHTML = '<img style ="width: 30px" src="/icons/icons-skyrocket/eye-solid.svg" alt="listing-button">';
 extra_button.innerText = "View Articles";
 async function showShelvesAsTable() {
@@ -44,6 +46,7 @@ async function showShelvesAsTable() {
             let cell_category = row.insertCell(2)
             let cell_articleCount = row.insertCell(3)
             let cell_extra_button = row.insertCell(4)
+            let cell_extra_button_pdf = row.insertCell(5)
 
             cell_name.innerText = response_array[i]["name"]
             cell_type.innerText = response_array[i]["type"]
@@ -62,8 +65,11 @@ async function showShelvesAsTable() {
 
             cell_articleCount.innerText = responseCount;
             cell_extra_button.value = response_array[i]["id"];
+            cell_extra_button_pdf.value = response_array[i]["id"];
+
             let button_to_view_articles = document.createElement('button');
-            button_to_view_articles.innerText = "einsehen";
+            let button_to_download_pdf = document.createElement('button');
+            button_to_view_articles.innerText = "Ansehen";
             button_to_view_articles.addEventListener("click", async function () {
                 // Submit ShelveID through button and get Listing template for shelve.
                 // check if there are even Articles for that shelve
@@ -77,7 +83,14 @@ async function showShelvesAsTable() {
                     replaceShelveDashboardWithArticleList(Object.keys(data_articles).length, data_articles);
                 }
             })
+
+            button_to_download_pdf.innerText = "Download";
+            button_to_download_pdf.addEventListener('click', async function () {
+                // Here i should trigger the Endpoint that takes the ShelveID and makes a pretty PDF for me
+            })
+
             cell_extra_button.append(button_to_view_articles)
+            cell_extra_button_pdf.append(button_to_download_pdf)
         }
     } else {
         let headlineIfNoShelvesAreAvailable = document.createElement("h5")
@@ -92,6 +105,7 @@ async function showShelvesAsTable() {
     let header_third = header_row.insertCell(2)
     let header_fourth = header_row.insertCell(3)
     let header_fifth = header_row.insertCell(4)
+    let header_sixth = header_row.insertCell(5)
 
     header_row.style.fontWeight = "bold"
     header_first.innerText = "Regal"
@@ -99,6 +113,7 @@ async function showShelvesAsTable() {
     header_third.innerText = "Kategorie"
     header_fourth.innerText = "Einträge"
     header_fifth.innerText = "Auflisten"
+    header_sixth.innerText = "PDF"
 }
 
 // Server sends ArrayList of Articles back (for this shelve)
