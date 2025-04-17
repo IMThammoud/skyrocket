@@ -81,7 +81,7 @@ async function showShelvesAsTable() {
         }
     } else {
         let headlineIfNoShelvesAreAvailable = document.createElement("h5")
-        headlineIfNoShelvesAreAvailable.innerText = "Please create a shelve first."
+        headlineIfNoShelvesAreAvailable.innerHTML = "<p> Please create a shelve first: <a href=http://localhost:8080/shelve/create> create </a> </p>"
         document.getElementById("ifNoShelvesFound").appendChild(headlineIfNoShelvesAreAvailable)
     }
     // Adding header cells to the table

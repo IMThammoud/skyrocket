@@ -48,7 +48,7 @@ async function loadShelves(){
         document.getElementById("buttonForAskingForTemplate").remove()
         document.getElementById("labelForSelectElement").remove()
         let whenNoShelvesFoundForTemplateCreation = document.createElement("h5")
-        whenNoShelvesFoundForTemplateCreation.innerText = "Please create a shelve first."
+        whenNoShelvesFoundForTemplateCreation.innerHTML = "<p>Please create a shelve first: <a href='/shelve/create'>Create</a></p>"
         document.getElementById("replaceableWithJS").appendChild(whenNoShelvesFoundForTemplateCreation)
     }
 

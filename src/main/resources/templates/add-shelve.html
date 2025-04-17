@@ -8,7 +8,7 @@
 </head>
 <body style="color: #483e37ff;">
 <header>
-  <div style="margin-top: 1%"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"></div>
+  <div style="margin-top: 1%"><a href="/shelve/shelves"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
   <nav>
     <ul>
       <li><a href="/shelve/shelves">Regale</a></li>
@@ -23,6 +23,9 @@
 <h4 id="heading">
   Regal Erstellen
 </h4>
+  <div class="notice">
+    <p>Zurzeit können nur Notebooks gespeichert werden. <br> Andere Kategorien folgen noch.</p>
+  </div>
   <div>
   <form action="/shelve/submit" method="POST">
     <label for="shelve_name">Name des Regals <br><input type="text" placeholder="Notebooks, Smartphones" name="shelve_name" id="shelve_name" required></label>
@@ -33,23 +36,23 @@
     <div id="shelve-type">
     <label for="article-radio-button">Artikel
       <input type="radio" name="is_for_service" id="article-radio-button" value="no" required></label>
-    <label for="service-radio-button">Dienstleistung
+    <!--<label for="service-radio-button">Dienstleistung
       <input type="radio" name="is_for_service" id="service-radio-button" value="yes" required>
-    </label>
+    </label> -->
     </div>
       </label>
     <br>
     <label for="category"> Kategorie <br>
     <select name="category" id="category">
       <option value="electronics">Elektronisch</option>
-      <option value="selfmade">Eigene Produktion</option>
+      <!-- <option value="selfmade">Eigene Produktion</option> -->
     </select></label>
     <br>
     <label for="article-selection">Auswahl: <br>
       <div id="article-selection-div">
       <select name="article_selection" id="article-selection">
       <option value="notebook">Laptop / Notebook</option>
-      <option value="smartphone">Smartphone</option>
+      <!-- <option value="smartphone">Smartphone</option> -->
     </select>
 
     </div>

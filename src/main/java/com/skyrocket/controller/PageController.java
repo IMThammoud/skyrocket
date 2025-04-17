@@ -12,8 +12,6 @@ import com.skyrocket.model.UserAccount;
 import com.skyrocket.repository.SessionStoreRepository;
 import com.skyrocket.repository.ShelveRepository;
 import com.skyrocket.repository.UserAccountRepository;
-import com.skyrocket.services.ShelveQueries;
-import com.skyrocket.services.UserAccountQueries;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,26 +24,19 @@ import java.util.UUID;
 
 @Controller
 public class PageController {
-    @Autowired
     UserAccountRepository userAccountRepository;
-    @Autowired
     SessionStoreRepository sessionStoreRepository;
-    @Autowired
     ShelveRepository shelveRepository;
 
     public final static Logger LOG = LoggerFactory.getLogger(PageController.class);
     Shelve shelve;
-    @Autowired
-    ShelveQueries shelveQueries;
-    @Autowired
-    UserAccountQueries userAccountQueries;
     Boolean isForService;
     @Autowired
     HttpSession session;
-    @Autowired
-    public PageController(UserAccountQueries userAccountQueries, ShelveQueries shelveQueries) {
-        this.userAccountQueries = userAccountQueries;
-        this.shelveQueries = shelveQueries;
+    public PageController(UserAccountRepository userAccountRepository, SessionStoreRepository sessionStoreRepository, ShelveRepository shelveRepository) {
+        this.userAccountRepository = userAccountRepository;
+        this.sessionStoreRepository = sessionStoreRepository;
+        this.shelveRepository = shelveRepository;
     }
 
     @GetMapping("/")
@@ -62,6 +53,9 @@ public class PageController {
     public String register(@RequestParam(name = "email") String email,
                            @RequestParam(name = "password") String password){
 
+        if (userAccountRepository.getByEmail(email) != null) {
+            return "AccountExistsAlready";
+        }
         UserAccount userAccount = new UserAccount(email, password, LocalDateTime.now());
 
         userAccount.setId(UUID.randomUUID());
@@ -94,10 +88,6 @@ public class PageController {
 
     @GetMapping("/shelve/shelves")
     public String showShelveDashboard(@CookieValue(name = "JSESSIONID") String sessionId){
-        /* if (userAccountQueries.checkSessionId(sessionId)) {
-            return "shelves";
-        }
-        */
          if (sessionStoreRepository.existsBySessionToken(sessionId)) {
              LOG.info("Authenticated in Shelve Dashboard endpoint with SessionID");
              LOG.info("Found sessionstore objects based on sessionID " + sessionStoreRepository.getSessionStoresBySessionToken(sessionId).get(0).toString());

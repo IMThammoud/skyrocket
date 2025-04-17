@@ -17,6 +17,7 @@ public class UserAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(unique=true)
     private String email;
     private String password;
     private LocalDateTime creationDate;

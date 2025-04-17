@@ -12,7 +12,7 @@ import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.repository.*;
 import com.skyrocket.services.*;
-import com.skyrocket.utilityClasses.FilteredNotebookListForPDF;
+import com.skyrocket.utilityClasses.FilteredNotebookListForShelveView;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,47 +35,15 @@ public class DynamicElementsController {
     private ShelveRepository shelveRepository;
     @Autowired
     private NotebookRepository notebookRepository;
-
-    private final UserAccountQueries userAccountQueries;
-    private final ShelveQueries shelveQueries;
-    private final ArticleQueries articleQueries;
-    JsonMethods jsonMethods = new JsonMethods();
     @Autowired
     private ArticleRepository articleRepository;
+    JsonMethods jsonMethods = new JsonMethods();
 
-    public DynamicElementsController(UserAccountQueries userAccountQueries, ShelveQueries shelveQueries) {
-        this.userAccountQueries = userAccountQueries;
-        this.shelveQueries = shelveQueries;
-        this.articleQueries = new ArticleQueries();
-    }
+    public DynamicElementsController() {}
 
     @GetMapping("/category/get/list_of_article_types_based_on_category")
     public List<String> getListOfArticleTypesBasedOnCategoryChosen() {
         return null;
-    }
-
-    @GetMapping("/testjs")
-    public String testjs(){
-        return "This was returned from testJS endpoint";
-    }
-
-    @PostMapping("/shelve/articleCount")
-    public int getArticleCountInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
-                                          @RequestBody Map<String, String> shelveIdAndShelveTypeInMap) {
-        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-            Shelve shelveToBeChecked = shelveRepository.findById(UUID.fromString(shelveIdAndShelveTypeInMap.get("shelve_id")));
-            switch (shelveIdAndShelveTypeInMap.get("shelve_type")){
-                case "notebook":
-                    LOG.info("Counting Articles in notebook shelve of shelve:"+ shelveIdAndShelveTypeInMap.get("shelve_id"));
-
-                    return notebookRepository.countByShelve_Id(shelveToBeChecked.getId());
-
-                default:
-                    LOG.info("Default case was met in switch statement.. breaking");
-                    break;
-            }
-        }
-        return 0;
     }
 
     @PostMapping("/add/article/receiveArticle")
@@ -120,9 +88,10 @@ public class DynamicElementsController {
         if(sessionStoreRepository.existsBySessionToken(sessionId)) {
             // ShelveId will be carried through option into select element in html
             // check the Shelve_ID and see what type it is
-            // Use Type with Switch Case to return right Template
+            // Use Type with Switch Case to return type as string so JS can build the form for the type
             // Have to check for is_for_service too so i can render article or Service template <- important
             // Add more switch cases as more types are available (notebook, smartphone, tablet, etc.)
+            // Maybe this has to be solved differently as it feels very UngaBunga
             Shelve shelveToBeChecked = shelveRepository.findById(UUID.fromString(jsBody.get("shelve")));
             if(shelveToBeChecked.getIsForService() == false) {
                 switch (shelveToBeChecked.getType()) {
@@ -138,23 +107,6 @@ public class DynamicElementsController {
             }
         }
         return "redirect:/logout";
-    }
-
-    // Return List of Shelves in JSON
-    // Serialization happens automatically due to Jacksons Spring Web-Starter Super duper Magic
-    @PostMapping("/shelve/retrieve")
-    public List<Shelve> getShelves(@CookieValue(name ="JSESSIONID") String sessionId) throws JsonProcessingException {
-        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-           UserAccount fetchedUserAccount = userAccountRepository.findById(sessionStoreRepository.findBySessionToken(sessionId).getUserAccount().getId());
-           LOG.info("Fetched user account: " + fetchedUserAccount.toString());
-
-           List<Shelve> shelveListOfUser = shelveRepository.findByUserAccount(fetchedUserAccount);
-           LOG.info("Fetched shelves list: " + shelveListOfUser.toString());
-
-            return shelveListOfUser;
-        }
-        LOG.info("No shelves were returned");
-        return null;
     }
 
     // When logging in: new sessionStore entry for user is created.
@@ -180,43 +132,4 @@ public class DynamicElementsController {
 
         return "false";
     }
-
-    // Return 200 if deletion was successful
-    @DeleteMapping("/shelve/delete")
-    public ResponseStatus deleteShelve(@CookieValue(name = "JSESSIONID") String sessionId,
-                                       String shelveId) {
-        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-
-        }
-        return null;
-    }
-
-    // Return a list of filtered Notebooks that match the ShelveID
-    // This endpoint should not be used when downloading the PDF because it lacks Info.
-    @PostMapping("/shelve/get-notebooks-filtered")
-    public List<FilteredNotebookListForPDF> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
-                                      @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
-        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-
-            Shelve fetchedShelve = shelveRepository.findById(UUID.fromString(shelveId.get("shelve_id")));
-
-            ConvertNotebookListForPDF NotebookFilter = new FilteredNotebookListForPDF();
-            return NotebookFilter.filterOutNotUsedColumnsAndCreateNewListForShelveViewDashboard(notebookRepository.findByShelve(fetchedShelve));
-
-        } else return Collections.emptyList();
-    }
-
-    // This returns the bigger unfiltered Notebook List
-    @PostMapping("/shelve/get-notebooks-unfiltered")
-    public List<Notebook> getArticlesInShelveUnfiltered(@CookieValue(name = "JSESSIONID") String sessionId,
-                                                                @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
-        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-
-            Shelve fetchedShelve = shelveRepository.findById(UUID.fromString(shelveId.get("shelve_id")));
-
-            return notebookRepository.findByShelve(fetchedShelve);
-
-        } else return Collections.emptyList();
-    }
-
 }

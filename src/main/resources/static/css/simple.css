@@ -707,6 +707,6 @@ sub {
   background: var(--accent-bg);
   border: 2px solid var(--border);
   border-radius: var(--standard-border-radius);
-  padding: 1.5rem;
+  padding: 1rem;
   margin: 2rem 0;
 }
