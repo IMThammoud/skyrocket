@@ -89,7 +89,20 @@ async function showShelvesAsTable() {
 
             button_to_download_pdf.innerText = "Download";
             button_to_download_pdf.addEventListener('click', async function () {
-                // Here i should trigger the Endpoint that takes the ShelveID and makes a pretty PDF for me
+                let shelve_as_pdf_data = await downloadPDF(cell_extra_button)
+                if (shelve_as_pdf_data == null) {
+                    console.log("No PDF was created.")
+                    alert("PDF-Creation failed.")
+                } else {
+
+                    // I create a Link and trigger a Download
+                    let downloadLink = document.createElement("a");
+                    downloadLink.href = URL.createObjectURL(shelve_as_pdf_data);
+                    downloadLink.download = "shelve_as_pdf.pdf";
+                    downloadLink.click();
+                    console.log("PDF-Creation successful.")
+                    alert("PDF-Creation successful.")
+                }
             })
 
             cell_extra_button.append(button_to_view_articles)
@@ -127,6 +140,16 @@ async function listArticles(cell_extra_button){
         body : JSON.stringify({"shelve_id" : cell_extra_button.value}),
     })
     let response =  await request.json();
+    return response;
+}
+
+async function downloadPDF(cell_extra_button){
+    let request = await fetch("http://localhost:8080/shelve/shelve-content-to-pdf", {
+        headers : {"content-type": "application/json"},
+        method : "POST",
+        body : JSON.stringify({"shelve_id" : cell_extra_button.value}),
+    })
+    let response =  await request.blob();
     return response;
 }
 

@@ -13,11 +13,21 @@ import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.repository.*;
 import com.skyrocket.services.*;
 import com.skyrocket.utilityClasses.FilteredNotebookListForShelveView;
+import com.skyrocket.utilityClasses.PDFCreatorWithOpenPDF;
 import jakarta.servlet.http.HttpSession;
 
+import jdk.jfr.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +47,8 @@ public class DynamicElementsController {
     private NotebookRepository notebookRepository;
     @Autowired
     private ArticleRepository articleRepository;
-    JsonMethods jsonMethods = new JsonMethods();
+
+    PDFCreatorWithOpenPDF pdfCreator;
 
     public DynamicElementsController() {}
 
@@ -133,11 +144,25 @@ public class DynamicElementsController {
         return "false";
     }
 
+
     @PostMapping("shelve/shelve-content-to-pdf")
-    public void getShelveContentToPDF() {
+    public ResponseEntity<FileSystemResource> getShelveContentToPDF(@CookieValue(name = "JSESSIONID") String sessionId,
+                                                                    @RequestBody Map<String,String> requestBodyContainingShelveId) throws FileNotFoundException {
+
+        Shelve shelve = shelveRepository.findById(UUID.fromString(requestBodyContainingShelveId.get("shelve_id")));
+        switch (shelve.getType()) {
+            case "notebook":
+                pdfCreator = new PDFCreatorWithOpenPDF(FilteredNotebookListForShelveView.class.getDeclaredFields().length);
+                LOG.info(String.valueOf(FilteredNotebookListForShelveView.class.getDeclaredFields().length));
+        }
+
+         FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDF());
         // I have to check the ShelveType here first so my PDF-Method knows which
         // structure is needed for the PDF-Template (what columns to use for the table)
         // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone ones..
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(createdPdf);
     }
 
 }
