@@ -91,8 +91,8 @@ async function showShelvesAsTable() {
             button_to_download_pdf.addEventListener('click', async function () {
                 let shelve_as_pdf_data = await downloadPDF(cell_extra_button)
                 if (shelve_as_pdf_data == null) {
-                    console.log("No PDF was created.")
-                    alert("PDF-Creation failed.")
+                    console.log("No PDF was created. Shelve is probably empty")
+                    alert("Shelve is probably empty. No PDF was created.")
                 } else {
 
                     // I create a Link and trigger a Download
@@ -149,8 +149,10 @@ async function downloadPDF(cell_extra_button){
         method : "POST",
         body : JSON.stringify({"shelve_id" : cell_extra_button.value}),
     })
-    let response =  await request.blob();
-    return response;
+    if (request.ok) {
+        return await request.blob()
+    } else
+        return null;
 }
 
 function replaceShelveDashboardWithArticleList(number_of_keys, data_articles) {

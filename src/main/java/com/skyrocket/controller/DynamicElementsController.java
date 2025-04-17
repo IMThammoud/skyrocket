@@ -150,20 +150,24 @@ public class DynamicElementsController {
                                                                     @RequestBody Map<String,String> requestBodyContainingShelveId) throws FileNotFoundException {
 
         Shelve shelve = shelveRepository.findById(UUID.fromString(requestBodyContainingShelveId.get("shelve_id")));
-        switch (shelve.getType()) {
-            case "notebook":
-                pdfCreator = new PDFCreatorWithOpenPDF(FilteredNotebookListForShelveView.class.getDeclaredFields().length);
-                LOG.info(String.valueOf(FilteredNotebookListForShelveView.class.getDeclaredFields().length));
-                LOG.info("Generating PDF for contents of this shelve:" + shelve.getId()+ ", And name: " + shelve.getName());
-        }
+        if (notebookRepository.countByShelve_Id(shelve.getId()) > 0) {
+            switch (shelve.getType()) {
+                case "notebook":
+                    pdfCreator = new PDFCreatorWithOpenPDF(FilteredNotebookListForShelveView.class.getDeclaredFields().length);
+                    LOG.info(String.valueOf(FilteredNotebookListForShelveView.class.getDeclaredFields().length));
+                    LOG.info("Generating PDF for contents of this shelve:" + shelve.getId() + ", And name: " + shelve.getName());
+            }
 
-         FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDF());
-        // I have to check the ShelveType here first so my PDF-Method knows which
-        // structure is needed for the PDF-Template (what columns to use for the table)
-        // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone ones..
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/pdf"))
-                .body(createdPdf);
+            FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDF());
+            // I have to check the ShelveType here first so my PDF-Method knows which
+            // structure is needed for the PDF-Template (what columns to use for the table)
+            // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone ones..
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("application/pdf"))
+                    .body(createdPdf);
+        } else
+            LOG.info("Shelve is empty so no PDF was created for shelve: " + shelve.getId());
+            return ResponseEntity.badRequest().body(null);
     }
 
 }
