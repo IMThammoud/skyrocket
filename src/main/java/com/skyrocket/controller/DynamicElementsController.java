@@ -154,6 +154,7 @@ public class DynamicElementsController {
             case "notebook":
                 pdfCreator = new PDFCreatorWithOpenPDF(FilteredNotebookListForShelveView.class.getDeclaredFields().length);
                 LOG.info(String.valueOf(FilteredNotebookListForShelveView.class.getDeclaredFields().length));
+                LOG.info("Generating PDF for contents of this shelve:" + shelve.getId()+ ", And name: " + shelve.getName());
         }
 
          FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDF());
