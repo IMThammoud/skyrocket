@@ -30,6 +30,7 @@ public class FilteredNotebookListForShelveView implements ConvertNotebookListFor
                     String name,
                     int amount,
                     String type,
+                    double priceWhenBought,
                     double sellingPrice,
                     String brand,
                     String modelNr,
@@ -45,6 +46,7 @@ public class FilteredNotebookListForShelveView implements ConvertNotebookListFor
         this.name = name;
         this.amount = amount;
         this.type = type;
+        this.priceWhenBought = priceWhenBought;
         this.sellingPrice = sellingPrice;
         this.brand = brand;
         this.modelNr = modelNr;
@@ -71,6 +73,7 @@ public class FilteredNotebookListForShelveView implements ConvertNotebookListFor
                     notebook.getName(),
                     notebook.getAmount(),
                     notebook.getType(),
+                    notebook.getPriceWhenBought(),
                     notebook.getSellingPrice(),
                     notebook.getBrand(),
                     notebook.getModelNr(),
