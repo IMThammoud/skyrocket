@@ -5,30 +5,23 @@ for things like rendering the shelves of a user dynamically in a table
 
 package com.skyrocket.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.skyrocket.model.SessionStore;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.repository.*;
-import com.skyrocket.services.*;
-import com.skyrocket.utilityClasses.FilteredNotebookListForShelveView;
+import com.skyrocket.utilityClasses.FilteredNotebookForPDF;
+import com.skyrocket.utilityClasses.FilteredNotebookForShelveView;
 import com.skyrocket.utilityClasses.PDFCreatorWithOpenPDF;
 import jakarta.servlet.http.HttpSession;
 
-import jdk.jfr.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -153,12 +146,13 @@ public class DynamicElementsController {
         if (notebookRepository.countByShelve_Id(shelve.getId()) > 0) {
             switch (shelve.getType()) {
                 case "notebook":
-                    pdfCreator = new PDFCreatorWithOpenPDF(FilteredNotebookListForShelveView.class.getDeclaredFields().length);
-                    LOG.info(String.valueOf(FilteredNotebookListForShelveView.class.getDeclaredFields().length));
+                    FilteredNotebookForPDF filteredNotebookForPDFForLengthOfColumns = new FilteredNotebookForPDF();
+                    pdfCreator = new PDFCreatorWithOpenPDF(filteredNotebookForPDFForLengthOfColumns.getColumnsForTablePDF().size());
+                    LOG.info(String.valueOf(filteredNotebookForPDFForLengthOfColumns.getColumnsForTablePDF().size()));
                     LOG.info("Generating PDF for contents of this shelve:" + shelve.getId() + ", And name: " + shelve.getName());
             }
 
-            FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDF());
+            FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDFForNotebook(notebookRepository.findByShelve(shelve)));
             // I have to check the ShelveType here first so my PDF-Method knows which
             // structure is needed for the PDF-Template (what columns to use for the table)
             // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone ones..

@@ -9,8 +9,7 @@ import com.skyrocket.repository.SessionStoreRepository;
 import com.skyrocket.repository.ShelveRepository;
 import com.skyrocket.repository.UserAccountRepository;
 import com.skyrocket.services.ConvertNotebookListForShelveView;
-import com.skyrocket.utilityClasses.FilteredNotebookListForShelveView;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.skyrocket.utilityClasses.FilteredNotebookForShelveView;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -52,13 +51,13 @@ public class ShelveController {
     }
 
     @PostMapping("/shelve/get-notebooks-filtered")
-    public List<FilteredNotebookListForShelveView> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
-                                                                       @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
+    public List<FilteredNotebookForShelveView> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
+                                                                   @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
 
             Shelve fetchedShelve = shelveRepository.findById(UUID.fromString(shelveId.get("shelve_id")));
 
-            ConvertNotebookListForShelveView NotebookFilter = new FilteredNotebookListForShelveView();
+            ConvertNotebookListForShelveView NotebookFilter = new FilteredNotebookForShelveView();
             return NotebookFilter.filterOutNotUsedColumnsAndCreateNewListForShelveViewDashboard(notebookRepository.findByShelve(fetchedShelve));
 
         } else return Collections.emptyList();
