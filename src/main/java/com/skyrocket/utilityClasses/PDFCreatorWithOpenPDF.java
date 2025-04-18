@@ -4,13 +4,13 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import com.skyrocket.Article;
+import com.skyrocket.model.Shelve;
 import com.skyrocket.model.articles.electronics.Notebook;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ public class PDFCreatorWithOpenPDF {
     private Document document;
     private PdfWriter pdfWriter;
     private PdfPTable table;
-    private Paragraph testingParagraph = new Paragraph("Testing OpenPDF: This is a Paragraph");
+    private Paragraph headerShelveName;
     private File file;
 
     public PDFCreatorWithOpenPDF(int amountOfColumns) throws FileNotFoundException {
@@ -29,34 +29,31 @@ public class PDFCreatorWithOpenPDF {
         this.table = new PdfPTable(amountOfColumns);
     }
 
-    public File createAndReturnPDFForNotebook(List<Notebook> notebooks) {
-
+    public File createAndReturnPDFForNotebook(List<Notebook> notebooks, Shelve shelve) {
        this.table.setWidthPercentage(100);
+       this.headerShelveName = new Paragraph(shelve.getName());
         this.document.setPageSize(PageSize.A4.rotate()); // gives you ~842pt width instead of 595pt
-        this.document.newPage();
         this.document.open();
-        this.document.newPage();
-         this.document.add(this.testingParagraph);
+        this.document.add(headerShelveName);
+        this.document.add(new Paragraph("  "));  // Empty Paragraph to create space between table and shelve.name
+
         float[] columnWidths = {
-                0.6f,  // Amount
-                1.2f,  // Brand
+                1.0f,  // Amount
+                1.0f,  // Brand
                 1.5f,  // Name
                 1.5f,  // Modelnumber
-                1.0f,  // Type
-                1.2f,  // CPU
-                0.8f,  // RAM
-                1.0f,  // Storage
+                0.8f,  // Type
+                1.1f,  // CPU
+                0.6f,  // RAM
+                0.8f,  // Storage
                 1.0f,  // Display Size
                 1.3f,  // Operating System
-                0.9f,  // Keyboard
+                0.6f,  // Keyboard
                 0.8f,  // Battery
                 1.2f,  // Note
                 1.0f   // Selling Price
         };
         table.setWidths(columnWidths);
-
-
-
 
         FilteredNotebookForPDF filteredNotebookForPDF = new FilteredNotebookForPDF();
         List<FilteredNotebookForPDF> filteredNotebookListForPDF = filteredNotebookForPDF.convertNotebookListForPDF(notebooks);
@@ -64,18 +61,33 @@ public class PDFCreatorWithOpenPDF {
         // For every column i add a cell to the pdf template with the right name of the column element ( i defined those)
         for(String column : filteredNotebookForPDF.getColumnsForTablePDF()) {
             System.out.println(column);
-            table.addCell(new PdfPCell(new Phrase(column, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 6f))));
+            table.addCell(new PdfPCell(new Phrase(column, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9f)))).setBackgroundColor(Color.lightGray);
         }
 
-        /*for (FilteredNotebookForPDF filteredNotebook : filteredNotebookListForPDF) {
-            table.addCell(filteredNotebookForPDF.getBrand());
-            System.out.println(table.getRow(0).toString());
-        }*/
+            // Create a row for every Notebook in the Filtered Notebook List
+            for (FilteredNotebookForPDF filteredNotebook : filteredNotebookListForPDF) {
+                table.addCell(String.valueOf(filteredNotebook.getAmount()));
+                table.addCell(filteredNotebook.getBrand());
+                table.addCell(filteredNotebook.getName());
+                table.addCell(filteredNotebook.getModelNr());
+                table.addCell(filteredNotebook.getType());
+                table.addCell(filteredNotebook.getCpu());
+                table.addCell(String.valueOf(filteredNotebook.getRam()));
+                table.addCell(String.valueOf(filteredNotebook.getStorage()));
+                table.addCell(String.valueOf(filteredNotebook.getDisplaySize()));
+                table.addCell(filteredNotebook.getOperatingSystem());
+                table.addCell(filteredNotebook.getKeyboardLayout());
+                table.addCell(String.valueOf(filteredNotebook.getBatteryCapacityHealth()));
+                table.addCell(filteredNotebook.getSideNote());
+                table.addCell(String.valueOf(filteredNotebook.getSellingPrice()));
+            }
 
         System.out.println("Columns: " + filteredNotebookForPDF.getColumnsForTablePDF().toString());
         System.out.println("Notebooks: " + notebooks.toString());
         System.out.println(table.getNumberOfColumns());
 
+
+        System.out.println(shelve.getName());
         this.document.add(table);
         this.document.close();
         //pdfWriter.close();
@@ -107,11 +119,11 @@ public class PDFCreatorWithOpenPDF {
         this.table = table;
     }
 
-    public Paragraph getTestingParagraph() {
-        return testingParagraph;
+    public Paragraph getHeaderShelveName() {
+        return headerShelveName;
     }
 
-    public void setTestingParagraph(Paragraph testingParagraph) {
-        this.testingParagraph = testingParagraph;
+    public void setHeaderShelveName(Paragraph headerShelveName) {
+        this.headerShelveName = headerShelveName;
     }
 }

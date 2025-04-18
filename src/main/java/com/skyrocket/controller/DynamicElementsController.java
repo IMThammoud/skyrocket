@@ -152,7 +152,7 @@ public class DynamicElementsController {
                     LOG.info("Generating PDF for contents of this shelve:" + shelve.getId() + ", And name: " + shelve.getName());
             }
 
-            FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDFForNotebook(notebookRepository.findByShelve(shelve)));
+            FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDFForNotebook(notebookRepository.findByShelve(shelve), shelve));
             // I have to check the ShelveType here first so my PDF-Method knows which
             // structure is needed for the PDF-Template (what columns to use for the table)
             // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone ones..
