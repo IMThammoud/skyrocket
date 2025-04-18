@@ -143,6 +143,7 @@ public class DynamicElementsController {
                                                                     @RequestBody Map<String,String> requestBodyContainingShelveId) throws FileNotFoundException {
 
         Shelve shelve = shelveRepository.findById(UUID.fromString(requestBodyContainingShelveId.get("shelve_id")));
+        // Here i should check the Shelve_type and based on that i would create the corresponding PDFCREATOR and call the right PDF methods.
         if (notebookRepository.countByShelve_Id(shelve.getId()) > 0) {
             switch (shelve.getType()) {
                 case "notebook":
