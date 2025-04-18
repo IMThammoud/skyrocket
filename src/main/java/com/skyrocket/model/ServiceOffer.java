@@ -5,6 +5,7 @@ in german we say "Dienstleistung"
 
 package com.skyrocket.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class ServiceOffer {

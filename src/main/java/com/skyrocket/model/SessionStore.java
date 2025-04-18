@@ -3,10 +3,14 @@ package com.skyrocket.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class SessionStore {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -18,6 +22,8 @@ public class SessionStore {
     @JoinColumn(name = "fk_user_account_id")
     private UserAccount userAccount;
     private String sessionToken;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     public SessionStore(UserAccount userAccount, String sessionToken) {
         this.userAccount = userAccount;

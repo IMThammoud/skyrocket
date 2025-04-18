@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.skyrocket.Article;
 import com.skyrocket.model.Shelve;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -32,16 +33,6 @@ public class Notebook extends Article {
     public Notebook() {
         super();
     }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    private LocalDateTime createdAt;
 
     public Notebook(UUID id,
                     String name,
@@ -181,7 +172,7 @@ public class Notebook extends Article {
                 ", keyboardLayout='" + keyboardLayout + '\'' +
                 ", sideNote='" + sideNote + '\'' +
                 ", shelve=" + shelve.getId() +
-                ", createdAt=" + createdAt +
+                ", createdAt=" + this.getCreatedAt() +
                 '}';
     }
 }
