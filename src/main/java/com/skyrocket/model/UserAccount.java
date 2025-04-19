@@ -29,9 +29,7 @@ public class UserAccount {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAccount")
     public List<Shelve> shelve;
 
-    public UserAccount() {
-
-    }
+    public UserAccount() {}
 
     public UserAccount(String email, String password, LocalDateTime createdAt) {
         this.email = email;

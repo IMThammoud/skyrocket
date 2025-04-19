@@ -1,6 +1,7 @@
 // Don't forget to set the IPv4 of the server into the fetch request later
 // Dont forget to implement a cap of Shelves because there shouldt be 100 Shelves rendered
 // on one Page. Would be better to dynamically load them on button press "Next" or something
+
 let global_response_array;
 let global_article_array
 let filtered_notebook_object_table_headrow = {
@@ -23,9 +24,14 @@ let extra_button = document.createElement("button");
 extra_button.id = "extra_button";
 let extra_button_pdf = document.createElement("button");
 extra_button_pdf.id = "extra_button_pdf";
+
+let extra_button_delete_shelves = document.createElement("button");
+extra_button_delete_shelves.id = "extra_button_delete_shelves";
+extra_button_delete_shelves.style.color = "red";
 // extra_button.innerHTML = '<img style ="width: 30px" src="/icons/icons-skyrocket/eye-solid.svg" alt="listing-button">';
 extra_button.innerText = "View Articles";
 async function showShelvesAsTable() {
+
     let request = await fetch("http://localhost:8080/shelve/retrieve", {
         method: "POST",
     })
@@ -33,6 +39,7 @@ async function showShelvesAsTable() {
 
     let response_array = JSON.parse(response)
     if (response_array.length > 0){
+
         // Cycling through the retrieved shelves and building a table from it
         for (let i = 0; i < response_array.length; i++) {
             let shelve_id_of_current_iteration = response_array[i]["id"];
@@ -50,6 +57,7 @@ async function showShelvesAsTable() {
             let cell_articleCount = row.insertCell(3)
             let cell_extra_button = row.insertCell(4)
             let cell_extra_button_pdf = row.insertCell(5)
+            let cell_extra_button_delete_shelve = row.insertCell(6)
 
             cell_name.innerText = response_array[i]["name"]
             cell_type.innerText = response_array[i]["type"]
@@ -66,12 +74,18 @@ async function showShelvesAsTable() {
             })
             let responseCount = await askForArticleCount.json()
 
+            // Assigning the shelve_id to the cells in which the buttons will be
             cell_articleCount.innerText = responseCount;
             cell_extra_button.value = response_array[i]["id"];
             cell_extra_button_pdf.value = response_array[i]["id"];
+            cell_extra_button_delete_shelve.value = response_array[i]["id"];
 
+            // Buttons of the Shelve Table
             let button_to_view_articles = document.createElement('button');
             let button_to_download_pdf = document.createElement('button');
+            let button_to_download_delete_shelve = document.createElement('button');
+
+
             button_to_view_articles.innerText = "Ansehen";
             button_to_view_articles.addEventListener("click", async function () {
                 // Submit ShelveID through button and get Listing template for shelve.
@@ -105,31 +119,47 @@ async function showShelvesAsTable() {
                 }
             })
 
+            button_to_download_delete_shelve.innerText = "Delete";
+            button_to_download_delete_shelve.addEventListener("click", async function () {
+                let requestOfDeletingShelve;
+                    if (confirm("Are you sure?")) {
+                        if (requestOfDeletingShelve = await deleteShelvesAndItsArticles(cell_extra_button)) {
+                            window.location.reload();
+                        }
+                    } else
+                        alert("Couldnt delete shelve..")
+            })
+
             cell_extra_button.append(button_to_view_articles)
             cell_extra_button_pdf.append(button_to_download_pdf)
+            cell_extra_button_delete_shelve.append(button_to_download_delete_shelve)
         }
+
+        // Adding header cells to the table
+        // Probably need to put this at the end otherwise the tableheaders are at the last row
+        let header_row = document.getElementById("shelve-table").insertRow(0)
+        let header_first =  header_row.insertCell(0)
+        let header_second = header_row.insertCell(1)
+        let header_third = header_row.insertCell(2)
+        let header_fourth = header_row.insertCell(3)
+        let header_fifth = header_row.insertCell(4)
+        let header_sixth = header_row.insertCell(5)
+        let header_seventh = header_row.insertCell(6)
+
+        header_row.style.fontWeight = "bold"
+        header_first.innerText = "Regal"
+        header_second.innerText = "Typ"
+        header_third.innerText = "Kategorie"
+        header_fourth.innerText = "Einträge"
+        header_fifth.innerText = "Auflisten"
+        header_sixth.innerText = "PDF"
+        header_seventh.innerText = "Löschen"
     } else {
         let headlineIfNoShelvesAreAvailable = document.createElement("h5")
         headlineIfNoShelvesAreAvailable.innerHTML = "<p> Please create a shelve first: <a href=http://localhost:8080/shelve/create> create </a> </p>"
         document.getElementById("ifNoShelvesFound").appendChild(headlineIfNoShelvesAreAvailable)
     }
-    // Adding header cells to the table
-    // Probably need to put this at the end otherwise the tableheaders are at the last row
-    let header_row = document.getElementById("shelve-table").insertRow(0)
-    let header_first =  header_row.insertCell(0)
-    let header_second = header_row.insertCell(1)
-    let header_third = header_row.insertCell(2)
-    let header_fourth = header_row.insertCell(3)
-    let header_fifth = header_row.insertCell(4)
-    let header_sixth = header_row.insertCell(5)
 
-    header_row.style.fontWeight = "bold"
-    header_first.innerText = "Regal"
-    header_second.innerText = "Typ"
-    header_third.innerText = "Kategorie"
-    header_fourth.innerText = "Einträge"
-    header_fifth.innerText = "Auflisten"
-    header_sixth.innerText = "PDF"
 }
 
 // Server sends ArrayList of Articles back (for this shelve)
@@ -153,6 +183,15 @@ async function downloadPDF(cell_extra_button){
         return await request.blob()
     } else
         return null;
+}
+
+async function deleteShelvesAndItsArticles(cell_extra_button){
+    let request = await fetch("http://localhost:8080/shelve/delete", {
+        headers : {"content-type": "application/json"},
+        method : "DELETE",
+        body : JSON.stringify({"shelve_id" : cell_extra_button.value}),
+    })
+    return request.status;
 }
 
 function replaceShelveDashboardWithArticleList(number_of_keys, data_articles) {

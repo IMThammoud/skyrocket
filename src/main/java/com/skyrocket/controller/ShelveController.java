@@ -104,7 +104,7 @@ public class ShelveController {
     // Return 200 if deletion was successful
     @Transactional
     @DeleteMapping("/shelve/delete")
-    public void deleteShelve(@CookieValue(name = "JSESSIONID") String sessionId,
+    public ResponseEntity deleteShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                              @RequestBody Map<String, String> sessionIdMap) {
         // If sessionToken exists and there are Articles with that shelve_id then delete all the articles and the shelve on top.
         if (sessionStoreRepository.existsBySessionToken(sessionId) && shelveRepository.existsById(UUID.fromString(sessionIdMap.get("shelve_id")))) {
@@ -112,9 +112,10 @@ public class ShelveController {
             notebookRepository.deleteAllByShelve(shelveRepository.findById(UUID.fromString(sessionIdMap.get("shelve_id"))));
             System.out.println("Deleting Shelves with id: " + sessionIdMap.get("shelve_id"));
             shelveRepository.delete(shelveRepository.findById(UUID.fromString(sessionIdMap.get("shelve_id"))));
+            return ResponseEntity.ok().build();
         } else {
             LOG.info("Shelve could not be deleted.. Either it does not exist or something else happened.");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
     }
 }
