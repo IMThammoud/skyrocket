@@ -14,4 +14,6 @@ public interface ShelveRepository extends JpaRepository<Shelve, Integer> {
     List<Shelve> findByUserAccount(UserAccount userAccount);
 
     Shelve findById(UUID id);
+
+    boolean existsById(UUID id);
 }

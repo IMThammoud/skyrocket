@@ -13,4 +13,8 @@ public interface NotebookRepository extends JpaRepository<Notebook, Integer> {
     int countByShelve_Id(UUID shelveId);
 
     List<Notebook> findByShelve(Shelve shelve);
+
+    void deleteByShelve(Shelve shelve);
+
+    void deleteAllByShelve(Shelve shelveId);
 }

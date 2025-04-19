@@ -10,7 +10,13 @@ import com.skyrocket.repository.ShelveRepository;
 import com.skyrocket.repository.UserAccountRepository;
 import com.skyrocket.services.ConvertNotebookListForShelveView;
 import com.skyrocket.utilityClasses.FilteredNotebookForShelveView;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.thymeleaf.templateparser.markup.HTMLTemplateParser;
 
 import java.util.Collections;
 import java.util.List;
@@ -95,14 +101,20 @@ public class ShelveController {
         }
         return 0;
     }
-
     // Return 200 if deletion was successful
+    @Transactional
     @DeleteMapping("/shelve/delete")
-    public ResponseStatus deleteShelve(@CookieValue(name = "JSESSIONID") String sessionId,
-                                       String shelveId) {
-        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-
+    public void deleteShelve(@CookieValue(name = "JSESSIONID") String sessionId,
+                             @RequestBody Map<String, String> sessionIdMap) {
+        // If sessionToken exists and there are Articles with that shelve_id then delete all the articles and the shelve on top.
+        if (sessionStoreRepository.existsBySessionToken(sessionId) && shelveRepository.existsById(UUID.fromString(sessionIdMap.get("shelve_id")))) {
+            System.out.println("Deleting Notebooks of Shelve: " + sessionIdMap.get("shelve_id"));
+            notebookRepository.deleteAllByShelve(shelveRepository.findById(UUID.fromString(sessionIdMap.get("shelve_id"))));
+            System.out.println("Deleting Shelves with id: " + sessionIdMap.get("shelve_id"));
+            shelveRepository.delete(shelveRepository.findById(UUID.fromString(sessionIdMap.get("shelve_id"))));
+        } else {
+            LOG.info("Shelve could not be deleted.. Either it does not exist or something else happened.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return null;
     }
 }
