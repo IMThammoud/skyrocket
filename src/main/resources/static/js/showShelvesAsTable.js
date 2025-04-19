@@ -1,7 +1,6 @@
 // Don't forget to set the IPv4 of the server into the fetch request later
 // Dont forget to implement a cap of Shelves because there shouldt be 100 Shelves rendered
 // on one Page. Would be better to dynamically load them on button press "Next" or something
-
 let global_response_array;
 let global_article_array
 let filtered_notebook_object_table_headrow = {
@@ -93,7 +92,7 @@ async function showShelvesAsTable() {
                 let data_articles = await listArticles(cell_extra_button)
                 if (data_articles.length == 0) {
                     console.log("No articles found for this shelve")
-                    alert("Es sind keine Artikel in diesem Regal vorhanden.")
+                    alert("No Articles found for this shelve.")
                 } else {
                     console.log(data_articles)
                     console.log("amount of keys (columns): ", Object.keys(data_articles[0]).length);
