@@ -78,12 +78,13 @@ public class PDFCreatorWithOpenPDF {
                 table.addCell(filteredNotebook.getOperatingSystem());
                 table.addCell(filteredNotebook.getKeyboardLayout());
                 table.addCell(String.valueOf(filteredNotebook.getBatteryCapacityHealth()));
-                table.addCell(filteredNotebook.getSideNote());
+                table.addCell(new PdfPCell(new Phrase(filteredNotebook.getSideNote(), FontFactory.getFont(FontFactory.HELVETICA, 9f))));
+                //table.addCell(filteredNotebook.getSideNote());
                 table.addCell(String.valueOf(filteredNotebook.getSellingPrice()));
             }
 
-        System.out.println("Columns: " + filteredNotebookForPDF.getColumnsForTablePDF().toString());
-        System.out.println("Notebooks: " + notebooks.toString());
+        System.out.println("Columns: " + filteredNotebookForPDF.getColumnsForTablePDF());
+        System.out.println("Notebooks: " + notebooks);
         System.out.println(table.getNumberOfColumns());
 
 
