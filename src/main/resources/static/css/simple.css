@@ -90,6 +90,8 @@ body > header {
   grid-column: 1 / -1;
 }
 
+
+
 body > header > *:only-child {
   margin-block-start: 2rem;
 }
@@ -254,6 +256,18 @@ header > nav {
   line-height: 2;
   padding: 1rem 0 0 0;
 }
+@media only screen and (max-width: 720px){
+  header {
+    background-color: var(--accent-bg);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    padding: 0 0.5rem 2rem 0.5rem;
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 
 /* Use flexbox to allow items to wrap, as needed */
 header > nav ul,
