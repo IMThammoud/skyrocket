@@ -23,7 +23,7 @@ let notebookObject = {
 }
 
 async function loadShelves(){
-    let request = await fetch("http://localhost:8080/shelve/retrieve",
+    let request = await fetch("https://mister-unternehmer.de/shelve/retrieve",
         {
             method : "POST",
         })
@@ -48,7 +48,7 @@ async function loadShelves(){
         document.getElementById("buttonForAskingForTemplate").remove()
         document.getElementById("labelForSelectElement").remove()
         let whenNoShelvesFoundForTemplateCreation = document.createElement("h5")
-        whenNoShelvesFoundForTemplateCreation.innerHTML = "<p>Please create a shelve first: <a href='/shelve/create'>Create</a></p>"
+        whenNoShelvesFoundForTemplateCreation.innerHTML = "<p>Please create a shelve first: <a href='https://mister-unternehmer.de/shelve/create'>Create</a></p>"
         document.getElementById("replaceableWithJS").appendChild(whenNoShelvesFoundForTemplateCreation)
     }
 
@@ -58,7 +58,7 @@ async function loadShelves(){
 async function askForTemplateTypeUsingShelveID() {
 
     // When clicking on add article to shelve on UI
-    let request = await fetch("http://localhost:8080/add/article/check-shelve-type",
+    let request = await fetch("https://mister-unternehmer.de/add/article/check-shelve-type",
         {
             headers : {"content-type" : "application/json;charset=UTF8"},
             method : "POST",
@@ -366,7 +366,7 @@ async function askForTemplateTypeUsingShelveID() {
 
     async function submitArticleAndWaitForResponse(notebookObject) {
         console.log(notebookObject)
-        let request =  await fetch("http://localhost:8080/add/article/receiveArticle", {
+        let request =  await fetch("https://mister-unternehmer.de/add/article/receiveArticle", {
             headers: {"Content-Type": "application/json"},
             method: "POST",
             body: JSON.stringify(notebookObject)

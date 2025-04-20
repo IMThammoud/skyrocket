@@ -31,7 +31,7 @@ extra_button_delete_shelves.style.color = "red";
 extra_button.innerText = "View Articles";
 async function showShelvesAsTable() {
 
-    let request = await fetch("http://localhost:8080/shelve/retrieve", {
+    let request = await fetch("https://mister-unternehmer.de/shelve/retrieve", {
         method: "POST",
     })
     let response = await request.text();
@@ -63,7 +63,7 @@ async function showShelvesAsTable() {
             cell_category.innerText = response_array[i]["category"]
 
             // This endpoint expects exactly these field names: shelve_id, shelve_type
-            let askForArticleCount = await fetch("http://localhost:8080/shelve/articleCount", {
+            let askForArticleCount = await fetch("https://mister-unternehmer.de/shelve/articleCount", {
                 headers: {"content-type": "application/json"},
                 method: "POST",
                 body: JSON.stringify({
@@ -85,7 +85,7 @@ async function showShelvesAsTable() {
             let button_to_download_delete_shelve = document.createElement('button');
 
 
-            button_to_view_articles.innerText = "Ansehen";
+            button_to_view_articles.innerText = "View";
             button_to_view_articles.addEventListener("click", async function () {
                 // Submit ShelveID through button and get Listing template for shelve.
                 // check if there are even Articles for that shelve
@@ -146,16 +146,16 @@ async function showShelvesAsTable() {
         let header_seventh = header_row.insertCell(6)
 
         header_row.style.fontWeight = "bold"
-        header_first.innerText = "Regal"
-        header_second.innerText = "Typ"
-        header_third.innerText = "Kategorie"
-        header_fourth.innerText = "Einträge"
-        header_fifth.innerText = "Auflisten"
+        header_first.innerText = "Shelf"
+        header_second.innerText = "Type"
+        header_third.innerText = "Category"
+        header_fourth.innerText = "Entries"
+        header_fifth.innerText = "List"
         header_sixth.innerText = "PDF"
-        header_seventh.innerText = "Löschen"
+        header_seventh.innerText = "Delete"
     } else {
         let headlineIfNoShelvesAreAvailable = document.createElement("h5")
-        headlineIfNoShelvesAreAvailable.innerHTML = "<p> Please create a shelve first: <a href=http://localhost:8080/shelve/create> create </a> </p>"
+        headlineIfNoShelvesAreAvailable.innerHTML = "<p> Please create a shelve first: <a href='https://mister-unternehmer.de/shelve/create'> Create </a> </p>"
         document.getElementById("ifNoShelvesFound").appendChild(headlineIfNoShelvesAreAvailable)
     }
 
@@ -163,7 +163,7 @@ async function showShelvesAsTable() {
 
 // Server sends ArrayList of Articles back (for this shelve)
 async function listArticles(cell_extra_button){
-    let request = await fetch("http://localhost:8080/shelve/get-notebooks-filtered", {
+    let request = await fetch("https://mister-unternehmer.de/shelve/get-notebooks-filtered", {
         headers : {"content-type": "application/json"},
         method : "POST",
         body : JSON.stringify({"shelve_id" : cell_extra_button.value}),
@@ -173,7 +173,7 @@ async function listArticles(cell_extra_button){
 }
 
 async function downloadPDF(cell_extra_button){
-    let request = await fetch("http://localhost:8080/shelve/shelve-content-to-pdf", {
+    let request = await fetch("https://mister-unternehmer.de/shelve/shelve-content-to-pdf", {
         headers : {"content-type": "application/json"},
         method : "POST",
         body : JSON.stringify({"shelve_id" : cell_extra_button.value}),
@@ -185,7 +185,7 @@ async function downloadPDF(cell_extra_button){
 }
 
 async function deleteShelvesAndItsArticles(cell_extra_button){
-    let request = await fetch("http://localhost:8080/shelve/delete", {
+    let request = await fetch("https://mister-unternehmer.de/shelve/delete", {
         headers : {"content-type": "application/json"},
         method : "DELETE",
         body : JSON.stringify({"shelve_id" : cell_extra_button.value}),

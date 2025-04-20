@@ -3,33 +3,32 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-  <title>Anmelden</title>
-  <link rel="stylesheet" href="/css/simple.css">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/simple.css">
 </head>
 <body style="color:#483e37ff">
 <header>
-    <div style="margin-top: 1%"> <a href="/"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
+    <div style="margin-top: 1%"> <a href="https://mister-unternehmer.de/"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
     <nav>
         <ul>
-            <li><a href="/">Startseite</a></li>
-            <li><a href="/login-page" aria-current="true">Login</a></li>
-            <li><a href="/registration" >Registrierung</a></li>
+            <li><a href="https://mister-unternehmer.de/">Home</a></li>
+            <li><a href="https://mister-unternehmer.de/login-page" aria-current="true">Login</a></li>
+            <li><a href="https://mister-unternehmer.de/registration" >Registration</a></li>
         </ul>
     </nav>
 </header>
 <main>
-  <h4>Login</h4>
-  <script src="/js/login.js"></script>
-      <label for="email">Username:</label>
-        <input type="text" placeholder="Jeff@Beispiel.de" name="email" id="email" required>
+    <h4>Login</h4>
+    <script src="/js/login.js"></script>
+    <label for="email">Username:</label>
+    <input type="text" placeholder="Jeff@example.com" name="email" id="email" required>
 
-
-      <label for="password">Passwort:</label>
-      <input type="password" placeholder="Passwort" name="password" id="password" required>
-      <br>
-      <div style="text-align: center">
-        <button type="submit" onclick="login()">Anmelden</button>
-      </div>
+    <label for="password">Password:</label>
+    <input type="password" placeholder="Password" name="password" id="password" required>
+    <br>
+    <div style="text-align: center">
+        <button type="submit" onclick="login()">Log in</button>
+    </div>
 
 </main>
 <footer class="footer"><a style="text-align: center" href="https://uberspace.de/"><img style="vertical-align: middle;width: 15%" src="/badge/uberspace_badge_light.svg" alt="" ></a>

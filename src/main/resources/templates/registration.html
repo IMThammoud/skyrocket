@@ -3,35 +3,34 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>Registrierung</title>
+    <title>Registration</title>
     <link rel="stylesheet" href="/css/simple.css">
 </head>
 <body style="color: #483e37ff;">
 <header style="display: inline-flex; align-items: center; justify-content: space-around;">
-    <div style="margin-top: 1%"> <a href="/"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
+    <div style="margin-top: 1%"> <a href="https://mister-unternehmer.de/"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
     <nav>
         <ul>
-            <li><a href="/">Startseite</a></li>
-            <li><a href="/login-page">Login</a></li>
-            <li><a href="/registration" aria-current="true">Registrierung</a></li>
+            <li><a href="https://mister-unternehmer.de/">Home</a></li>
+            <li><a href="https://mister-unternehmer.de/login-page">Login</a></li>
+            <li><a href="https://mister-unternehmer.de/registration" aria-current="true">Registration</a></li>
         </ul>
     </nav>
 </header>
 <main>
     <p class="notice">Only Username and Password are required. <br> <mark>Email for Password verification will follow in User-Settings.</mark></p>
-    <h4>Registrierung</h4>
-    <form action="/register" method="post">
+    <h4>Registration</h4>
+    <form action="https://mister-unternehmer.de/register" method="post">
         <label for="email">Username:</label>
-        <input type="text" placeholder="Jeff@Beispiel.de" name="email" id="email" required>
+        <input type="text" placeholder="Jeff@example.com" name="email" id="email" required>
 
-
-        <label for="password">Passwort:</label>
-        <input type="password" placeholder="Passwort" name="password" id="password" required>
+        <label for="password">Password:</label>
+        <input type="password" placeholder="Password" name="password" id="password" required>
         <br>
         <br>
         <div style="text-align: center">
-        <input type="submit" value="Registrieren">
-            </div>
+            <input type="submit" value="Register">
+        </div>
     </form>
 </main>
 <footer class="footer"><a style="text-align: center" href="https://uberspace.de/"><img style="vertical-align: middle;width: 15%" src="/badge/uberspace_badge_light.svg" alt="" ></a>

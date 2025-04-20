@@ -1,5 +1,5 @@
 async function submitRegistration() {
-    let response = await fetch("/register",
+    let response = await fetch("https://mister-unternehmer.de/register",
         {
             method: "POST",
             "Content-Type": "application/json",
@@ -10,6 +10,6 @@ async function submitRegistration() {
         })
     response = await response.text();
     if (response.ok) {
-        window.location.replace("/registration-success");
+        window.location.replace("https://mister-unternehmer.de/registration-success");
     }
 }

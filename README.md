@@ -24,6 +24,8 @@ spring.datasource.url= URL
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto= ddlmode
 ```
+- Always make sure that there is a directory "pdf" at the root path "/"
+
 
 #### Functionalities in progress:
 + Inventory with different shelves, articles and services

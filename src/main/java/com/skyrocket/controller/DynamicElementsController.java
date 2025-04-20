@@ -106,17 +106,32 @@ public class DynamicElementsController {
                     case "smartphone":
                         return "smartphone";
                     default:
-                        return "redirect:/logout";
+                        return "redirect:https://mister-unternehmer.de/logout";
                 }
             }
         }
-        return "redirect:/logout";
+        return "redirect:https://mister-unternehmer.de/logout";
     }
 
     // When logging in: new sessionStore entry for user is created.
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes="application/json")
     public String login(@RequestBody UserAccount userAccount,
+                        @CookieValue(name = "JSESSIONID", required = false) String cookieAlreadyInUse,
                         HttpSession session) {
+
+        // If someone already has a SessionTOKEN then this prevents duplicate SessionTOKENS in the sessionstore.
+        // So if someone does not login and invalidates his session and then tries to LOGIN AGAIN
+        // It doesnt crash anymore. This fixes double session_token saves because the session_token could be stored
+        // On every login. The user had only to visit the login page again without logging out before and log in again
+        // and it would save the already stored session_id again.
+        // This could also be fixed by creating a new sessionID when saving the new Entry in session_store
+        // Example: sessionStore.setSessionToken(new HTTPsession().getId()) but my approach is fine too with catching it with
+        // if condition.
+        if (sessionStoreRepository.existsBySessionToken(cookieAlreadyInUse)) {
+            // JS checks for this as response and then lets user to the dashboard.
+            return "alreadyHasAccount";
+        }
+
         // Fetch entry out of DB
         UserAccount foundUserAccountByEmail = userAccountRepository.getByEmail(userAccount.getEmail());
 

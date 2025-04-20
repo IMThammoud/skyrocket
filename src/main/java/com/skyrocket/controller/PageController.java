@@ -83,7 +83,7 @@ public class PageController {
         }
         LOG.info("invalidated this userSession on server: " + sessionId);
         session.invalidate();
-        return "redirect:/";
+        return "redirect:https://mister-unternehmer.de/";
     }
 
     @GetMapping("/shelve/shelves")
@@ -93,7 +93,7 @@ public class PageController {
              LOG.info("Found sessionstore objects based on sessionID " + sessionStoreRepository.getSessionStoresBySessionToken(sessionId).get(0).toString());
             return "shelves";
          }
-        return "redirect:/logout";
+        return "redirect:https://mister-unternehmer.de/logout";
     }
 
     @GetMapping("/shelve/create")
@@ -101,7 +101,7 @@ public class PageController {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "add-shelve";
         }
-        return "redirect:/logout";
+        return "redirect:https://mister-unternehmer.de/logout";
     }
 
     @GetMapping("/add/article")
@@ -109,7 +109,7 @@ public class PageController {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "add-article";
         }
-        return "redirect:/logout";
+        return "redirect:https://mister-unternehmer.de/logout";
     }
 
 
