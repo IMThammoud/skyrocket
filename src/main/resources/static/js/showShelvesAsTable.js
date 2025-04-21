@@ -70,6 +70,10 @@ extra_button_delete_shelves.id = "extra_button_delete_shelves";
 extra_button_delete_shelves.style.color = "red";
 // extra_button.innerHTML = '<img style ="width: 30px" src="/icons/icons-skyrocket/eye-solid.svg" alt="listing-button">';
 extra_button.innerText = "View Articles";
+
+// I cycle through the shelves creating a table  and give every Cell that contains a button the id of the shelve that is
+// currently iterated through as cell.value
+// So when a button is clicked on any cell it can use the shelveID that is specifically for this row.
 async function showShelvesAsTable() {
 
     let request = await fetch("/shelve/retrieve", {
