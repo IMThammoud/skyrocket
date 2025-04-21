@@ -8,14 +8,14 @@
 </head>
 <body style="color: #483e37ff;">
 <header style="display: inline-flex; align-items: center; justify-content: space-around;">
-  <div style="margin-top: 1%"><a href="https://mister-unternehmer.de/shelve/shelves"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
+  <div style="margin-top: 1%"><a href="/shelve/shelves"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
   <nav>
     <ul>
-      <li><a href="https://mister-unternehmer.de/shelve/shelves">Shelves</a></li>
-      <li><a aria-current="true" href="https://mister-unternehmer.de/shelve/create">Create Shelf</a></li>
-      <li><a href="https://mister-unternehmer.de/add/article">Add Article / Service</a></li>
-      <li><a href="https://mister-unternehmer.de/invoice/dashboard">Create Invoice</a></li>
-      <li><a style="color: darkred; border: none" href="https://mister-unternehmer.de/logout">Log out</a></li>
+      <li><a href="/shelve/shelves">Shelves</a></li>
+      <li><a aria-current="true" href="/shelve/create">Create Shelf</a></li>
+      <li><a href="/add/article">Add Article / Service</a></li>
+      <li><a href="/invoice/dashboard">Create Invoice</a></li>
+      <li><a style="color: darkred; border: none" href="/logout">Log out</a></li>
     </ul>
   </nav>
 </header>
@@ -27,7 +27,7 @@
     <p>Currently, only notebooks can be stored. <br> Other categories will follow.</p>
   </div>
   <div>
-    <form action="https://mister-unternehmer.de/shelve/submit" method="POST">
+    <form action="/shelve/submit" method="POST">
       <label for="shelve_name">Shelf Name <br><input type="text" placeholder="Notebooks, Smartphones" name="shelve_name" id="shelve_name" required></label>
 
       <br>

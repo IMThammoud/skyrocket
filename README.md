@@ -23,6 +23,9 @@ spring.datasource.password= mariadb-password
 spring.datasource.url= URL
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto= ddlmode
+spring.jpa.properties.jakarta.persistence.schema-generation.scripts.action=create
+spring.jpa.properties.jakarta.persistence.schema-generation.scripts.create-target=create.sql
+spring.jpa.properties.jakarta.persistence.schema-generation.scripts.create-source=metadata
 ```
 - Always make sure that there is a directory "pdf" at the root path "/"
 

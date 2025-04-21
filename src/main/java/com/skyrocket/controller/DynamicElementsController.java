@@ -97,6 +97,7 @@ public class DynamicElementsController {
             // Add more switch cases as more types are available (notebook, smartphone, tablet, etc.)
             // Maybe this has to be solved differently as it feels very UngaBunga
             Shelve shelveToBeChecked = shelveRepository.findById(UUID.fromString(jsBody.get("shelve")));
+            System.out.println("check-shelve-type Endpoint received this shelve_id: " + jsBody.get("shelve"));
             if(shelveToBeChecked.getIsForService() == false) {
                 switch (shelveToBeChecked.getType()) {
                     case "notebook":

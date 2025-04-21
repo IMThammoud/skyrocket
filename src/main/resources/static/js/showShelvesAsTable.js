@@ -1,8 +1,49 @@
 // Don't forget to set the IPv4 of the server into the fetch request later
 // Dont forget to implement a cap of Shelves because there shouldt be 100 Shelves rendered
 // on one Page. Would be better to dynamically load them on button press "Next" or something
-let global_response_array;
-let global_article_array
+
+// Using this object as long as i dont know how to use objects from other files
+let notebookObject = {
+    "pk_id":"",
+    "name":"",
+    "amount":"",
+    "type":"",
+    "description":"",
+    "price_when_bought":"",
+    "selling_price":"",
+    "fk_shelve_id":"",
+    "brand":"",
+    "model_nr":"",
+    "cpu":"",
+    "ram":"",
+    "storage_in_gb":"",
+    "display_size_inches":"",
+    "operating_system":"",
+    "battery_capacity_health":"",
+    "keyboard_layout":"",
+    "side_note":""
+}
+
+
+
+async function submitArticleAndWaitForResponseWhileOnShelveView(notebookObject) {
+    console.log(notebookObject)
+    let request =  await fetch("/add/article/receiveArticle", {
+        headers: {"Content-Type": "application/json"},
+        method: "POST",
+        body: JSON.stringify(notebookObject)
+    })
+    let response = await request.text()
+    if (response === "success") {
+        alert("Article added to shelve")
+    } else {
+        alert("Server does not like your form. ")
+    }
+}
+
+// Gets the Shelve_ID from the function that lists the shelve in the dashboard. This is a very important FIELD
+let shelve_id_as_cell_value
+
 let filtered_notebook_object_table_headrow = {
     "name":"",
     "amount":"",
@@ -31,7 +72,7 @@ extra_button_delete_shelves.style.color = "red";
 extra_button.innerText = "View Articles";
 async function showShelvesAsTable() {
 
-    let request = await fetch("https://mister-unternehmer.de/shelve/retrieve", {
+    let request = await fetch("/shelve/retrieve", {
         method: "POST",
     })
     let response = await request.text();
@@ -57,13 +98,14 @@ async function showShelvesAsTable() {
             let cell_extra_button = row.insertCell(4)
             let cell_extra_button_pdf = row.insertCell(5)
             let cell_extra_button_delete_shelve = row.insertCell(6)
+            let cell_extra_button_add_to_shelve = row.insertCell(7)
 
             cell_name.innerText = response_array[i]["name"]
             cell_type.innerText = response_array[i]["type"]
             cell_category.innerText = response_array[i]["category"]
 
             // This endpoint expects exactly these field names: shelve_id, shelve_type
-            let askForArticleCount = await fetch("https://mister-unternehmer.de/shelve/articleCount", {
+            let askForArticleCount = await fetch("/shelve/articleCount", {
                 headers: {"content-type": "application/json"},
                 method: "POST",
                 body: JSON.stringify({
@@ -78,11 +120,13 @@ async function showShelvesAsTable() {
             cell_extra_button.value = response_array[i]["id"];
             cell_extra_button_pdf.value = response_array[i]["id"];
             cell_extra_button_delete_shelve.value = response_array[i]["id"];
+            cell_extra_button_add_to_shelve.value = response_array[i]["id"];
 
             // Buttons of the Shelve Table
             let button_to_view_articles = document.createElement('button');
             let button_to_download_pdf = document.createElement('button');
-            let button_to_download_delete_shelve = document.createElement('button');
+            let button_to_delete_shelve = document.createElement('button');
+            let button_to_add_to_shelve = document.createElement('button');
 
 
             button_to_view_articles.innerText = "View";
@@ -118,8 +162,8 @@ async function showShelvesAsTable() {
                 }
             })
 
-            button_to_download_delete_shelve.innerText = "Delete";
-            button_to_download_delete_shelve.addEventListener("click", async function () {
+            button_to_delete_shelve.innerText = "Delete";
+            button_to_delete_shelve.addEventListener("click", async function () {
                 let requestOfDeletingShelve;
                     if (confirm("Are you sure?")) {
                         if (requestOfDeletingShelve = await deleteShelvesAndItsArticles(cell_extra_button)) {
@@ -129,9 +173,18 @@ async function showShelvesAsTable() {
                         alert("Couldnt delete shelve..")
             })
 
+            button_to_add_to_shelve.innerText = "Add";
+            button_to_add_to_shelve.addEventListener("click", async function () {
+                let request = await askForTemplateToAddArticleWhileOnShelveView(cell_extra_button_add_to_shelve)
+                document.getElementById("shelve-table").remove()
+                document.getElementById("shelves-dashboard-heading").innerText = "Add Article from Shelve-Dashboard";
+
+            })
+
             cell_extra_button.append(button_to_view_articles)
             cell_extra_button_pdf.append(button_to_download_pdf)
-            cell_extra_button_delete_shelve.append(button_to_download_delete_shelve)
+            cell_extra_button_delete_shelve.append(button_to_delete_shelve)
+            cell_extra_button_add_to_shelve.append(button_to_add_to_shelve)
         }
 
         // Adding header cells to the table
@@ -144,6 +197,7 @@ async function showShelvesAsTable() {
         let header_fifth = header_row.insertCell(4)
         let header_sixth = header_row.insertCell(5)
         let header_seventh = header_row.insertCell(6)
+        let header_eigth = header_row.insertCell(7)
 
         header_row.style.fontWeight = "bold"
         header_first.innerText = "Shelf"
@@ -153,9 +207,11 @@ async function showShelvesAsTable() {
         header_fifth.innerText = "List"
         header_sixth.innerText = "PDF"
         header_seventh.innerText = "Delete"
+        header_eigth.innerText = "Article"
+
     } else {
         let headlineIfNoShelvesAreAvailable = document.createElement("h5")
-        headlineIfNoShelvesAreAvailable.innerHTML = "<p> Please create a shelve first: <a href='https://mister-unternehmer.de/shelve/create'> Create </a> </p>"
+        headlineIfNoShelvesAreAvailable.innerHTML = "<p> Please create a shelve first: <a href='/shelve/create'> Create </a> </p>"
         document.getElementById("ifNoShelvesFound").appendChild(headlineIfNoShelvesAreAvailable)
     }
 
@@ -163,7 +219,7 @@ async function showShelvesAsTable() {
 
 // Server sends ArrayList of Articles back (for this shelve)
 async function listArticles(cell_extra_button){
-    let request = await fetch("https://mister-unternehmer.de/shelve/get-notebooks-filtered", {
+    let request = await fetch("/shelve/get-notebooks-filtered", {
         headers : {"content-type": "application/json"},
         method : "POST",
         body : JSON.stringify({"shelve_id" : cell_extra_button.value}),
@@ -173,7 +229,7 @@ async function listArticles(cell_extra_button){
 }
 
 async function downloadPDF(cell_extra_button){
-    let request = await fetch("https://mister-unternehmer.de/shelve/shelve-content-to-pdf", {
+    let request = await fetch("/shelve/shelve-content-to-pdf", {
         headers : {"content-type": "application/json"},
         method : "POST",
         body : JSON.stringify({"shelve_id" : cell_extra_button.value}),
@@ -185,12 +241,42 @@ async function downloadPDF(cell_extra_button){
 }
 
 async function deleteShelvesAndItsArticles(cell_extra_button){
-    let request = await fetch("https://mister-unternehmer.de/shelve/delete", {
+    let request = await fetch("/shelve/delete", {
         headers : {"content-type": "application/json"},
         method : "DELETE",
         body : JSON.stringify({"shelve_id" : cell_extra_button.value}),
     })
     return request.status;
+}
+
+async function askForTemplateToAddArticleWhileOnShelveView(cell_extra_button_add_to_shelve) {
+
+    // When clicking on add article to shelve on UI
+    let request = await fetch("/add/article/check-shelve-type",
+        {
+            headers: {"content-type": "application/json;charset=UTF8"},
+            method: "POST",
+            body: JSON.stringify({"shelve": cell_extra_button_add_to_shelve.value}),
+        })
+    let response = await request.text()
+    console.log("This was the response from server after clicking add button on shelveview: " + response)
+    switch (response) {
+        // Add some other cases in future and mirror the cases with the endpoint on the server, storing global ShelveID to use it in request function
+        case "notebook":
+            console.log("ShelveID of selected shelve:" + cell_extra_button_add_to_shelve.value)
+            //document.getElementById("replaceableWithJsIfAddButtonClicked").remove()
+            build_notebook_form(cell_extra_button_add_to_shelve)
+
+        //case "smartphone":
+        //    shelveIdOfSelectedShelve = shelve_id_as_cell_value
+        //    console.log("ShelveID of selected shelve:" + shelveIdOfSelectedShelve)
+        //    document.getElementById("replaceableWithJsIfAddButtonClicked").remove()
+        //    build_smartphone_form()
+
+        default:
+            console.log("No suitable type returned by the server for template generation.")
+            break;
+    }
 }
 
 function replaceShelveDashboardWithArticleList(number_of_keys, data_articles) {
@@ -222,4 +308,288 @@ function replaceShelveDashboardWithArticleList(number_of_keys, data_articles) {
     }
     document.getElementById("table-article").append(new_table);
 
+}
+
+// This method is a duplicate of the build_notebook_form() from /js/addArticleFunctions.js
+// Until i know how to import functions from other js files, this will stay.
+function build_notebook_form(cell_extra_button){
+    // Building the form
+    let formDiv = document.createElement("div")
+    formDiv.id = "Js-built-form"
+
+    let mainElement = document.createElement("main")
+    mainElement.id = "main-element"
+    let buttonSpace = document.getElementById("Button-space-in-form")
+
+    let templateForm = document.createElement("form")
+    templateForm.id = "template-form"
+
+    // Create label and link its for property to the input form
+    let label_notebookbrand = document.createElement("label")
+    label_notebookbrand.innerText = "Marke"
+    label_notebookbrand.htmlFor = "notebook-brand"
+    let notebookBrand = document.createElement("input")
+    notebookBrand.id = "notebook-brand"
+    notebookBrand.placeholder = "Lenovo"
+    notebookBrand.type = "text"
+
+    let label_notebookname = document.createElement("label")
+    label_notebookname.innerText = "Name"
+    label_notebookname.htmlFor = "notebook-name"
+    let notebookName = document.createElement("input")
+    notebookName.id = "notebook-name"
+    notebookName.placeholder = "Thinkpad T14 Gen5"
+    notebookName.type = "text"
+
+    let label_notebookAmount = document.createElement("label")
+    label_notebookAmount.innerText = "Anzahl"
+    label_notebookAmount.htmlFor = "notebook-amount"
+    let notebookAmount = document.createElement("input")
+    notebookAmount.id = "notebook-amount"
+    notebookAmount.placeholder = "1..10.."
+    notebookAmount.size = 20
+    notebookAmount.type = "number"
+
+    // Need to add selection with types for the typefield
+    let label_notebookType = document.createElement("label")
+    label_notebookType.innerText = "Typ"
+    label_notebookType.htmlFor = "notebook-typ"
+    let notebookType = document.createElement("select")
+    notebookType.id = "notebook-type"
+    notebookType.placeholder = "Standard, Convertable"
+    notebookType.type = "select-one"
+    let optionStandard = document.createElement("option")
+    optionStandard.innerText = "Standard"
+    optionStandard.value = "standard"
+    let optionConvertible = document.createElement("option")
+    optionConvertible.innerText = "Convertible"
+    optionConvertible.value = "convertible"
+    let optionTwoInOneTablet = document.createElement("option")
+    optionTwoInOneTablet.innerText = "2-in-1-tablet"
+    optionTwoInOneTablet.value = "2-in-1-tablet"
+    notebookType.appendChild(optionStandard)
+    notebookType.appendChild(optionConvertible)
+    notebookType.appendChild(optionTwoInOneTablet)
+
+    let label_notebookDescription = document.createElement("label")
+    label_notebookDescription.innerText = "Kurze Beschreibung"
+    label_notebookDescription.htmlFor = "notebook-description"
+    let notebookDescription = document.createElement("textarea")
+    notebookDescription.id = "notebook-description"
+    notebookDescription.placeholder = "Light and portable Workstation that works efficient and has all-day batterylife."
+    notebookDescription.type = "text"
+
+    let label_notebookPriceWhenBought = document.createElement("label")
+    label_notebookPriceWhenBought.innerText = "Einkaufspreis"
+    label_notebookPriceWhenBought.htmlFor = "notebook-price-when-bought"
+    let notebookPriceWhenBought = document.createElement("input")
+    notebookPriceWhenBought.id = "notebook-price-when-bought"
+    notebookPriceWhenBought.placeholder = "429,99€"
+    notebookPriceWhenBought.min = "0"
+    notebookPriceWhenBought.size = 30
+    notebookPriceWhenBought.type = "number"
+
+    let label_notebookSellingPrice = document.createElement("label")
+    label_notebookSellingPrice.innerText = "Listenverkaufspreis"
+    label_notebookSellingPrice.htmlFor = "notebook-selling-price"
+    let notebookSellingPrice = document.createElement("input")
+    notebookSellingPrice.id = "notebook-selling-price"
+    notebookSellingPrice.placeholder = "429,99€"
+    notebookSellingPrice.min = "0"
+    notebookSellingPrice.size = 30
+    notebookSellingPrice.type = "number"
+
+    let label_notebookModelNumber = document.createElement("label")
+    label_notebookModelNumber.innerText = "Modellnummer"
+    label_notebookModelNumber.htmlFor = "notebook-modelnumber"
+    let notebookModelNumber = document.createElement("input")
+    notebookModelNumber.id = "notebook-modelnumber"
+    notebookModelNumber.placeholder = "20SUB-QSYYC"
+    notebookModelNumber.size = 50
+    notebookModelNumber.type = "text"
+
+    let label_notebookCpu = document.createElement("label")
+    label_notebookCpu.innerText = "CPU / Prozessor"
+    label_notebookCpu.htmlFor = "notebook-cpu"
+    let notebookCpu = document.createElement("input")
+    notebookCpu.id = "notebook-cpu"
+    notebookCpu.placeholder = "Intel Core i5 or i5 1235u"
+    notebookCpu.size = 30
+    notebookCpu.type = "text"
+
+    let label_notebookRam = document.createElement("label")
+    label_notebookRam.innerText = "RAM / Arbeitsspeicher in GBs"
+    label_notebookRam.htmlFor = "notebook-ram"
+    let notebookRam = document.createElement("input")
+    notebookRam.id = "notebook-ram"
+    notebookRam.placeholder = "16"
+    notebookRam.min = 0
+    notebookRam.max = 1000
+    notebookRam.size = 30
+    notebookRam.type = "number"
+
+    let label_notebookStorageInGigs = document.createElement("label")
+    label_notebookStorageInGigs.innerText = "Festplatte / SSD / HDD Speicher"
+    label_notebookStorageInGigs.htmlFor = "notebook-storage"
+    let notebookStorageInGigs = document.createElement("input")
+    notebookStorageInGigs.id = "notebook-storage"
+    notebookStorageInGigs.placeholder = "1000GB"
+    notebookStorageInGigs.min = 0
+    notebookStorageInGigs.size = 30
+    notebookStorageInGigs.type = "number"
+    //notebookStorageInGigs.pattern = "[0-9]{3}-[0-9]{3}-[0-9]{4}"
+
+
+    let label_notebookDisplaySizeInInches = document.createElement("label")
+    label_notebookDisplaySizeInInches.innerText = "Display in Zoll"
+    label_notebookDisplaySizeInInches.htmlFor = "notebook-displaySize"
+    let notebookDisplaySizeInInches = document.createElement("input")
+    notebookDisplaySizeInInches.id = "notebook-displaySize"
+    notebookDisplaySizeInInches.min = "0"
+    notebookDisplaySizeInInches.placeholder = "14"
+    notebookDisplaySizeInInches.size = 30
+    notebookDisplaySizeInInches.type = "number"
+
+    let label_notebookOS = document.createElement("label")
+    label_notebookOS.innerText = "Betriebssystem"
+    label_notebookOS.htmlFor = "notebook-os"
+
+    let notebookOS = document.createElement("select")
+    notebookOS.id = "notebook-os"
+    notebookOS.placeholder = "Windows 11"
+    notebookOS.innerHTML = "Betriebssystem"
+    let osOptionWindows10 = document.createElement("option")
+    osOptionWindows10.value = "Windows10"
+    osOptionWindows10.innerText = "Windows10"
+    let osOptionWindows11 = document.createElement("option")
+    osOptionWindows11.value = "Windows11"
+    osOptionWindows11.innerText = "Windows11"
+    let osOptionMac = document.createElement("option")
+    osOptionMac.value = "MacOS"
+    osOptionMac.innerText = "MacOS"
+    let osOptionLinux = document.createElement("option")
+    osOptionLinux.value = "LinuxOS"
+    osOptionLinux.innerText = "LinuxOS"
+    notebookOS.appendChild(osOptionWindows10)
+    notebookOS.appendChild(osOptionWindows11)
+    notebookOS.appendChild(osOptionMac)
+    notebookOS.appendChild(osOptionLinux)
+
+    let label_notebookBatteryHealth = document.createElement("label")
+    label_notebookBatteryHealth.innerText = "Batteryhealth in %"
+    label_notebookBatteryHealth.htmlFor = "notebook-batteryhealth"
+    let notebookBatteryHealth = document.createElement("input")
+    notebookBatteryHealth.id = "notebook-batteryhealth"
+    notebookBatteryHealth.placeholder = "80%"
+    notebookBatteryHealth.size = 50
+    notebookBatteryHealth.max = 100
+    notebookBatteryHealth.min = 1
+    notebookBatteryHealth.type = "number"
+
+    let label_notebookKeyboardLayout = document.createElement("label")
+    label_notebookKeyboardLayout.innerText = "Keyboard Layout"
+    label_notebookKeyboardLayout.htmlFor = "notebook-keyboardlayout"
+    let notebookKeyboardLayout = document.createElement("input")
+    notebookKeyboardLayout.id = "notebook-keyboardlayout"
+    notebookKeyboardLayout.placeholder = "Deutsch"
+    notebookKeyboardLayout.size = 300
+    notebookKeyboardLayout.type = "text"
+
+    let label_notebookSideNote = document.createElement("label")
+    label_notebookSideNote.innerText = "Bemerkung, Notiz"
+    label_notebookSideNote.id = "notebook-sidenote"
+    let notebookSideNote = document.createElement("textarea")
+    notebookSideNote.id = "notebook-sidenote"
+    notebookSideNote.placeholder = "Hier mehr infos hinterlassen falls noch etwas offen ist."
+    notebookSideNote.size = 300
+    notebookSideNote.type = "text"
+
+    let submitNotebookButton = document.createElement("button")
+    submitNotebookButton.id = "submitNotebookButton"
+    submitNotebookButton.style = "margin-top: 5%"
+    submitNotebookButton.innerHTML = "Artikel speichern"
+
+    // submitNotebookButton.onclick
+    //Adding eventlistener is necessary to lock all values into notebookObject and submit it
+    submitNotebookButton.addEventListener("click", function() {
+        notebookObject.pk_id = ""
+        notebookObject.fk_shelve_id = cell_extra_button.value
+        notebookObject.name = notebookName.value
+        notebookObject.amount = notebookAmount.value
+        notebookObject.type = notebookType.value
+        notebookObject.description = notebookDescription.value
+        notebookObject.price_when_bought = notebookPriceWhenBought.value
+        notebookObject.selling_price = notebookSellingPrice.value
+        notebookObject.brand = notebookBrand.value
+        notebookObject.model_nr = notebookModelNumber.value
+        notebookObject.cpu = notebookCpu.value
+        notebookObject.ram = notebookRam.value
+        notebookObject.storage_in_gb = notebookStorageInGigs.value
+        notebookObject.display_size_inches = notebookDisplaySizeInInches.value
+        notebookObject.operating_system = notebookOS.value
+        notebookObject.battery_capacity_health = notebookBatteryHealth.value
+        notebookObject.keyboard_layout = notebookKeyboardLayout.value
+        notebookObject.side_note = notebookSideNote.value;
+        console.log("---------------------------------notebook.type----------------------------------------"  +  notebookObject)
+        submitArticleAndWaitForResponseWhileOnShelveView(notebookObject);}
+
+    );
+
+    //////////////////////////////////////////////////////////////////////
+    // attach the elements to an element by using id in "add-article.html"
+    templateForm.appendChild(label_notebookbrand)
+    templateForm.appendChild(notebookBrand)
+
+    templateForm.appendChild(label_notebookname)
+    templateForm.appendChild(notebookName)
+
+    templateForm.appendChild(label_notebookAmount)
+    templateForm.appendChild(notebookAmount)
+
+    templateForm.appendChild(label_notebookType)
+    templateForm.appendChild(notebookType)
+
+    templateForm.appendChild(label_notebookDescription)
+    templateForm.appendChild(notebookDescription)
+
+    templateForm.appendChild(label_notebookPriceWhenBought)
+    templateForm.appendChild(notebookPriceWhenBought)
+
+    templateForm.appendChild(label_notebookSellingPrice)
+    templateForm.appendChild(notebookSellingPrice)
+
+    templateForm.appendChild(label_notebookModelNumber)
+    templateForm.appendChild(notebookModelNumber)
+
+    templateForm.appendChild(label_notebookCpu)
+    templateForm.appendChild(notebookCpu)
+
+    templateForm.appendChild(label_notebookRam)
+    templateForm.appendChild(notebookRam)
+
+    templateForm.appendChild(label_notebookStorageInGigs)
+    templateForm.appendChild(notebookStorageInGigs)
+
+    templateForm.appendChild(label_notebookDisplaySizeInInches)
+    templateForm.appendChild(notebookDisplaySizeInInches)
+
+    templateForm.appendChild(label_notebookOS)
+    templateForm.appendChild(notebookOS)
+
+    templateForm.appendChild(label_notebookBatteryHealth)
+    templateForm.appendChild(notebookBatteryHealth)
+
+    templateForm.appendChild(label_notebookKeyboardLayout)
+    templateForm.appendChild(notebookKeyboardLayout)
+
+    templateForm.appendChild(label_notebookSideNote)
+    templateForm.appendChild(notebookSideNote)
+
+    formDiv.appendChild(templateForm)
+    formDiv.appendChild(submitNotebookButton)
+
+    mainElement.appendChild(formDiv)
+
+    let toAttachTheFormToShelveView = document.getElementById("replaceableWithJsIfAddButtonClicked")
+    toAttachTheFormToShelveView.append(mainElement)
 }
