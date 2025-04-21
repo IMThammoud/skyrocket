@@ -107,11 +107,11 @@ public class DynamicElementsController {
                     case "smartphone":
                         return "smartphone";
                     default:
-                        return "redirect:https://mister-unternehmer.de/logout";
+                        return "redirect:/logout";
                 }
             }
         }
-        return "redirect:https://mister-unternehmer.de/logout";
+        return "redirect:/logout";
     }
 
     // When logging in: new sessionStore entry for user is created.
