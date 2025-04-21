@@ -40,12 +40,18 @@ public class PageController {
     }
 
     @GetMapping("/")
-    public String landingPage(){
+    public String landingPage(@CookieValue(name = "JSESSIONID", required = false)String sessionId) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+            return "redirect:/logout";
+        }
         return "landing-page";
     }
 
     @GetMapping("/registration")
-    public String registrationPage(){
+    public String registrationPage(@CookieValue(name = "JSESSIONID") String sessionId) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+            return "redirect:/logout";
+        }
         return "registration";
     }
 
@@ -71,7 +77,12 @@ public class PageController {
     }
 
     @GetMapping("/login-page")
-    public String loginPage(){
+    public String loginPage(@CookieValue(name = "JSESSIONID", required = false) String sessionId){
+
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+            return "redirect:/logout";
+        }
+
         return "login-page";
     }
 

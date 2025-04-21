@@ -61,7 +61,7 @@ public class PDFCreatorWithOpenPDF {
         // For every column i add a cell to the pdf template with the right name of the column element ( i defined those)
         for(String column : filteredNotebookForPDF.getColumnsForTablePDF()) {
             System.out.println(column);
-            table.addCell(new PdfPCell(new Phrase(column, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9f)))).setBackgroundColor(Color.lightGray);
+            table.addCell(new PdfPCell(new Phrase(column, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9f)))).setBackgroundColor(Color.orange);
         }
 
             // Create a row for every Notebook in the Filtered Notebook List

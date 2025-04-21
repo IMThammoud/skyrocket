@@ -330,7 +330,7 @@ function build_notebook_form(cell_extra_button){
 
     // Create label and link its for property to the input form
     let label_notebookbrand = document.createElement("label")
-    label_notebookbrand.innerText = "Marke"
+    label_notebookbrand.innerText = "Brand"
     label_notebookbrand.htmlFor = "notebook-brand"
     let notebookBrand = document.createElement("input")
     notebookBrand.id = "notebook-brand"
@@ -346,7 +346,7 @@ function build_notebook_form(cell_extra_button){
     notebookName.type = "text"
 
     let label_notebookAmount = document.createElement("label")
-    label_notebookAmount.innerText = "Anzahl"
+    label_notebookAmount.innerText = "Amount"
     label_notebookAmount.htmlFor = "notebook-amount"
     let notebookAmount = document.createElement("input")
     notebookAmount.id = "notebook-amount"
@@ -356,7 +356,7 @@ function build_notebook_form(cell_extra_button){
 
     // Need to add selection with types for the typefield
     let label_notebookType = document.createElement("label")
-    label_notebookType.innerText = "Typ"
+    label_notebookType.innerText = "Type of Notebook"
     label_notebookType.htmlFor = "notebook-typ"
     let notebookType = document.createElement("select")
     notebookType.id = "notebook-type"
@@ -376,7 +376,7 @@ function build_notebook_form(cell_extra_button){
     notebookType.appendChild(optionTwoInOneTablet)
 
     let label_notebookDescription = document.createElement("label")
-    label_notebookDescription.innerText = "Kurze Beschreibung"
+    label_notebookDescription.innerText = "Short Description"
     label_notebookDescription.htmlFor = "notebook-description"
     let notebookDescription = document.createElement("textarea")
     notebookDescription.id = "notebook-description"
@@ -384,27 +384,27 @@ function build_notebook_form(cell_extra_button){
     notebookDescription.type = "text"
 
     let label_notebookPriceWhenBought = document.createElement("label")
-    label_notebookPriceWhenBought.innerText = "Einkaufspreis"
+    label_notebookPriceWhenBought.innerText = "Bought for €"
     label_notebookPriceWhenBought.htmlFor = "notebook-price-when-bought"
     let notebookPriceWhenBought = document.createElement("input")
     notebookPriceWhenBought.id = "notebook-price-when-bought"
-    notebookPriceWhenBought.placeholder = "429,99€"
+    notebookPriceWhenBought.placeholder = "429,99"
     notebookPriceWhenBought.min = "0"
     notebookPriceWhenBought.size = 30
     notebookPriceWhenBought.type = "number"
 
     let label_notebookSellingPrice = document.createElement("label")
-    label_notebookSellingPrice.innerText = "Listenverkaufspreis"
+    label_notebookSellingPrice.innerText = "Selling For €"
     label_notebookSellingPrice.htmlFor = "notebook-selling-price"
     let notebookSellingPrice = document.createElement("input")
     notebookSellingPrice.id = "notebook-selling-price"
-    notebookSellingPrice.placeholder = "429,99€"
+    notebookSellingPrice.placeholder = "429,99"
     notebookSellingPrice.min = "0"
     notebookSellingPrice.size = 30
     notebookSellingPrice.type = "number"
 
     let label_notebookModelNumber = document.createElement("label")
-    label_notebookModelNumber.innerText = "Modellnummer"
+    label_notebookModelNumber.innerText = "Modelnumber"
     label_notebookModelNumber.htmlFor = "notebook-modelnumber"
     let notebookModelNumber = document.createElement("input")
     notebookModelNumber.id = "notebook-modelnumber"
@@ -413,7 +413,7 @@ function build_notebook_form(cell_extra_button){
     notebookModelNumber.type = "text"
 
     let label_notebookCpu = document.createElement("label")
-    label_notebookCpu.innerText = "CPU / Prozessor"
+    label_notebookCpu.innerText = "CPU / Processor"
     label_notebookCpu.htmlFor = "notebook-cpu"
     let notebookCpu = document.createElement("input")
     notebookCpu.id = "notebook-cpu"
@@ -422,7 +422,7 @@ function build_notebook_form(cell_extra_button){
     notebookCpu.type = "text"
 
     let label_notebookRam = document.createElement("label")
-    label_notebookRam.innerText = "RAM / Arbeitsspeicher in GBs"
+    label_notebookRam.innerText = "RAM / Memory in GBs"
     label_notebookRam.htmlFor = "notebook-ram"
     let notebookRam = document.createElement("input")
     notebookRam.id = "notebook-ram"
@@ -433,7 +433,7 @@ function build_notebook_form(cell_extra_button){
     notebookRam.type = "number"
 
     let label_notebookStorageInGigs = document.createElement("label")
-    label_notebookStorageInGigs.innerText = "Festplatte / SSD / HDD Speicher"
+    label_notebookStorageInGigs.innerText = "Storage size in GB"
     label_notebookStorageInGigs.htmlFor = "notebook-storage"
     let notebookStorageInGigs = document.createElement("input")
     notebookStorageInGigs.id = "notebook-storage"
@@ -445,7 +445,7 @@ function build_notebook_form(cell_extra_button){
 
 
     let label_notebookDisplaySizeInInches = document.createElement("label")
-    label_notebookDisplaySizeInInches.innerText = "Display in Zoll"
+    label_notebookDisplaySizeInInches.innerText = "Display in inches"
     label_notebookDisplaySizeInInches.htmlFor = "notebook-displaySize"
     let notebookDisplaySizeInInches = document.createElement("input")
     notebookDisplaySizeInInches.id = "notebook-displaySize"
@@ -455,7 +455,7 @@ function build_notebook_form(cell_extra_button){
     notebookDisplaySizeInInches.type = "number"
 
     let label_notebookOS = document.createElement("label")
-    label_notebookOS.innerText = "Betriebssystem"
+    label_notebookOS.innerText = "Operating System"
     label_notebookOS.htmlFor = "notebook-os"
 
     let notebookOS = document.createElement("select")
@@ -500,7 +500,7 @@ function build_notebook_form(cell_extra_button){
     notebookKeyboardLayout.type = "text"
 
     let label_notebookSideNote = document.createElement("label")
-    label_notebookSideNote.innerText = "Bemerkung, Notiz"
+    label_notebookSideNote.innerText = "Short note .."
     label_notebookSideNote.id = "notebook-sidenote"
     let notebookSideNote = document.createElement("textarea")
     notebookSideNote.id = "notebook-sidenote"
@@ -511,7 +511,7 @@ function build_notebook_form(cell_extra_button){
     let submitNotebookButton = document.createElement("button")
     submitNotebookButton.id = "submitNotebookButton"
     submitNotebookButton.style = "margin-top: 5%"
-    submitNotebookButton.innerHTML = "Artikel speichern"
+    submitNotebookButton.innerHTML = "Save Article"
 
     // submitNotebookButton.onclick
     //Adding eventlistener is necessary to lock all values into notebookObject and submit it
