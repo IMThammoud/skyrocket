@@ -1,4 +1,4 @@
-![Alt-Text](src/main/resources/static/imgs/logo-600px.svg)
+![Alt-Text](src/main/resources/static/imgs/logo-header-hippo.svg)
 ### An Inventory App  (Codename Skyrocket)
 Mister-Unternehmer (Skyrocket) ist eine WebApp, die dich bei deinem Unternehmertum unterstützt.
 Sie ist auf Unternehmer ausgerichtet, die mehrere Tools an einem Ort haben möchten.
@@ -23,9 +23,6 @@ spring.datasource.password= mariadb-password
 spring.datasource.url= URL
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto= ddlmode
-spring.jpa.properties.jakarta.persistence.schema-generation.scripts.action=create
-spring.jpa.properties.jakarta.persistence.schema-generation.scripts.create-target=create.sql
-spring.jpa.properties.jakarta.persistence.schema-generation.scripts.create-source=metadata
 ```
 - Always make sure that there is a directory "pdf" at the root path "/"
 
