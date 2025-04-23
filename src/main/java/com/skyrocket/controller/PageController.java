@@ -48,7 +48,7 @@ public class PageController {
     }
 
     @GetMapping("/registration")
-    public String registrationPage(@CookieValue(name = "JSESSIONID") String sessionId) {
+    public String registrationPage(@CookieValue(name = "JSESSIONID", required = false) String sessionId) {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "redirect:/logout";
         }
