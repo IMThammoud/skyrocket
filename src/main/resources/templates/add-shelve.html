@@ -3,62 +3,69 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
-  <title>Regal hinzufuegen</title>
+  <title>Add Shelf</title>
   <link rel="stylesheet" href="/css/simple.css">
 </head>
 <body style="color: #483e37ff;">
-<header>
-  <div><img src="/imgs/logo-400px-90px.svg" alt="Hippo-logo"></div>
+<header style="display: inline-flex; align-items: center; justify-content: space-around;">
+  <div style="margin-top: 1%"><a href="/shelve/shelves"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
   <nav>
     <ul>
-      <li><a href="/shelve/shelves">Regale</a></li>
-      <li><a aria-current="true"  href="/shelve/create">Regal erstellen</a></li>
-      <li><a href="/add/article">Artikel / Dienstleistung hinzufügen</a></li>
-      <li><a href="/invoice/dashboard"> Rechnung erstellen</a></li>
-      <li><a>Kontakt</a></li>
-      <li> <a style="color: darkred; border: none" href="/logout">Abmelden</a></li>
-    </ul></nav>
+      <li><a href="/shelve/shelves">Shelves</a></li>
+      <li><a aria-current="true" href="/shelve/create">Create Shelf</a></li>
+      <li><a href="/add/article">Add Article / Service</a></li>
+      <li><a href="/invoice/dashboard">Create Invoice</a></li>
+      <li><a style="color: darkred; border: none" href="/logout">Log out</a></li>
+    </ul>
+  </nav>
 </header>
 <main>
-<h4 id="heading">
-  Regal Erstellen
-</h4>
+  <h4 id="heading">
+    Create Shelf
+  </h4>
+  <div class="notice">
+    <p>Currently, only notebooks can be stored. <br> Other categories will follow.</p>
+  </div>
   <div>
-  <form action="/shelve/submit" method="POST">
-    <label for="shelve_name">Name des Regals <br><input type="text" placeholder="Notebooks, Smartphones" name="shelve_name" id="shelve_name" required></label>
+    <form action="/shelve/submit" method="POST">
+      <label for="shelve_name">Shelf Name <br><input type="text" placeholder="Notebooks, Smartphones" name="shelve_name" id="shelve_name" required></label>
 
-    <br>
-    <br>
-    <label for="shelve-type"> Bitte auswählen:
-    <div id="shelve-type">
-    <label for="article-radio-button">Artikel
-      <input type="radio" name="is_for_service" id="article-radio-button" value="no" required></label>
-    <label for="service-radio-button">Dienstleistung
-      <input type="radio" name="is_for_service" id="service-radio-button" value="yes" required>
-    </label>
-    </div>
+      <br>
+      <br>
+      <label for="shelve-type"> Please select:
+        <div id="shelve-type">
+          <label for="article-radio-button">Article
+            <input type="radio" name="is_for_service" id="article-radio-button" value="no" required></label>
+          <!--<label for="service-radio-button">Service
+            <input type="radio" name="is_for_service" id="service-radio-button" value="yes" required>
+          </label> -->
+        </div>
       </label>
-    <br>
-    <label for="category"> Kategorie <br>
-    <select name="category" id="category">
-      <option value="electronics">Elektronisch</option>
-      <option value="selfmade">Eigene Produktion</option>
-    </select></label>
-    <br>
-    <label for="article-selection">Auswahl: <br>
-      <div id="article-selection-div">
-      <select name="article_selection" id="article-selection">
-      <option value="notebook">Laptop / Notebook</option>
-      <option value="smartphone">Smartphone</option>
-    </select>
+      <br>
+      <label for="category"> Category <br>
+        <select name="category" id="category">
+          <option value="electronics">Electronic</option>
+          <!-- <option value="selfmade">Own Production</option> -->
+        </select></label>
+      <br>
+      <label for="article-selection">Selection: <br>
+        <div id="article-selection-div">
+          <select name="article_selection" id="article-selection">
+            <option value="notebook">Laptop / Notebook</option>
+            <!-- <option value="smartphone">Smartphone</option> -->
+          </select>
 
-    </div>
+        </div>
       </label>
-    <br>
-    <input type="submit" value="Erstellen">
-  </form>
-</div>
-  </main>
-<footer>Inventarisierung leicht gemacht -- Hosted on Uberspace -- feinschliff durch simplecss</footer>
+      <br>
+      <input type="submit" value="Create">
+    </form>
+  </div>
+</main>
+<footer class="footer"><a style="text-align: center" href="https://uberspace.de/"><img style="vertical-align: middle;width: 15%" src="/badge/uberspace_badge_light.svg" alt="" ></a>
+
+  <p> Styled with <a href="https://simplecss.org/">SimpleCSS</a></p>
+
+</footer>
 </body>
 </html>

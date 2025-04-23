@@ -3,27 +3,40 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>Regale</title>
+    <title>Shelves</title>
     <link rel="stylesheet" href="/css/simple.css">
 </head>
 <body onload="showShelvesAsTable()" style="color:#483e37ff">
-<header>
-    <div><img src="/imgs/logo-400px-90px.svg" alt="Hippo-logo"></div>
+<header style="display: inline-flex; align-items: center; justify-content: space-around;">
+    <div style="margin-top: 1%"><a href="/shelve/shelves"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
     <nav>
         <ul>
-            <li><a href="">Regale</a></li>
-            <li><a href="/shelve/create">Regal erstellen</a></li>
-            <li><a href="/add/article">Artikel / Dienstleistung hinzufügen</a></li>
-            <li><a aria-current="true"  href=""> Rechnung erstellen</a></li>
-            <li><a>Kontakt</a></li>
-            <li> <a style="color: darkred; border: none" href="/logout">Abmelden</a></li>
-        </ul></nav>
+            <li><a href="/shelve/shelves">Shelves</a></li>
+            <li><a href="/shelve/create">Create Shelf</a></li>
+            <li><a href="/add/article">Add Article / Service</a></li>
+            <li><a aria-current="true" href="/invoice/dashboard">Create Invoice</a></li>
+            <li><a style="color: darkred; border: none" href="/logout">Log out</a></li>
+        </ul>
+    </nav>
 </header>
 <main id="main">
-  <h4>
-      Rechnung Erstellen
-  </h4>
+    <h4>
+        Create Invoice
+    </h4>
+
+    <p>SOON</p>
+    <section> <h4>Invoice for stored Article</h4>
+        <select name="InvoiceForStoredSelection" id="InvoiceForStoredSelection">
+            <option value="1">Article 1</option>
+            <option value="2">Article 2</option>
+            <option value="3">Article 3</option>
+        </select>
+        <button onclick="">Create Invoice</button></section>
 </main>
-<footer>Inventarisierung leicht gemacht -- Hosted on Uberspace -- feinschliff durch simplecss</footer>
+<footer class="footer"><a style="text-align: center" href="https://uberspace.de/"><img style="vertical-align: middle;width: 15%" src="/badge/uberspace_badge_light.svg" alt="" ></a>
+
+    <p> Styled with <a href="https://simplecss.org/">SimpleCSS</a></p>
+
+</footer>
 </body>
 </html>

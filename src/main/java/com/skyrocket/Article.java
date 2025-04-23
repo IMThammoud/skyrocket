@@ -5,14 +5,15 @@ have all Attributes from this abstract class.
 
 package com.skyrocket;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,6 +24,9 @@ public abstract class Article {
     private String description;
     private double priceWhenBought;
     private double sellingPrice;
+    @CreatedDate
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     public Article() {
 
@@ -109,5 +113,13 @@ public abstract class Article {
 
     public Article build(){
         return this;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

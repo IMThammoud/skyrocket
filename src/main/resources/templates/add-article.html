@@ -3,41 +3,46 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>Artikel hinzufügen</title>
+    <title>Add Article</title>
     <link rel="stylesheet" href="/css/simple.css">
 </head>
 <body onload="loadShelves()" style="color: #483e37ff;">
 
-<header>
-    <div><img src="/imgs/logo-400px-90px.svg" alt="Hippo-logo"></div>
+<header style="display: inline-flex; align-items: center; justify-content: space-around;">
+    <div style="margin-top: 1%"><a href="/shelve/shelves"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
     <nav>
         <ul>
-            <li><a href="/shelve/shelves">Regale</a></li>
-            <li><a  href="/shelve/create">Regal erstellen</a></li>
-            <li><a aria-current="true"  href="/add/article">Artikel / Dienstleistung hinzufügen</a></li>
-            <li><a href="/invoice/dashboard"> Rechnung erstellen</a></li>
-            <li><a>Kontakt</a></li>
-            <li> <a style="color: darkred; border: none" href="/logout">Abmelden</a></li>
-        </ul></nav>
+            <li><a href="/shelve/shelves">Shelves</a></li>
+            <li><a href="/shelve/create">Create Shelf</a></li>
+            <li><a aria-current="true" href="/add/article">Add Article / Service</a></li>
+            <li><a href="/invoice/dashboard">Create Invoice</a></li>
+            <li><a style="color: darkred; border: none" href="/logout">Log out</a></li>
+        </ul>
+    </nav>
 </header>
 <h4>
-    Artikel hinzufügen
+    Add Article
 </h4>
+<p id="to_be_replaced_when_template_loads"></p>
 <main id="main-element">
     <script src="/js/addArticleFunctions.js"></script>
 
     <!-- A function will replace this div block with the template depending on the shelve type (using shelveid) -->
     <div id="replaceableWithJS">
-    <form action="/add/article/to_shelve" method="post">
-        <label for="shelve">Auswahl:</label>
-    <select name="shelve" id="shelve">
-            <--! JS will generate existing shelves as options here -> >
-        </select>
-        <button type="button" onclick="askForTemplateTypeUsingShelveID()">Regal auswählen</button>
-        <div id="Button-space-in-form" style="margin-top: 2%"></div>
-    </form>
+        <form action="https://mister-unternehmer.de/add/article/to_shelve" method="post">
+            <label for="shelve" id="labelForSelectElement">Selection:</label>
+            <select name="shelve" id="shelve">
+                <--! JS will generate existing shelves as options here -> >
+            </select>
+            <button type="button" onclick="askForTemplateTypeUsingShelveID()" id="buttonForAskingForTemplate">Select Shelf</button>
+            <div id="Button-space-in-form" style="margin-top: 2%"></div>
+        </form>
     </div>
 </main>
-    <footer>Inventarisierung leicht gemacht -- Hosted on Uberspace -- feinschliff durch simplecss</footer>
+<footer class="footer"><a style="text-align: center" href="https://uberspace.de/"><img style="vertical-align: middle;width: 15%" src="/badge/uberspace_badge_light.svg" alt="" ></a>
+
+    <p> Styled with <a href="https://simplecss.org/">SimpleCSS</a></p>
+
+</footer>
 </body>
 </html>

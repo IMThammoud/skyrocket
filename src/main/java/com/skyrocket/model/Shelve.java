@@ -1,16 +1,18 @@
 package com.skyrocket.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.skyrocket.model.articles.Notebook;
+import com.skyrocket.model.articles.electronics.Notebook;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Shelve {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,6 +29,9 @@ public class Shelve {
 
     @OneToMany(mappedBy = "shelve")
     List<Notebook> notebooks;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     public Shelve() {
     }

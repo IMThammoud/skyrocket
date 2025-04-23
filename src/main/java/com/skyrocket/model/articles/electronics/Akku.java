@@ -1,4 +1,4 @@
-package com.skyrocket.model.articles;
+package com.skyrocket.model.articles.electronics;
 
 import java.util.UUID;
 

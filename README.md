@@ -1,5 +1,16 @@
 ![Alt-Text](src/main/resources/static/imgs/logo-600px.svg)
 ### An Inventory App  (Codename Skyrocket)
+Mister-Unternehmer (Skyrocket) ist eine WebApp, die dich bei deinem Unternehmertum unterstützt.
+Sie ist auf Unternehmer ausgerichtet, die mehrere Tools an einem Ort haben möchten.
+Geplant für die vollständige Veröffentlichung sind:
+- Inventarfuntkion
+- Rechnungserstellung (Mit & ohne Konto)
+- Hilfe in Steuern und Finanzen
+- PDF-integration von erstellen von Artikelauflistungen oder Regalen
+- Generierte Links die den aktuellen Stand des Lagers spiegeln und als HTML-Seite oder PDF zurückgegeben werden, um diesen weiterzugeben oder zu teilen.
+- Kreiren eigener Artikeltypen
+
+Mehr auf der [Website](http://mister-unternehmer.de)
 
 ### Requirements to run locally:
 - MariaDB Container using these Envs: MARIADB_USER, MARIADB_PASSWORD, MARIADB_ROOT_PASSWORD, MARIADB_DATABASE
@@ -12,7 +23,12 @@ spring.datasource.password= mariadb-password
 spring.datasource.url= URL
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto= ddlmode
+spring.jpa.properties.jakarta.persistence.schema-generation.scripts.action=create
+spring.jpa.properties.jakarta.persistence.schema-generation.scripts.create-target=create.sql
+spring.jpa.properties.jakarta.persistence.schema-generation.scripts.create-source=metadata
 ```
+- Always make sure that there is a directory "pdf" at the root path "/"
+
 
 #### Functionalities in progress:
 + Inventory with different shelves, articles and services

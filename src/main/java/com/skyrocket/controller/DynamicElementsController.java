@@ -5,22 +5,23 @@ for things like rendering the shelves of a user dynamically in a table
 
 package com.skyrocket.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.skyrocket.model.SessionStore;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
-import com.skyrocket.model.articles.Notebook;
+import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.repository.*;
-import com.skyrocket.services.ArticleQueries;
-import com.skyrocket.services.JsonMethods;
-import com.skyrocket.services.ShelveQueries;
-import com.skyrocket.services.UserAccountQueries;
+import com.skyrocket.utilityClasses.FilteredNotebookForPDF;
+import com.skyrocket.utilityClasses.FilteredNotebookForShelveView;
+import com.skyrocket.utilityClasses.PDFCreatorWithOpenPDF;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -37,42 +38,16 @@ public class DynamicElementsController {
     private ShelveRepository shelveRepository;
     @Autowired
     private NotebookRepository notebookRepository;
-
-    private final UserAccountQueries userAccountQueries;
-    private final ShelveQueries shelveQueries;
-    private final ArticleQueries articleQueries;
-    JsonMethods jsonMethods = new JsonMethods();
     @Autowired
     private ArticleRepository articleRepository;
 
-    public DynamicElementsController(UserAccountQueries userAccountQueries, ShelveQueries shelveQueries) {
-        this.userAccountQueries = userAccountQueries;
-        this.shelveQueries = shelveQueries;
-        this.articleQueries = new ArticleQueries();
-    }
+    PDFCreatorWithOpenPDF pdfCreator;
 
-    @GetMapping("/testjs")
-    public String testjs(){
-        return "This was returned from testJS endpoint";
-    }
+    public DynamicElementsController() {}
 
-    @PostMapping("/shelve/articleCount")
-    public int getArticleCountInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
-                                          @RequestBody Map<String, String> shelveIdAndShelveTypeInMap) {
-        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-            Shelve shelveToBeChecked = shelveRepository.findById(UUID.fromString(shelveIdAndShelveTypeInMap.get("shelve_id")));
-            switch (shelveIdAndShelveTypeInMap.get("shelve_type")){
-                case "notebook":
-                    LOG.info("Counting Articles in notebook shelve of shelve:"+ shelveIdAndShelveTypeInMap.get("shelve_id"));
-
-                    return notebookRepository.countByShelve_Id(shelveToBeChecked.getId());
-
-                default:
-                    LOG.info("Default case was met in switch statement.. breaking");
-                    break;
-            }
-        }
-        return 0;
+    @GetMapping("/category/get/list_of_article_types_based_on_category")
+    public List<String> getListOfArticleTypesBasedOnCategoryChosen() {
+        return null;
     }
 
     @PostMapping("/add/article/receiveArticle")
@@ -117,10 +92,12 @@ public class DynamicElementsController {
         if(sessionStoreRepository.existsBySessionToken(sessionId)) {
             // ShelveId will be carried through option into select element in html
             // check the Shelve_ID and see what type it is
-            // Use Type with Switch Case to return right Template
+            // Use Type with Switch Case to return type as string so JS can build the form for the type
             // Have to check for is_for_service too so i can render article or Service template <- important
             // Add more switch cases as more types are available (notebook, smartphone, tablet, etc.)
+            // Maybe this has to be solved differently as it feels very UngaBunga
             Shelve shelveToBeChecked = shelveRepository.findById(UUID.fromString(jsBody.get("shelve")));
+            System.out.println("check-shelve-type Endpoint received this shelve_id: " + jsBody.get("shelve"));
             if(shelveToBeChecked.getIsForService() == false) {
                 switch (shelveToBeChecked.getType()) {
                     case "notebook":
@@ -137,27 +114,25 @@ public class DynamicElementsController {
         return "redirect:/logout";
     }
 
-    // Return List of Shelves in JSON
-    // Serialization happens automatically due to Jacksons Spring Web-Starter Super duper Magic
-    @PostMapping("/shelve/retrieve")
-    public List<Shelve> getShelves(@CookieValue(name ="JSESSIONID") String sessionId) throws JsonProcessingException {
-        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-           UserAccount fetchedUserAccount = userAccountRepository.findById(sessionStoreRepository.findBySessionToken(sessionId).getUserAccount().getId());
-           LOG.info("Fetched user account: " + fetchedUserAccount.toString());
-
-           List<Shelve> shelveListOfUser = shelveRepository.findByUserAccount(fetchedUserAccount);
-           LOG.info("Fetched shelves list: " + shelveListOfUser.toString());
-
-            return shelveListOfUser;
-        }
-        LOG.info("No shelves were returned");
-        return null;
-    }
-
     // When logging in: new sessionStore entry for user is created.
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes="application/json")
     public String login(@RequestBody UserAccount userAccount,
+                        @CookieValue(name = "JSESSIONID", required = false) String cookieAlreadyInUse,
                         HttpSession session) {
+
+        // If someone already has a SessionTOKEN then this prevents duplicate SessionTOKENS in the sessionstore.
+        // So if someone does not login and invalidates his session and then tries to LOGIN AGAIN
+        // It doesnt crash anymore. This fixes double session_token saves because the session_token could be stored
+        // On every login. The user had only to visit the login page again without logging out before and log in again
+        // and it would save the already stored session_id again.
+        // This could also be fixed by creating a new sessionID when saving the new Entry in session_store
+        // Example: sessionStore.setSessionToken(new HTTPsession().getId()) but my approach is fine too with catching it with
+        // if condition.
+        if (sessionStoreRepository.existsBySessionToken(cookieAlreadyInUse)) {
+            // JS checks for this as response and then lets user to the dashboard.
+            return "alreadyHasAccount";
+        }
+
         // Fetch entry out of DB
         UserAccount foundUserAccountByEmail = userAccountRepository.getByEmail(userAccount.getEmail());
 
@@ -178,26 +153,32 @@ public class DynamicElementsController {
         return "false";
     }
 
-    // Return 200 if deletion was successful
-    @DeleteMapping("/shelve/delete")
-    public ResponseStatus deleteShelve(@CookieValue(name = "JSESSIONID") String sessionId,
-                                       String shelveId) {
-        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
 
-        }
-        return null;
-    }
+    @PostMapping("shelve/shelve-content-to-pdf")
+    public ResponseEntity<FileSystemResource> getShelveContentToPDF(@CookieValue(name = "JSESSIONID") String sessionId,
+                                                                    @RequestBody Map<String,String> requestBodyContainingShelveId) throws FileNotFoundException {
 
-    // Return a list of Notebooks that have the ShelveID
-    @PostMapping("/shelve/get-articles")
-    public List<Notebook> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
-                                      @RequestBody Map<String, String> shelveId) throws JsonProcessingException {
-        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+        Shelve shelve = shelveRepository.findById(UUID.fromString(requestBodyContainingShelveId.get("shelve_id")));
+        // Here i should check the Shelve_type and based on that i would create the corresponding PDFCREATOR and call the right PDF methods.
+        if (notebookRepository.countByShelve_Id(shelve.getId()) > 0) {
+            switch (shelve.getType()) {
+                case "notebook":
+                    FilteredNotebookForPDF filteredNotebookForPDFForLengthOfColumns = new FilteredNotebookForPDF();
+                    pdfCreator = new PDFCreatorWithOpenPDF(filteredNotebookForPDFForLengthOfColumns.getColumnsForTablePDF().size());
+                    LOG.info(String.valueOf(filteredNotebookForPDFForLengthOfColumns.getColumnsForTablePDF().size()));
+                    LOG.info("Generating PDF for contents of this shelve:" + shelve.getId() + ", And name: " + shelve.getName());
+            }
 
-            Shelve fetchedShelve = shelveRepository.findById(UUID.fromString(shelveId.get("shelve_id")));
-
-            return notebookRepository.findByShelve(fetchedShelve);
-        } else return Collections.emptyList();
+            FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDFForNotebook(notebookRepository.findByShelve(shelve), shelve));
+            // I have to check the ShelveType here first so my PDF-Method knows which
+            // structure is needed for the PDF-Template (what columns to use for the table)
+            // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone ones..
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("application/pdf"))
+                    .body(createdPdf);
+        } else
+            LOG.info("Shelve is empty so no PDF was created for shelve: " + shelve.getId());
+            return ResponseEntity.badRequest().body(null);
     }
 
 }

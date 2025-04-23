@@ -3,42 +3,40 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>Registrierung</title>
+    <title>Registration</title>
     <link rel="stylesheet" href="/css/simple.css">
 </head>
 <body style="color: #483e37ff;">
-<header>
-    <div><img src="/imgs/logo-400px-90px.svg" alt="Hippo-logo"></div>
+<header style="display: inline-flex; align-items: center; justify-content: space-around;">
+    <div style="margin-top: 1%"> <a href="/"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/login-page">Login</a></li>
-            <li><a href="/registration" aria-current="true">Registrierung</a></li>
+            <li><a href="/registration" aria-current="true">Registration</a></li>
         </ul>
     </nav>
 </header>
 <main>
-    <h4>Registrierung</h4>
+    <p class="notice">Only Username and Password are required. <br> <mark>Email for Password verification will follow in User-Settings.</mark></p>
+    <h4>Registration</h4>
     <form action="/register" method="post">
-        <label for="email">E-Mail-Adresse:</label>
-        <input type="email" placeholder="Jeff@Beispiel.de" name="email" id="email" required>
+        <label for="email">Username:</label>
+        <input type="text" placeholder="Jeff@example.com" name="email" id="email" required>
 
-
-        <label for="password">Passwort:</label>
-        <input type="password" placeholder="Passwort" name="password" id="password" required>
-        <br>
-        <label for="password-confirm">Passwort wiederholen:</label>
-        <input type="password" placeholder="Passwort wiederholen" name="password-confirm" id="password-confirm" required>
-
+        <label for="password">Password:</label>
+        <input type="password" placeholder="Password" name="password" id="password" required>
         <br>
         <br>
         <div style="text-align: center">
-        <input type="submit" value="Registrieren">
-            </div>
+            <input type="submit" value="Register">
+        </div>
     </form>
 </main>
-<footer>
-    Inventarisierung leicht gemacht -- Hosted on Uberspace -- feinschliff durch simplecss
+<footer class="footer"><a style="text-align: center" href="https://uberspace.de/"><img style="vertical-align: middle;width: 15%" src="/badge/uberspace_badge_light.svg" alt="" ></a>
+
+    <p> Styled with <a href="https://simplecss.org/">SimpleCSS</a></p>
+
 </footer>
 </body>
 </html>

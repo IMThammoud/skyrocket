@@ -3,8 +3,9 @@ package com.skyrocket.controller;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 public class MyErrorController{
 
 @RequestMapping("/error")
@@ -18,7 +19,7 @@ public String handleError(HttpServletRequest request) {
             return "error-404";
         }
         else if(statusCode == HttpStatus.BAD_REQUEST.value()) {
-            return "/static/template/error-400";
+            return "error-400";
         }
         else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
             return "error-500";

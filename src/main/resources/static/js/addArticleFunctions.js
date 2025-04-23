@@ -1,7 +1,7 @@
 // This renders the shelves as options on the selection when adding a new article
 // It fetches a json array uses its key value pairs for the options in selection tab of "add-article.html"
 let shelveIdOfSelectedShelve
-let notebookObject = {
+ let notebookObject = {
     "pk_id":"",
     "name":"",
     "amount":"",
@@ -23,22 +23,33 @@ let notebookObject = {
 }
 
 async function loadShelves(){
-    let request = await fetch("http://localhost:8080/shelve/retrieve",
+    let request = await fetch("/shelve/retrieve",
         {
             method : "POST",
         })
     let response = await request.text()
     let shelvesAsArray = JSON.parse(response)
+    console.log("Length of shelve-Array" + shelvesAsArray.length)
 
-    for (const shelvesAsArrayKey in shelvesAsArray) {
-        let option = document.createElement("option")
-        option.id = "optionIdentifier"
-        // Giving the option an ID so i can pass it to the server to get the right article-template back.
-        option.value = shelvesAsArray[shelvesAsArrayKey]["id"]
-        option.innerText = shelvesAsArray[shelvesAsArrayKey]["name"]
-        document.getElementById("shelve").appendChild(option)
+    if( shelvesAsArray.length > 0) {
+        for (const shelvesAsArrayKey in shelvesAsArray) {
+            let option = document.createElement("option")
+            option.id = "optionIdentifier"
+            console.log("testing if blockblabalbalab shelves should be created now haha!")
+            // Giving the option an ID so i can pass it to the server to get the right article-template back.
+            option.value = shelvesAsArray[shelvesAsArrayKey]["id"]
+            option.innerText = shelvesAsArray[shelvesAsArrayKey]["name"]
+            document.getElementById("shelve").appendChild(option)
 
-        console.log("Current retrieved Shelve: " + option.innerText)
+            console.log("Current retrieved Shelve: " + option.innerText)
+        }
+    } else {
+        document.getElementById("shelve").remove()
+        document.getElementById("buttonForAskingForTemplate").remove()
+        document.getElementById("labelForSelectElement").remove()
+        let whenNoShelvesFoundForTemplateCreation = document.createElement("h5")
+        whenNoShelvesFoundForTemplateCreation.innerHTML = "<p>Please create a shelve first: <a href='/shelve/create'> Create </a></p>"
+        document.getElementById("replaceableWithJS").appendChild(whenNoShelvesFoundForTemplateCreation)
     }
 
 }
@@ -47,7 +58,7 @@ async function loadShelves(){
 async function askForTemplateTypeUsingShelveID() {
 
     // When clicking on add article to shelve on UI
-    let request = await fetch("http://localhost:8080/add/article/check-shelve-type",
+    let request = await fetch("/add/article/check-shelve-type",
         {
             headers : {"content-type" : "application/json;charset=UTF8"},
             method : "POST",
@@ -86,7 +97,7 @@ async function askForTemplateTypeUsingShelveID() {
 
         // Create label and link its for property to the input form
         let label_notebookbrand = document.createElement("label")
-        label_notebookbrand.innerText = "Marke"
+        label_notebookbrand.innerText = "Brand"
         label_notebookbrand.htmlFor = "notebook-brand"
         let notebookBrand = document.createElement("input")
         notebookBrand.id = "notebook-brand"
@@ -94,7 +105,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookBrand.type = "text"
 
         let label_notebookname = document.createElement("label")
-        label_notebookname.innerText = "Name"
+        label_notebookname.innerText = "Name - Model"
         label_notebookname.htmlFor = "notebook-name"
         let notebookName = document.createElement("input")
         notebookName.id = "notebook-name"
@@ -102,7 +113,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookName.type = "text"
 
         let label_notebookAmount = document.createElement("label")
-        label_notebookAmount.innerText = "Anzahl"
+        label_notebookAmount.innerText = "Amount"
         label_notebookAmount.htmlFor = "notebook-amount"
         let notebookAmount = document.createElement("input")
         notebookAmount.id = "notebook-amount"
@@ -112,7 +123,7 @@ async function askForTemplateTypeUsingShelveID() {
 
         // Need to add selection with types for the typefield
         let label_notebookType = document.createElement("label")
-        label_notebookType.innerText = "Typ"
+        label_notebookType.innerText = "Type of notebook"
         label_notebookType.htmlFor = "notebook-typ"
         let notebookType = document.createElement("select")
         notebookType.id = "notebook-type"
@@ -132,7 +143,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookType.appendChild(optionTwoInOneTablet)
 
         let label_notebookDescription = document.createElement("label")
-        label_notebookDescription.innerText = "Kurze Beschreibung"
+        label_notebookDescription.innerText = "Short Description"
         label_notebookDescription.htmlFor = "notebook-description"
         let notebookDescription = document.createElement("textarea")
         notebookDescription.id = "notebook-description"
@@ -140,7 +151,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookDescription.type = "text"
 
         let label_notebookPriceWhenBought = document.createElement("label")
-        label_notebookPriceWhenBought.innerText = "Einkaufspreis"
+        label_notebookPriceWhenBought.innerText = "Bought for €"
         label_notebookPriceWhenBought.htmlFor = "notebook-price-when-bought"
         let notebookPriceWhenBought = document.createElement("input")
         notebookPriceWhenBought.id = "notebook-price-when-bought"
@@ -150,7 +161,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookPriceWhenBought.type = "number"
 
         let label_notebookSellingPrice = document.createElement("label")
-        label_notebookSellingPrice.innerText = "Listenverkaufspreis"
+        label_notebookSellingPrice.innerText = "Selling for €"
         label_notebookSellingPrice.htmlFor = "notebook-selling-price"
         let notebookSellingPrice = document.createElement("input")
         notebookSellingPrice.id = "notebook-selling-price"
@@ -160,7 +171,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookSellingPrice.type = "number"
 
         let label_notebookModelNumber = document.createElement("label")
-        label_notebookModelNumber.innerText = "Modellnummer"
+        label_notebookModelNumber.innerText = "ModelNr. (usually on the bottom shell)"
         label_notebookModelNumber.htmlFor = "notebook-modelnumber"
         let notebookModelNumber = document.createElement("input")
         notebookModelNumber.id = "notebook-modelnumber"
@@ -169,7 +180,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookModelNumber.type = "text"
 
         let label_notebookCpu = document.createElement("label")
-        label_notebookCpu.innerText = "CPU / Prozessor"
+        label_notebookCpu.innerText = "CPU / Processor"
         label_notebookCpu.htmlFor = "notebook-cpu"
         let notebookCpu = document.createElement("input")
         notebookCpu.id = "notebook-cpu"
@@ -178,7 +189,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookCpu.type = "text"
 
         let label_notebookRam = document.createElement("label")
-        label_notebookRam.innerText = "RAM / Arbeitsspeicher in GBs"
+        label_notebookRam.innerText = "RAM / Memory"
         label_notebookRam.htmlFor = "notebook-ram"
         let notebookRam = document.createElement("input")
         notebookRam.id = "notebook-ram"
@@ -189,7 +200,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookRam.type = "number"
 
         let label_notebookStorageInGigs = document.createElement("label")
-        label_notebookStorageInGigs.innerText = "Festplatte / SSD / HDD Speicher"
+        label_notebookStorageInGigs.innerText = "Storage size / SSD / HDD "
         label_notebookStorageInGigs.htmlFor = "notebook-storage"
         let notebookStorageInGigs = document.createElement("input")
         notebookStorageInGigs.id = "notebook-storage"
@@ -201,7 +212,7 @@ async function askForTemplateTypeUsingShelveID() {
 
 
         let label_notebookDisplaySizeInInches = document.createElement("label")
-        label_notebookDisplaySizeInInches.innerText = "Display in Zoll"
+        label_notebookDisplaySizeInInches.innerText = "Display in Inches"
         label_notebookDisplaySizeInInches.htmlFor = "notebook-displaySize"
         let notebookDisplaySizeInInches = document.createElement("input")
         notebookDisplaySizeInInches.id = "notebook-displaySize"
@@ -211,7 +222,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookDisplaySizeInInches.type = "number"
 
         let label_notebookOS = document.createElement("label")
-        label_notebookOS.innerText = "Betriebssystem"
+        label_notebookOS.innerText = "Operating System"
         label_notebookOS.htmlFor = "notebook-os"
 
         let notebookOS = document.createElement("select")
@@ -256,7 +267,7 @@ async function askForTemplateTypeUsingShelveID() {
         notebookKeyboardLayout.type = "text"
 
         let label_notebookSideNote = document.createElement("label")
-        label_notebookSideNote.innerText = "Bemerkung, Notiz"
+        label_notebookSideNote.innerText = "Little info / sidenote.."
         label_notebookSideNote.id = "notebook-sidenote"
         let notebookSideNote = document.createElement("textarea")
         notebookSideNote.id = "notebook-sidenote"
@@ -267,7 +278,7 @@ async function askForTemplateTypeUsingShelveID() {
         let submitNotebookButton = document.createElement("button")
         submitNotebookButton.id = "submitNotebookButton"
         submitNotebookButton.style = "margin-top: 5%"
-        submitNotebookButton.innerHTML = "Artikel speichern"
+        submitNotebookButton.innerHTML = "Save Article"
 
         // submitNotebookButton.onclick
         //Adding eventlistener is necessary to lock all values into notebookObject and submit it
@@ -346,6 +357,11 @@ async function askForTemplateTypeUsingShelveID() {
         formDiv.appendChild(templateForm)
         formDiv.appendChild(submitNotebookButton)
 
+        // Get the Paragraph that lays on top of the template to display important info like
+        // How to use the template. This adds a class to that tag and controls the innerText.
+        document.getElementById("to_be_replaced_when_template_loads").className = "notice"
+        document.getElementById("to_be_replaced_when_template_loads").innerText = "Please dont use special characters or symbols when asked for input in numbers."
+
         mainElement.appendChild(formDiv)
     }
 
@@ -355,7 +371,7 @@ async function askForTemplateTypeUsingShelveID() {
 
     async function submitArticleAndWaitForResponse(notebookObject) {
         console.log(notebookObject)
-        let request =  await fetch("http://localhost:8080/add/article/receiveArticle", {
+        let request =  await fetch("/add/article/receiveArticle", {
             headers: {"Content-Type": "application/json"},
             method: "POST",
             body: JSON.stringify(notebookObject)

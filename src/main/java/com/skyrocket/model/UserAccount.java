@@ -1,25 +1,27 @@
 package com.skyrocket.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 import java.util.List;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@EntityListeners(AuditingEntityListener.class)
 public class UserAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(unique=true)
     private String email;
     private String password;
-    private LocalDateTime creationDate;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAccount")
     public List<SessionStore> sessionStore;
@@ -27,14 +29,12 @@ public class UserAccount {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAccount")
     public List<Shelve> shelve;
 
-    public UserAccount() {
+    public UserAccount() {}
 
-    }
-
-    public UserAccount(String email, String password, LocalDateTime creationDate) {
+    public UserAccount(String email, String password, LocalDateTime createdAt) {
         this.email = email;
         this.password = password;
-        this.creationDate = creationDate;
+        this.createdAt = createdAt;
     }
 
 
@@ -75,12 +75,12 @@ public class UserAccount {
         return this;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public UserAccount setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
+    public UserAccount setCreatedAt(LocalDateTime creationDate) {
+        this.createdAt = creationDate;
         return this;
     }
 
@@ -94,7 +94,7 @@ public class UserAccount {
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", creationDate=" + creationDate +
+                ", creationDate=" + createdAt +
                 '}';
     }
 }
