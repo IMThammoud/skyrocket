@@ -121,21 +121,15 @@ public class DynamicElementsController {
                         HttpSession session) {
 
         // If someone already has a SessionTOKEN then this prevents duplicate SessionTOKENS in the sessionstore.
-        // So if someone does not login and invalidates his session and then tries to LOGIN AGAIN
-        // It doesnt crash anymore. This fixes double session_token saves because the session_token could be stored
-        // On every login. The user had only to visit the login page again without logging out before and log in again
-        // and it would save the already stored session_id again.
-        // This could also be fixed by creating a new sessionID when saving the new Entry in session_store
-        // Example: sessionStore.setSessionToken(new HTTPsession().getId()) but my approach is fine too with catching it with
-        // if condition.
         if (sessionStoreRepository.existsBySessionToken(cookieAlreadyInUse)) {
             // JS checks for this as response and then lets user to the dashboard.
             return "alreadyHasAccount";
         }
 
-        // Fetch entry out of DB
+        // Fetch Useraccount and see if its even there.
         UserAccount foundUserAccountByEmail = userAccountRepository.getByEmail(userAccount.getEmail());
 
+        
         if (foundUserAccountByEmail != null && foundUserAccountByEmail.getPassword().equals(userAccount.getPassword())) {
             // logging for testing purposes
             System.out.println("Found e-mail: " + userAccount.getEmail());
@@ -172,7 +166,7 @@ public class DynamicElementsController {
             FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDFForNotebook(notebookRepository.findByShelve(shelve), shelve));
             // I have to check the ShelveType here first so my PDF-Method knows which
             // structure is needed for the PDF-Template (what columns to use for the table)
-            // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone ones..
+            // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone.java ones..
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("application/pdf"))
                     .body(createdPdf);
