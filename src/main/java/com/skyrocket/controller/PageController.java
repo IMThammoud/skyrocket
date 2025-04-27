@@ -123,7 +123,9 @@ public class PageController {
         return "redirect:/logout";
     }
 
-
+    // This needs to stay here as it redirects to another endpoint here that returns HTML
+    // This class has @Controller annotation so it returns html. Moving this endpoint to ShelveController will
+    // lead to it returning a String instead of redirecting :D
     @PostMapping("/shelve/submit")
     public String receiveNewShelve(@RequestParam(name = "shelve_name")String shelveName,
                                    @RequestParam(name = "is_for_service")String isForServiceAsString,

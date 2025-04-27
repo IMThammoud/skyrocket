@@ -75,6 +75,12 @@ public class DynamicElementsController {
                     notebook.get("keyboard_layout"),
                     notebook.get("side_note")
                     );
+
+            // This will block shelves with the same name in one shelve.
+            //if (notebookRepository.existsNotebookByShelveAndName(shelveRepository.findById(UUID.fromString(notebook.get("fk_shelve_id"))), notebook.get("name"))) {
+            //    return "ArticleNameAlreadyExists";
+            //}
+
             LOG.info("Shelve for article: " + shelveForArticle.toString());
             LOG.info("New notebook: " + newNotebook.toString());
 
