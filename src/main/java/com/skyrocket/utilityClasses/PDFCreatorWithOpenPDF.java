@@ -21,6 +21,11 @@ public class PDFCreatorWithOpenPDF {
     private Paragraph headerShelveName;
     private File file;
 
+    // This class need overhaul with generic methods that consume generic types that extend "Article".
+    // I should then extract the amount of fields of an object in the list to determine the amount of columns
+    // needed for the pdf. This should be done with 2 seperate Methods.
+
+
     public PDFCreatorWithOpenPDF(int amountOfColumns) throws FileNotFoundException {
         this.document = new Document();
         // This File will be generated, written to and returned by the createAndReturnPDF() Method
