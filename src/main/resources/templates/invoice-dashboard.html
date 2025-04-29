@@ -1,12 +1,13 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>Shelves</title>
     <link rel="stylesheet" href="/css/simple.css">
+    <script src="/js/invoice_dashboard_functions.js"></script>
 </head>
-<body onload="showShelvesAsTable()" style="color:#483e37ff">
+<body style="color:#483e37ff">
 <header style="display: inline-flex; align-items: center; justify-content: space-around;">
     <div style="margin-top: 1%"><a href="/shelve/shelves"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
     <nav>
@@ -80,8 +81,10 @@
                  The Invoice will be created with the PDF_utility_class.
                  The Prices will appear next to an article and the sum will be calculated in TOTAL.
                  -->
-        <div id="outer_div_4">
+            <button class="button" id="button_add_article_box" onclick="add_article_box_and_increment_counter()">Add Article to Invoice</button>
+            <div id="outer_div_4_to_add_articlebox_to">
 
+            <div id="article_box">
             <div>
                 <label for="Invoice_Id">Invoice ID</label>
                 <input type="text" id="Invoice_Id" placeholder="0001IFM">
@@ -94,6 +97,7 @@
             <div>
                 <label for="price">Price in € (tax included)</label>
                 <input type="number" id="price">
+            </div>
             </div>
         </div>
         </div>
