@@ -20,6 +20,6 @@ function add_article_box_and_increment_counter() {
         "                <input type=\"number\" id=\"price_"+ counter +"\">\n" +
         "            </div>\n"
     document.getElementById("outer_div_4_to_add_articlebox_to").append(article_box)
-    console.log("Adding article box, and increasing counter..")
+    console.log("added articlebox: " + article_box.id)
     counter++
 }
