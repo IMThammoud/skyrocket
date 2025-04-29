@@ -1,5 +1,10 @@
 package com.skyrocket.utilityClasses;
 
+// This class need overhaul with generic methods that consume generic types that extend "Article".
+// I should then extract the amount of fields of an object in the list to determine the amount of columns
+// needed for the pdf. This should be done with 2 seperate Methods.
+
+
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -20,11 +25,6 @@ public class PDFCreatorWithOpenPDF {
     private PdfPTable table;
     private Paragraph headerShelveName;
     private File file;
-
-    // This class need overhaul with generic methods that consume generic types that extend "Article".
-    // I should then extract the amount of fields of an object in the list to determine the amount of columns
-    // needed for the pdf. This should be done with 2 seperate Methods.
-
 
     public PDFCreatorWithOpenPDF(int amountOfColumns) throws FileNotFoundException {
         this.document = new Document();
