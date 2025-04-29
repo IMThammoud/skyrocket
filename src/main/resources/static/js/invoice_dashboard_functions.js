@@ -1,4 +1,5 @@
 // used to increment IDs of the new article box that is added everytime user clicks the button..
+// I could cap the counter at a specific number to prevent spamming of the button.
 let counter = 1
 
 function add_article_box_and_increment_counter() {
