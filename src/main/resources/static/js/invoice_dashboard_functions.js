@@ -8,20 +8,28 @@ function add_article_box_and_increment_counter() {
     if(counter < 6) {
         let article_box = document.createElement("div")
         article_box.id = "article_box_" + counter
-        article_box.innerHTML = "<br>" + "<br>" +
-            "            <div>\n" +
-            "                <label for=\"Invoice_Id_" + counter + "\">Invoice ID</label>\n" +
-            "                <input type=\"text\" id='Invoice_Id_" + counter + "' placeholder=\"0001IFM\">\n" +
-            "            </div>\n" +
-            "\n" +
-            "            <div>\n" +
-            "                <label for=\"text_area_" + counter + "\">Article / Service description</label>\n" +
-            "                <textarea name=\"\" id=\"text_area_" + counter + "\" cols=\"30\" rows=\"10\" placeholder=\"1x Article with...\"></textarea>\n" +
-            "            </div>\n" +
-            "            <div>\n" +
-            "                <label for=\"price_" + counter + "\">Price in € (tax included)</label>\n" +
-            "                <input type=\"number\" id=\"price_" + counter + "\">\n" +
-            "            </div>\n"
+        article_box.innerHTML =
+            "<br><br>" +
+            "<div>" +
+            "<label for='Invoice_Id_" + counter + "'>Invoice ID</label>" +
+            "<input type='text' id='Invoice_Id_" + counter + "' placeholder='0001IFM'>" +
+            "</div>" +
+
+            "<div>" +
+            "<label for='text_area_" + counter + "'>Article / Service description</label>" +
+            "<textarea id='text_area_" + counter + "' cols='30' rows='10' placeholder='1x Article with...'></textarea>" +
+            "</div>" +
+
+            "<div>" +
+            "<label for='price_" + counter + "'>Price in € (tax included)</label>" +
+            "<input type='number' id='price_" + counter + "'>" +
+            "</div>" +
+
+            "<div>" +
+            "<label for='tax_percent'>Tax in %</label>" +
+            "<input type='number' id='tax_percent' placeholder='19%'>" +
+            "</div>";
+
         document.getElementById("outer_div_4_to_add_articlebox_to").append(article_box)
         console.log("added articlebox: " + article_box.id)
         counter++
