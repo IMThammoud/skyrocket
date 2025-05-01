@@ -27,7 +27,7 @@ function add_article_box_and_increment_counter() {
 
             "<div>" +
             "<label for='tax_percent'>Tax in %</label>" +
-            "<input type='number' id='tax_percent' placeholder='19%'>" +
+            "<input type='number' id='tax_percent_'+ counter + placeholder='19%'>" +
             "</div>";
 
         document.getElementById("outer_div_4_to_add_articlebox_to").append(article_box)
@@ -37,4 +37,17 @@ function add_article_box_and_increment_counter() {
     } else {
         alert("Already added 5 Article Boxes.")
     }
+
+}
+
+function invoice_pdf_download() {
+    let list_article_boxes = document.getElementById("outer_div_4_to_add_articlebox_to")
+
+    let amount_of_child_elements = list_article_boxes.children.length
+    console.log("Amount of child_elements:  " + amount_of_child_elements)
+
+    document.getElementById("Invoice_Id").value
+
+    console.log(Array.from(list_article_boxes.children)["article_box_0"])
+
 }
