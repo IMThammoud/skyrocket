@@ -31,11 +31,12 @@
             <div>
                 <label for="date_invoice_freemode">Date</label>
                 <input type="date" name="" id="date_invoice_freemode" placeholder="DD/MM/YYYY">
+                <script> document.getElementById("date_invoice_freemode").valueAsDate = new Date()</script>
             </div>
             <h5>Own Info</h5>
             <div>
                 <label for="Name">Name</label>
-                <input type="text" id="Name" placeholder="Max Meerrettich">
+                <input type="text" id="Name" placeholder="Max Meerrettich" required>
             </div>
             <div>
                 <label for="Address">Address</label>
@@ -58,7 +59,7 @@
             <h5>Customer Info</h5>
             <div>
                 <label for="Name_Customer">Name</label>
-                <input type="text" id="Name_Customer" placeholder="Bernd Brot">
+                <input type="text" id="Name_Customer" placeholder="Bernd Brot" required>
             </div>
             <div>
                 <label for="Address_Customer">Address</label>
@@ -103,9 +104,9 @@
             </div>
             <div>
                 <label for="price_article_0">Price in €</label>
-                <input type="number" id="price_article_0" placeholder="100">
+                <input type="number" id="price_article_0" placeholder="100" required>
                 <label for="tax_percent"> Tax in %</label>
-                <input type="number" name="" id="tax_percent" placeholder="19%">
+                <input type="number" name="" id="tax_percent" placeholder="19%" required>
             </div>
             </div>
         </div>
