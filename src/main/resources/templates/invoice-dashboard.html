@@ -82,11 +82,13 @@
                  The Prices will appear next to an article and the sum will be calculated in TOTAL.
                  -->
             <br>
-            <br>
+            <!--    Left this out until i get multiple article boxes to work.
             <button class="button" id="button_add_article_box" onclick="add_article_box_and_increment_counter()">Add Article to Invoice</button>
+
             <p>You can add 5 more Article Boxes.</p>
-            <br>
-            <br>
+            -->
+
+            <h5>Article / Service</h5>
             <div style="font-size: medium" name="article_boxes_div_list" id="outer_div_4_to_add_articlebox_to">
 
             <div id="article_box_0">
@@ -96,12 +98,12 @@
             </div>
 
             <div>
-                <label for="text_area">Article / Service description</label>
-                <textarea name="" id="text_area" cols="30" rows="10" placeholder="1x Article with..."></textarea>
+                <label for="text_area_article">Article / Service description</label>
+                <textarea name="" id="text_area_article" cols="30" rows="10" placeholder="1x Article with..."></textarea>
             </div>
             <div>
-                <label for="price">Price in €</label>
-                <input type="number" id="price" placeholder="100">
+                <label for="price_article_0">Price in €</label>
+                <input type="number" id="price_article_0" placeholder="100">
                 <label for="tax_percent"> Tax in %</label>
                 <input type="number" name="" id="tax_percent" placeholder="19%">
             </div>
@@ -109,7 +111,7 @@
         </div>
         </div>
 
-        <button style="margin-top: 6%" type="button" class="button" id="submit_pdf" onclick="invoice_pdf_download()">PDF Download</button>
+        <button style="margin-top: 6%" type="button" class="button" id="submit_pdf" onclick="submit_to_get_invoice_freemode()">PDF Download</button>
     </section>
 
 

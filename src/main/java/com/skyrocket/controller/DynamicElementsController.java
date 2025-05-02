@@ -181,4 +181,18 @@ public class DynamicElementsController {
             return ResponseEntity.badRequest().body(null);
     }
 
+    // Endpoint for Invoice free-mode
+    @PostMapping("/invoice/pdf-freemode")
+    public ResponseEntity<FileSystemResource> getInvoiceFreeMode(@CookieValue(name = "JSESSIONID") String sessionId,
+                                                                 @RequestBody Map<String, String> invoiceInfo) throws FileNotFoundException {
+
+        // Parameter is not used for because i dont use tables for this invoice yet.
+        pdfCreator = new PDFCreatorWithOpenPDF(1);
+        FileSystemResource fileSystemResource = new FileSystemResource(pdfCreator.createInvoiceFreeModePDF(invoiceInfo));
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(fileSystemResource);
+    }
+
 }

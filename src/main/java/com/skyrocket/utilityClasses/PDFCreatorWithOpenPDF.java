@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class PDFCreatorWithOpenPDF {
@@ -32,6 +33,19 @@ public class PDFCreatorWithOpenPDF {
         this.file = new File("pdf/"+UUID.randomUUID()+".pdf");
         this.pdfWriter = PdfWriter.getInstance(this.document, new FileOutputStream(file));
         this.table = new PdfPTable(amountOfColumns);
+    }
+
+    public File createInvoiceFreeModePDF(Map<String, String > invoiceInfo) {
+        this.headerShelveName = new Paragraph("Invoice");
+        Paragraph date  = new Paragraph(invoiceInfo.get("date"));
+        Paragraph nameCreator = new Paragraph(invoiceInfo.get("name_creator"));
+        this.document.open();
+        this.document.add(headerShelveName);
+        this.document.add(date);
+        this.document.add(nameCreator);
+        this.document.close();
+
+        return this.file;
     }
 
     public File createAndReturnPDFForNotebook(List<Notebook> notebooks, Shelve shelve) {

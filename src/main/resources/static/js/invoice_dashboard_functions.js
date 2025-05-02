@@ -1,6 +1,7 @@
+/* // Ill keep this out for the moment and only focus on 1 article at a time in freemode invoice creator.
+let counter = 1
 // used to increment IDs of the new article box that is added everytime user clicks the button..
 // I could cap the counter at a specific number to prevent spamming of the button.
-let counter = 1
 
 function add_article_box_and_increment_counter() {
     // This element spawns into an Article Box in invoice_dashboard when a button is pressed to add another article
@@ -50,4 +51,41 @@ function invoice_pdf_download() {
 
     console.log(Array.from(list_article_boxes.children)["article_box_0"])
 
+}
+*/
+
+async function submit_to_get_invoice_freemode() {
+    let request = await fetch("/invoice/pdf-freemode", {
+        headers : {"content-type": "application/json"},
+        method: "POST",
+        body: JSON.stringify({
+            /////////////////////////////////////////////////////////////
+            // Creator Info
+            "date" : document.getElementById("date_invoice_freemode").value,
+            "name_creator" : document.getElementById("Name").value,
+            "address_creator" : document.getElementById("Address").value,
+            "zip_code_creator" : document.getElementById("Zip_Code").value,
+            "city_creator" : document.getElementById("City").value,
+            "tel_creator" : document.getElementById("Tel.").value,
+            //////////////////////////////////////////////////////////////
+            // Customer Info
+            "name_customer" : document.getElementById("Name_Customer").value,
+            "address_customer" : document.getElementById("Address_Customer").value,
+            "zip_code_customer" : document.getElementById("Zip_Code_Customer").value,
+            "city_customer" : document.getElementById("City_Customer").value,
+            "tel_customer" : document.getElementById("Tel._Customer").value,
+            //////////////////////////////////////////////////////////////
+            // Article / Service Offering
+            "invoice_id" : document.getElementById("Invoice_Id").value,
+            "text_area_article" : document.getElementById("text_area_article").value,
+            "price" : document.getElementById("price_article_0").value,
+            "tax_percentage" : document.getElementById("tax_percent").value
+        })
+    })
+
+    let pdf = await request.blob()
+    let download_link = document.createElement("a")
+    download_link.href = URL.createObjectURL(pdf)
+    download_link.download = document.getElementById("Name_Customer").value + ".pdf"
+    download_link.click()
 }
