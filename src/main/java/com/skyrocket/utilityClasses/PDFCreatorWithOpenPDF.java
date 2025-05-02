@@ -7,9 +7,7 @@ package com.skyrocket.utilityClasses;
 
 import com.lowagie.text.*;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.*;
 import com.lowagie.text.pdf.TextField;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.articles.electronics.Notebook;
@@ -38,6 +36,13 @@ public class PDFCreatorWithOpenPDF {
     }
 
     public File createInvoiceFreeModePDF(Map<String, String > invoiceInfo) {
+        PdfPTable tableForBillerAndCustomerInfo = new PdfPTable(2);
+        PdfPCell billerCell = new PdfPCell();
+        billerCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        billerCell.setBackgroundColor(Color.lightGray);
+        PdfPCell toBeBilledCell = new PdfPCell();
+        toBeBilledCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        toBeBilledCell.setBackgroundColor(Color.lightGray);
         Paragraph headerForFreeModeInvoice = new Paragraph("- Invoice - ");
         headerForFreeModeInvoice.setAlignment(Element.ALIGN_CENTER);
         headerForFreeModeInvoice.setFont(FontFactory.getFont(FontFactory.HELVETICA, 20));
@@ -71,7 +76,13 @@ public class PDFCreatorWithOpenPDF {
         this.document.add(date);
         this.document.add(Chunk.NEWLINE);
         /// /////////////////////////////////////////////////////////////////
+        // Adding paragraphs to cells and cells to table and table to document. In this Order.
         // Adding Invoice Creator Info to Document
+        billerCell.addElement(nameCreator);
+        toBeBilledCell.addElement(nameCustomer);
+        tableForBillerAndCustomerInfo.addCell(billerCell);
+        tableForBillerAndCustomerInfo.addCell(toBeBilledCell);
+        this.document.add(tableForBillerAndCustomerInfo);
         this.document.add(new Paragraph("Biller:"));
         this.document.add(nameCreator);
         this.document.add(addressCreator);
