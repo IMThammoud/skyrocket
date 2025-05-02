@@ -95,8 +95,18 @@ public class PDFCreatorWithOpenPDF {
         this.document.add(Chunk.NEWLINE);
         this.document.add(new Paragraph("Article / Service: "));
         this.document.add(textAreaArticle);
-        this.document.add(new Paragraph("Price: " + articlePrice + "€"));
-        this.document.add(new Paragraph("Tax Percentage: " + taxPercentage + "%" ));
+        this.document.add(Chunk.NEWLINE);
+        /// ///////////////////////////////////////////////////////////////////
+        // Parse Price and make calculation with tax percentage
+        double parsedFullPrice = Double.parseDouble(invoiceInfo.get("price"));
+        double parsedTaxRate = Double.parseDouble(invoiceInfo.get("tax_percentage"));
+        double parsedTaxPercentage = Double.parseDouble(invoiceInfo.get("tax_percentage"));
+        double priceBeforeTax =   parsedFullPrice - Double.parseDouble(invoiceInfo.get("price")) * (parsedTaxPercentage / 100);
+        double taxResult = Double.parseDouble(invoiceInfo.get("price")) * (parsedTaxPercentage / 100);
+        this.document.add(new Paragraph("Tax Percentage:  " + String.format("%.2f",parsedTaxRate) + "%" ));
+        this.document.add(new Paragraph("Price before Tax:  " + String.format("%.2f",priceBeforeTax) + "€"));
+        this.document.add(new Paragraph("Tax Result:  " + String.format("%.2f",taxResult) + "€" ));
+        this.document.add(new Paragraph("Price after Tax:  " + String.format("%.2f",parsedFullPrice) + "€"));
         this.document.close();
 
         return this.file;
