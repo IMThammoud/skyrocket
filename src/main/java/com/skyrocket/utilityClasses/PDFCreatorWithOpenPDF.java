@@ -6,9 +6,11 @@ package com.skyrocket.utilityClasses;
 
 
 import com.lowagie.text.*;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.TextField;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.articles.electronics.Notebook;
 
@@ -36,13 +38,65 @@ public class PDFCreatorWithOpenPDF {
     }
 
     public File createInvoiceFreeModePDF(Map<String, String > invoiceInfo) {
-        this.headerShelveName = new Paragraph("Invoice");
+        Paragraph headerForFreeModeInvoice = new Paragraph("- Invoice - ");
+        headerForFreeModeInvoice.setAlignment(Element.ALIGN_CENTER);
+        headerForFreeModeInvoice.setFont(FontFactory.getFont(FontFactory.HELVETICA, 20));
         Paragraph date  = new Paragraph(invoiceInfo.get("date"));
+        date.setAlignment(Paragraph.ALIGN_RIGHT);
+        ////////////////////////////////////////////////////////////////////
+        // Invoice Creator Info
         Paragraph nameCreator = new Paragraph(invoiceInfo.get("name_creator"));
+        Paragraph addressCreator = new Paragraph(invoiceInfo.get("address_creator"));
+        Paragraph zipCodeCreator = new Paragraph(invoiceInfo.get("zip_code_creator"));
+        Paragraph cityCreator = new Paragraph(invoiceInfo.get("city_creator"));
+        Paragraph telCreator = new Paragraph(invoiceInfo.get("tel_creator"));
+        ////////////////////////////////////////////////////////////////////
+        // Customer Info
+        Paragraph nameCustomer = new Paragraph(invoiceInfo.get("name_customer"));
+        Paragraph addressCustomer = new Paragraph(invoiceInfo.get("address_customer"));
+        Paragraph zipCodeCustomer = new Paragraph(invoiceInfo.get("zip_code_customer"));
+        Paragraph cityCustomer = new Paragraph(invoiceInfo.get("city_customer"));
+        Paragraph telCustomer = new Paragraph(invoiceInfo.get("tel_customer"));
+        ////////////////////////////////////////////////////////////////////
+        // Article / Service Offering info
+        Paragraph invoiceId = new Paragraph(invoiceInfo.get("invoice_id"));
+        Paragraph textAreaArticle = new Paragraph(invoiceInfo.get("text_area_article"));
+        Paragraph articlePrice = new Paragraph(invoiceInfo.get("price"));
+        Paragraph taxPercentage = new Paragraph(invoiceInfo.get("tax_percentage"));
+        /////////////////////////////////////////////////////////////////////
+        // Open Document and add fields to it and close it at the end.
         this.document.open();
-        this.document.add(headerShelveName);
+        this.document.add(headerForFreeModeInvoice);
+        this.document.add(Chunk.NEWLINE);
         this.document.add(date);
+        this.document.add(Chunk.NEWLINE);
+        /// /////////////////////////////////////////////////////////////////
+        // Adding Invoice Creator Info to Document
+        this.document.add(new Paragraph("Biller:"));
         this.document.add(nameCreator);
+        this.document.add(addressCreator);
+        this.document.add(zipCodeCreator);
+        this.document.add(cityCreator);
+        this.document.add(telCreator);
+        this.document.add(Chunk.NEWLINE);
+        /// //////////////////////////////////////////////////////////////////
+        // Adding customer Info ot Document
+        this.document.add(new Paragraph("Bill goes to: "));
+        this.document.add(nameCustomer);
+        this.document.add(addressCustomer);
+        this.document.add(zipCodeCustomer);
+        this.document.add(cityCustomer);
+        this.document.add(telCustomer);
+        this.document.add(Chunk.NEWLINE);
+        this.document.add(Chunk.NEWLINE);
+        /// ///////////////////////////////////////////////////////////////////
+        // Adding Article / Service Offering Info
+        this.document.add(new Paragraph("Invoice ID: "+ invoiceId));
+        this.document.add(Chunk.NEWLINE);
+        this.document.add(new Paragraph("Article / Service: "));
+        this.document.add(textAreaArticle);
+        this.document.add(new Paragraph("Price: " + articlePrice + "€"));
+        this.document.add(new Paragraph("Tax Percentage: " + taxPercentage + "%" ));
         this.document.close();
 
         return this.file;
