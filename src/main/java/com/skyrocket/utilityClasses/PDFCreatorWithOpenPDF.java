@@ -36,14 +36,19 @@ public class PDFCreatorWithOpenPDF {
     }
 
     public File createInvoiceFreeModePDF(Map<String, String > invoiceInfo) {
-        PdfPTable tableForBillerAndCustomerInfo = new PdfPTable(2);
-        PdfPCell billerCell = new PdfPCell();
-        billerCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        billerCell.setBackgroundColor(Color.lightGray);
-        PdfPCell toBeBilledCell = new PdfPCell();
-        toBeBilledCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        toBeBilledCell.setBackgroundColor(Color.lightGray);
         Paragraph headerForFreeModeInvoice = new Paragraph("- Invoice - ");
+        // Table for biller und customer info
+        PdfPTable tableForBillerAndCustomerInfo = new PdfPTable(2);
+        // Table for Article or Service
+        PdfPTable tableForArticleOrService = new PdfPTable(1);
+        PdfPCell articleCell = new PdfPCell();
+        articleCell.setBackgroundColor(Color.lightGray);
+        PdfPCell billerCell = new PdfPCell();
+        billerCell.setBorder(Rectangle.NO_BORDER);
+        billerCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        PdfPCell toBeBilledCell = new PdfPCell();
+        toBeBilledCell.setBorder(Rectangle.NO_BORDER);
+        toBeBilledCell.setHorizontalAlignment(Element.ALIGN_LEFT);
         headerForFreeModeInvoice.setAlignment(Element.ALIGN_CENTER);
         headerForFreeModeInvoice.setFont(FontFactory.getFont(FontFactory.HELVETICA, 20));
         Paragraph date  = new Paragraph(invoiceInfo.get("date"));
@@ -55,6 +60,14 @@ public class PDFCreatorWithOpenPDF {
         Paragraph zipCodeCreator = new Paragraph(invoiceInfo.get("zip_code_creator"));
         Paragraph cityCreator = new Paragraph(invoiceInfo.get("city_creator"));
         Paragraph telCreator = new Paragraph(invoiceInfo.get("tel_creator"));
+        /// ///////////////////////////////////////////////////////////////
+        // Add invoice creator to left cell
+        billerCell.addElement(new Paragraph("Biller: "));
+        billerCell.addElement(nameCreator);
+        billerCell.addElement(addressCreator);
+        billerCell.addElement(zipCodeCreator);
+        billerCell.addElement(cityCreator);
+        billerCell.addElement(telCreator);
         ////////////////////////////////////////////////////////////////////
         // Customer Info
         Paragraph nameCustomer = new Paragraph(invoiceInfo.get("name_customer"));
@@ -62,12 +75,42 @@ public class PDFCreatorWithOpenPDF {
         Paragraph zipCodeCustomer = new Paragraph(invoiceInfo.get("zip_code_customer"));
         Paragraph cityCustomer = new Paragraph(invoiceInfo.get("city_customer"));
         Paragraph telCustomer = new Paragraph(invoiceInfo.get("tel_customer"));
+        /// ////////////////////////////////////////////////////////////////
+        // Add Customer info to the right cell
+        toBeBilledCell.addElement(new Paragraph("Customer: "));
+        toBeBilledCell.addElement(nameCustomer);
+        toBeBilledCell.addElement(addressCustomer);
+        toBeBilledCell.addElement(zipCodeCustomer);
+        toBeBilledCell.addElement(cityCustomer);
+        toBeBilledCell.addElement(telCustomer);
+        /// ///////////////////////////////////////////////////////////////
+        // Add cells to billercells and customer table.
+        tableForBillerAndCustomerInfo.addCell(billerCell);
+        tableForBillerAndCustomerInfo.addCell(toBeBilledCell);
         ////////////////////////////////////////////////////////////////////
         // Article / Service Offering info
         Paragraph invoiceId = new Paragraph(invoiceInfo.get("invoice_id"));
+        Paragraph articleHeaderText = new Paragraph("Article / Service");
         Paragraph textAreaArticle = new Paragraph(invoiceInfo.get("text_area_article"));
         Paragraph articlePrice = new Paragraph(invoiceInfo.get("price"));
         Paragraph taxPercentage = new Paragraph(invoiceInfo.get("tax_percentage"));
+        /// ///////////////////////////////////////////////////////////////
+        // Calculating Taxes and price.
+        double parsedFullPrice = Double.parseDouble(invoiceInfo.get("price"));
+        double parsedTaxRate = Double.parseDouble(invoiceInfo.get("tax_percentage"));
+        double parsedTaxPercentage = Double.parseDouble(invoiceInfo.get("tax_percentage"));
+        double priceBeforeTax =   parsedFullPrice - Double.parseDouble(invoiceInfo.get("price")) * (parsedTaxPercentage / 100);
+        double taxResult = Double.parseDouble(invoiceInfo.get("price")) * (parsedTaxPercentage / 100);
+        /// ///////////////////////////////////////////////////////////////
+        // Adding taxes and prices to the article cell.
+        articleCell.addElement(textAreaArticle);
+        articleCell.addElement(new Paragraph("Tax Percentage:  " + String.format("%.2f",parsedTaxRate) + "%" ));
+        articleCell.addElement(new Paragraph("Price before Tax:  " + String.format("%.2f",priceBeforeTax) + "€"));
+        articleCell.addElement(new Paragraph("Tax Result:  " + String.format("%.2f",taxResult) + "€" ));
+        articleCell.addElement(new Paragraph("Price after Tax:  " + String.format("%.2f",parsedFullPrice) + "€"));
+        /// ///////////////////////////////////////////////////////////////
+        // Adding article Cell to article / service table
+        tableForArticleOrService.addCell(articleCell);
         /////////////////////////////////////////////////////////////////////
         // Open Document and add fields to it and close it at the end.
         this.document.open();
@@ -76,48 +119,21 @@ public class PDFCreatorWithOpenPDF {
         this.document.add(date);
         this.document.add(Chunk.NEWLINE);
         /// /////////////////////////////////////////////////////////////////
-        // Adding paragraphs to cells and cells to table and table to document. In this Order.
+        // Adding billdercell and customerCell to the table and adding table to document.
         // Adding Invoice Creator Info to Document
-        billerCell.addElement(nameCreator);
-        toBeBilledCell.addElement(nameCustomer);
-        tableForBillerAndCustomerInfo.addCell(billerCell);
-        tableForBillerAndCustomerInfo.addCell(toBeBilledCell);
         this.document.add(tableForBillerAndCustomerInfo);
-        this.document.add(new Paragraph("Biller:"));
-        this.document.add(nameCreator);
-        this.document.add(addressCreator);
-        this.document.add(zipCodeCreator);
-        this.document.add(cityCreator);
-        this.document.add(telCreator);
-        this.document.add(Chunk.NEWLINE);
-        /// //////////////////////////////////////////////////////////////////
-        // Adding customer Info ot Document
-        this.document.add(new Paragraph("Bill goes to: "));
-        this.document.add(nameCustomer);
-        this.document.add(addressCustomer);
-        this.document.add(zipCodeCustomer);
-        this.document.add(cityCustomer);
-        this.document.add(telCustomer);
         this.document.add(Chunk.NEWLINE);
         this.document.add(Chunk.NEWLINE);
         /// ///////////////////////////////////////////////////////////////////
         // Adding Article / Service Offering Info
         this.document.add(new Paragraph("Invoice ID: "+ invoiceId));
         this.document.add(Chunk.NEWLINE);
-        this.document.add(new Paragraph("Article / Service: "));
-        this.document.add(textAreaArticle);
+        this.document.add(Chunk.NEWLINE);
+        this.document.add(Chunk.NEWLINE);
+        this.document.add(tableForArticleOrService);
         this.document.add(Chunk.NEWLINE);
         /// ///////////////////////////////////////////////////////////////////
-        // Parse Price and make calculation with tax percentage
-        double parsedFullPrice = Double.parseDouble(invoiceInfo.get("price"));
-        double parsedTaxRate = Double.parseDouble(invoiceInfo.get("tax_percentage"));
-        double parsedTaxPercentage = Double.parseDouble(invoiceInfo.get("tax_percentage"));
-        double priceBeforeTax =   parsedFullPrice - Double.parseDouble(invoiceInfo.get("price")) * (parsedTaxPercentage / 100);
-        double taxResult = Double.parseDouble(invoiceInfo.get("price")) * (parsedTaxPercentage / 100);
-        this.document.add(new Paragraph("Tax Percentage:  " + String.format("%.2f",parsedTaxRate) + "%" ));
-        this.document.add(new Paragraph("Price before Tax:  " + String.format("%.2f",priceBeforeTax) + "€"));
-        this.document.add(new Paragraph("Tax Result:  " + String.format("%.2f",taxResult) + "€" ));
-        this.document.add(new Paragraph("Price after Tax:  " + String.format("%.2f",parsedFullPrice) + "€"));
+        // Close document and return file
         this.document.close();
 
         return this.file;
