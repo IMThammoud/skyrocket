@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -184,7 +185,7 @@ public class DynamicElementsController {
     // Endpoint for Invoice free-mode
     @PostMapping("/invoice/pdf-freemode")
     public ResponseEntity<FileSystemResource> getInvoiceFreeMode(@CookieValue(name = "JSESSIONID") String sessionId,
-                                                                 @RequestBody Map<String, String> invoiceInfo) throws FileNotFoundException {
+                                                                 @RequestBody Map<String, String> invoiceInfo) throws IOException {
 
         // Parameter is not used for because i dont use tables for this invoice yet.
         pdfCreator = new PDFCreatorWithOpenPDF(1);

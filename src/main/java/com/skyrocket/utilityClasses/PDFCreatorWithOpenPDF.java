@@ -6,6 +6,8 @@ package com.skyrocket.utilityClasses;
 
 
 import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.pdf.TextField;
@@ -16,6 +18,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -35,7 +38,8 @@ public class PDFCreatorWithOpenPDF {
         this.table = new PdfPTable(amountOfColumns);
     }
 
-    public File createInvoiceFreeModePDF(Map<String, String > invoiceInfo) {
+    public File createInvoiceFreeModePDF(Map<String, String > invoiceInfo) throws IOException {
+        /*
         Paragraph headerForFreeModeInvoice = new Paragraph("- Invoice - ");
         // Table for biller und customer info
         PdfPTable tableForBillerAndCustomerInfo = new PdfPTable(2);
@@ -134,7 +138,96 @@ public class PDFCreatorWithOpenPDF {
         this.document.add(Chunk.NEWLINE);
         /// ///////////////////////////////////////////////////////////////////
         // Close document and return file
-        this.document.close();
+
+        */
+        this.document.open();
+
+        // Add logo
+        Image logo = Image.getInstance("invoice_demo_icon.jpeg");
+        logo.scaleToFit(80, 80);
+        logo.setAlignment(Image.ALIGN_LEFT);
+        document.add(logo);
+
+        // Add invoice title and date
+        PdfPTable headerTable = new PdfPTable(2);
+        headerTable.setWidthPercentage(100);
+        headerTable.setWidths(new float[]{3, 2});
+
+        PdfPCell titleCell = new PdfPCell(new Phrase("RECHNUNG", new Font(Font.HELVETICA, 18, Font.BOLD)));
+        titleCell.setBorder(Rectangle.NO_BORDER);
+        titleCell.setVerticalAlignment(Element.ALIGN_TOP);
+        headerTable.addCell(titleCell);
+
+        PdfPCell dateCell = new PdfPCell(new Phrase("Datum: " + invoiceInfo.get("date") + "\nRechnung Nr: " + invoiceInfo.get("invoice_id")));
+        dateCell.setBorder(Rectangle.NO_BORDER);
+        dateCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        headerTable.addCell(dateCell);
+        document.add(headerTable);
+
+        document.add(new Paragraph(Chunk.NEWLINE));
+        document.add(new Paragraph(Chunk.NEWLINE));
+        document.add(new Paragraph(Chunk.NEWLINE));
+
+        // Add biller and customer info
+        PdfPTable infoTable = new PdfPTable(2);
+        infoTable.setWidthPercentage(100);
+        infoTable.setSpacingBefore(10f);
+
+        PdfPCell billerCell = new PdfPCell();
+        billerCell.setBorder(Rectangle.NO_BORDER);
+        billerCell.addElement(new Paragraph("Absender:"));
+        billerCell.addElement(new Paragraph(invoiceInfo.get("name_creator")));
+        billerCell.addElement(new Paragraph(invoiceInfo.get("address_creator")));
+        billerCell.addElement(new Paragraph(invoiceInfo.get("zip_code_creator") + " " + invoiceInfo.get("city_creator")));
+        billerCell.addElement(new Paragraph("Tel: " + invoiceInfo.get("tel_creator")));
+
+        PdfPCell customerCell = new PdfPCell();
+        customerCell.setBorder(Rectangle.NO_BORDER);
+        customerCell.addElement(new Paragraph("Empfänger:"));
+        customerCell.addElement(new Paragraph(invoiceInfo.get("name_customer")));
+        customerCell.addElement(new Paragraph(invoiceInfo.get("address_customer")));
+        customerCell.addElement(new Paragraph(invoiceInfo.get("zip_code_customer") + " " + invoiceInfo.get("city_customer")));
+        customerCell.addElement(new Paragraph("Tel: " + invoiceInfo.get("tel_customer")));
+
+        infoTable.addCell(billerCell);
+        infoTable.addCell(customerCell);
+        document.add(infoTable);
+
+        document.add(new Paragraph(Chunk.NEWLINE));
+        document.add(new Paragraph(Chunk.NEWLINE));
+        document.add(new Paragraph(Chunk.NEWLINE));
+
+        // Artikel / Dienstleistung
+        PdfPTable articleTable = new PdfPTable(4);
+        articleTable.setWidthPercentage(100);
+        articleTable.setSpacingBefore(20f);
+        articleTable.setWidths(new float[]{4, 2, 2, 2});
+
+        articleTable.addCell(new PdfPCell(new Phrase("Beschreibung")));
+        articleTable.addCell(new PdfPCell(new Phrase("Netto")));
+        articleTable.addCell(new PdfPCell(new Phrase("MwSt")));
+        articleTable.addCell(new PdfPCell(new Phrase("Brutto")));
+
+        double priceGross = Double.parseDouble(invoiceInfo.get("price"));
+        double taxRate = Double.parseDouble(invoiceInfo.get("tax_percentage"));
+        double taxAmount = priceGross * (taxRate / (100 + taxRate));
+        double priceNet = priceGross - taxAmount;
+
+        articleTable.addCell(new PdfPCell(new Phrase(invoiceInfo.get("text_area_article"))));
+        articleTable.addCell(new PdfPCell(new Phrase(String.format("%.2f €", priceNet))));
+        articleTable.addCell(new PdfPCell(new Phrase(String.format("%.2f €", taxAmount))));
+        articleTable.addCell(new PdfPCell(new Phrase(String.format("%.2f €", priceGross))));
+
+        document.add(articleTable);
+
+
+        document.add(new Paragraph(Chunk.NEWLINE));
+        document.add(new Paragraph(Chunk.NEWLINE));
+        document.add(new Paragraph(Chunk.NEWLINE));
+        document.add(new Paragraph(Chunk.NEWLINE));
+        document.add(new Paragraph("Zahlbar innerhalb von 14 Tagen ohne Abzug. Vielen Dank für Ihren Auftrag."));
+
+        document.close();
 
         return this.file;
     }
