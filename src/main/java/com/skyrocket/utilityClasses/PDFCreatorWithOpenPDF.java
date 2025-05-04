@@ -144,7 +144,7 @@ public class PDFCreatorWithOpenPDF {
 
         // Add logo
         Image logo = Image.getInstance("invoice_demo_icon.jpeg");
-        logo.scaleToFit(80, 80);
+        logo.scaleToFit(60, 60);
         logo.setAlignment(Image.ALIGN_LEFT);
         document.add(logo);
 
@@ -153,12 +153,12 @@ public class PDFCreatorWithOpenPDF {
         headerTable.setWidthPercentage(100);
         headerTable.setWidths(new float[]{3, 2});
 
-        PdfPCell titleCell = new PdfPCell(new Phrase("RECHNUNG", new Font(Font.HELVETICA, 18, Font.BOLD)));
+        PdfPCell titleCell = new PdfPCell(new Phrase("INVOICE", new Font(Font.HELVETICA, 18, Font.BOLD)));
         titleCell.setBorder(Rectangle.NO_BORDER);
         titleCell.setVerticalAlignment(Element.ALIGN_TOP);
         headerTable.addCell(titleCell);
 
-        PdfPCell dateCell = new PdfPCell(new Phrase("Datum: " + invoiceInfo.get("date") + "\nRechnung Nr: " + invoiceInfo.get("invoice_id")));
+        PdfPCell dateCell = new PdfPCell(new Phrase("Date: " + invoiceInfo.get("date") + "\nInvoice ID: " + invoiceInfo.get("invoice_id")));
         dateCell.setBorder(Rectangle.NO_BORDER);
         dateCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         headerTable.addCell(dateCell);
@@ -203,10 +203,10 @@ public class PDFCreatorWithOpenPDF {
         articleTable.setSpacingBefore(20f);
         articleTable.setWidths(new float[]{4, 2, 2, 2});
 
-        articleTable.addCell(new PdfPCell(new Phrase("Beschreibung")));
-        articleTable.addCell(new PdfPCell(new Phrase("Netto")));
-        articleTable.addCell(new PdfPCell(new Phrase("MwSt")));
-        articleTable.addCell(new PdfPCell(new Phrase("Brutto")));
+        articleTable.addCell(new PdfPCell(new Phrase("Article / Service")));
+        articleTable.addCell(new PdfPCell(new Phrase("Price before Tax")));
+        articleTable.addCell(new PdfPCell(new Phrase("Tax sum")));
+        articleTable.addCell(new PdfPCell(new Phrase("Price after Tax")));
 
         double priceGross = Double.parseDouble(invoiceInfo.get("price"));
         double taxRate = Double.parseDouble(invoiceInfo.get("tax_percentage"));
@@ -225,7 +225,7 @@ public class PDFCreatorWithOpenPDF {
         document.add(new Paragraph(Chunk.NEWLINE));
         document.add(new Paragraph(Chunk.NEWLINE));
         document.add(new Paragraph(Chunk.NEWLINE));
-        document.add(new Paragraph("Zahlbar innerhalb von 14 Tagen ohne Abzug. Vielen Dank für Ihren Auftrag."));
+        document.add(new Paragraph("Thank you for your Order!"));
 
         document.close();
 
