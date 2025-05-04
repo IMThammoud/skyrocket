@@ -157,7 +157,20 @@ public class PageController {
     @GetMapping("/invoice/dashboard")
     public String showInvoiceDashboard(@CookieValue(name = "JSESSIONID") String sessionId){
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+            return "invoice-tab";
+        } else return "redirect:/logout";
+    }
+
+    @GetMapping("/invoice/invoice-freemode")
+    public String showInvoiceTab(@CookieValue(name = "JSESSIONID") String sessionId){
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "invoice-dashboard";
+        } else return "redirect:/logout";
+    }
+    @GetMapping("/invoice/invoice_for_article_or_service")
+    public String showInvoiceForArticleOrService(@CookieValue(name = "JSESSIONID") String sessionId){
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+            return "invoice-for-article-or-service";
         } else return "redirect:/logout";
     }
 }
