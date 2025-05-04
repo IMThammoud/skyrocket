@@ -175,7 +175,7 @@ public class PDFCreatorWithOpenPDF {
 
         PdfPCell billerCell = new PdfPCell();
         billerCell.setBorder(Rectangle.NO_BORDER);
-        billerCell.addElement(new Paragraph("Absender:"));
+        billerCell.addElement(new Paragraph("Biller:"));
         billerCell.addElement(new Paragraph(invoiceInfo.get("name_creator")));
         billerCell.addElement(new Paragraph(invoiceInfo.get("address_creator")));
         billerCell.addElement(new Paragraph(invoiceInfo.get("zip_code_creator") + " " + invoiceInfo.get("city_creator")));
@@ -183,7 +183,7 @@ public class PDFCreatorWithOpenPDF {
 
         PdfPCell customerCell = new PdfPCell();
         customerCell.setBorder(Rectangle.NO_BORDER);
-        customerCell.addElement(new Paragraph("Empfänger:"));
+        customerCell.addElement(new Paragraph("To:"));
         customerCell.addElement(new Paragraph(invoiceInfo.get("name_customer")));
         customerCell.addElement(new Paragraph(invoiceInfo.get("address_customer")));
         customerCell.addElement(new Paragraph(invoiceInfo.get("zip_code_customer") + " " + invoiceInfo.get("city_customer")));
