@@ -4,13 +4,12 @@ package com.skyrocket.services;
 // I should then extract the amount of fields of an object in the list to determine the amount of columns
 // needed for the pdf. This should be done with 2 seperate Methods.
 
-
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.*;
-import com.skyrocket.model.FilteredNotebookForPDF;
+import com.skyrocket.model.non_entities.FilteredNotebookForPDF;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.articles.electronics.Notebook;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,7 @@ public class PDFCreatorWithOpenPDF {
         this.pdfWriter = PdfWriter.getInstance(this.document, new FileOutputStream(file));
     }
 
-    public File createInvoiceFreeModePDF(Map<String, String > invoiceInfo) throws IOException {
+    public File createInvoiceFreeModePDF(Map<String, String> invoiceInfo) throws IOException {
         /*
         Paragraph headerForFreeModeInvoice = new Paragraph("- Invoice - ");
         // Table for biller und customer info

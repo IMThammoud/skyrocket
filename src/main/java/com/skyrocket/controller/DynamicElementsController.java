@@ -10,7 +10,7 @@ import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.repository.*;
-import com.skyrocket.model.FilteredNotebookForPDF;
+import com.skyrocket.model.non_entities.FilteredNotebookForPDF;
 import com.skyrocket.services.PDFCreatorWithOpenPDF;
 import jakarta.servlet.http.HttpSession;
 
@@ -42,8 +42,11 @@ public class DynamicElementsController {
     private ArticleRepository articleRepository;
 
     PDFCreatorWithOpenPDF pdfCreator;
-
-    public DynamicElementsController() {}
+    
+    @Autowired
+    public DynamicElementsController(PDFCreatorWithOpenPDF pdfCreator) {
+        this.pdfCreator = pdfCreator;
+    }
 
     @GetMapping("/category/get/list_of_article_types_based_on_category")
     public List<String> getListOfArticleTypesBasedOnCategoryChosen() {

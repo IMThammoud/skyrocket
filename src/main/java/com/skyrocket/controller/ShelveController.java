@@ -9,7 +9,7 @@ import com.skyrocket.repository.SessionStoreRepository;
 import com.skyrocket.repository.ShelveRepository;
 import com.skyrocket.repository.UserAccountRepository;
 import com.skyrocket.services.ConvertNotebookListForShelveView;
-import com.skyrocket.model.FilteredNotebookForShelveView;
+import com.skyrocket.model.non_entities.FilteredNotebookForShelveView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -60,13 +60,14 @@ public class ShelveController {
 
             Shelve fetchedShelve = shelveRepository.findById(UUID.fromString(shelveId.get("shelve_id")));
 
-            ConvertNotebookListForShelveView NotebookFilter = new FilteredNotebookForShelveView();
-            return NotebookFilter.filterOutNotUsedColumnsAndCreateNewListForShelveViewDashboard(notebookRepository.findByShelve(fetchedShelve));
+            ConvertNotebookListForShelveView notebookFilter = new FilteredNotebookForShelveView();
+            return notebookFilter.filterOutNotUsedColumnsAndCreateNewListForShelveViewDashboard(notebookRepository.findByShelve(fetchedShelve));
 
         } else return Collections.emptyList();
     }
 
     // This returns the bigger unfiltered Notebook List
+    // Does not use the filtering Method of filteredNotebook Class
     @PostMapping("/shelve/get-notebooks-unfiltered")
     public List<Notebook> getArticlesInShelveUnfiltered(@CookieValue(name = "JSESSIONID") String sessionId,
                                                         @RequestBody Map<String, String> shelveId) throws JsonProcessingException {

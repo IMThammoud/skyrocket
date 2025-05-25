@@ -27,10 +27,18 @@
     <a style="color: wheat; text-decoration: none" href="/invoice/invoice_for_article_or_service"><button style="color: lightblue"> For Article / Service </button></a>
     <a style="color: wheat; text-decoration: none" href="/invoice/invoice-freemode"><button>Invoice Free mode</button></a>
 
-<section>
+<section id="select_section">
     <h4>Automatic Invoices for Articles / Services (Soon)</h4>
+
+    <label for="shelve">Shelve selection</label>
     <select name="shelve" id="shelve">
         <--! JS will generate existing shelves as options here -> >
+    </select>
+    <button onclick="loadArticlesOfShelveAsSelection()">Fetch Articles</button>
+
+    <label for="article">Article selection</label>
+    <select name="article-selection" id="article">
+
     </select>
 </section>
 

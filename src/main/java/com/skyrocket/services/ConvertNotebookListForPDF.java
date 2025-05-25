@@ -1,7 +1,7 @@
 package com.skyrocket.services;
 
 import com.skyrocket.model.articles.electronics.Notebook;
-import com.skyrocket.model.FilteredNotebookForPDF;
+import com.skyrocket.model.non_entities.FilteredNotebookForPDF;
 
 import java.util.List;
 

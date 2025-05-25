@@ -1,5 +1,5 @@
-// Class to put ResultSets of SQL Queries into JSON Strings
-// This externalizes JSON operations so they dont happen in SQL Methods.
+// Maybe this class helps with serializing when
+// sending Requests with Javas Built in HTTP libs
 
 package com.skyrocket.services;
 
