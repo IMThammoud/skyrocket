@@ -13,6 +13,7 @@ import com.lowagie.text.pdf.*;
 import com.lowagie.text.pdf.TextField;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.articles.electronics.Notebook;
+import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.io.File;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Service
 public class PDFCreatorWithOpenPDF {
     private Document document;
     private PdfWriter pdfWriter;
@@ -30,12 +32,11 @@ public class PDFCreatorWithOpenPDF {
     private Paragraph headerShelveName;
     private File file;
 
-    public PDFCreatorWithOpenPDF(int amountOfColumns) throws FileNotFoundException {
+    public PDFCreatorWithOpenPDF() throws FileNotFoundException {
         this.document = new Document();
         // This File will be generated, written to and returned by the createAndReturnPDF() Method
         this.file = new File("pdf/"+UUID.randomUUID()+".pdf");
         this.pdfWriter = PdfWriter.getInstance(this.document, new FileOutputStream(file));
-        this.table = new PdfPTable(amountOfColumns);
     }
 
     public File createInvoiceFreeModePDF(Map<String, String > invoiceInfo) throws IOException {

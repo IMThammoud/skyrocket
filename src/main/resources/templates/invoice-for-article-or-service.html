@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/simple.css">
     <script src="/js/invoice_dashboard_functions.js"></script>
 </head>
-<body style="color:#483e37ff">
+<body onload="loadShelvesForAutoInvoiceSelect()" style="color:#483e37ff">
 <header style="display: inline-flex; align-items: center; justify-content: space-around;">
     <div style="margin-top: 1%"><a href="/shelve/shelves"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
     <nav>
@@ -29,6 +29,9 @@
 
 <section>
     <h4>Automatic Invoices for Articles / Services (Soon)</h4>
+    <select name="shelve" id="shelve">
+        <--! JS will generate existing shelves as options here -> >
+    </select>
 </section>
 
 </main>

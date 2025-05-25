@@ -56,6 +56,7 @@ public class ShelveController {
         return null;
     }
 
+    // use this for rendering articles on dashboard and for getting articles for automatic invoice creation
     @PostMapping("/shelve/get-notebooks-filtered")
     public List<FilteredNotebookForShelveView> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                                                    @RequestBody Map<String, String> shelveId) throws JsonProcessingException {

@@ -11,7 +11,6 @@ import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.repository.*;
 import com.skyrocket.utilityClasses.FilteredNotebookForPDF;
-import com.skyrocket.utilityClasses.FilteredNotebookForShelveView;
 import com.skyrocket.utilityClasses.PDFCreatorWithOpenPDF;
 import jakarta.servlet.http.HttpSession;
 
@@ -154,7 +153,6 @@ public class DynamicElementsController {
         return "false";
     }
 
-
     @PostMapping("shelve/shelve-content-to-pdf")
     public ResponseEntity<FileSystemResource> getShelveContentToPDF(@CookieValue(name = "JSESSIONID") String sessionId,
                                                                     @RequestBody Map<String,String> requestBodyContainingShelveId) throws FileNotFoundException {
@@ -165,7 +163,7 @@ public class DynamicElementsController {
             switch (shelve.getType()) {
                 case "notebook":
                     FilteredNotebookForPDF filteredNotebookForPDFForLengthOfColumns = new FilteredNotebookForPDF();
-                    pdfCreator = new PDFCreatorWithOpenPDF(filteredNotebookForPDFForLengthOfColumns.getColumnsForTablePDF().size());
+                    pdfCreator = new PDFCreatorWithOpenPDF();
                     LOG.info(String.valueOf(filteredNotebookForPDFForLengthOfColumns.getColumnsForTablePDF().size()));
                     LOG.info("Generating PDF for contents of this shelve:" + shelve.getId() + ", And name: " + shelve.getName());
             }
@@ -188,7 +186,7 @@ public class DynamicElementsController {
                                                                  @RequestBody Map<String, String> invoiceInfo) throws IOException {
 
         // Parameter is not used for because i dont use tables for this invoice yet.
-        pdfCreator = new PDFCreatorWithOpenPDF(1);
+        pdfCreator = new PDFCreatorWithOpenPDF();
         FileSystemResource fileSystemResource = new FileSystemResource(pdfCreator.createInvoiceFreeModePDF(invoiceInfo));
 
         return ResponseEntity.ok()
