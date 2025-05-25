@@ -17,4 +17,6 @@ public interface NotebookRepository extends JpaRepository<Notebook, Integer> {
     void deleteByShelve(Shelve shelve);
 
     void deleteAllByShelve(Shelve shelveId);
+
+    boolean existsNotebookByShelveAndName(Shelve shelve, String name);
 }

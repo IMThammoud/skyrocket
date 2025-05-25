@@ -9,14 +9,10 @@ import com.skyrocket.repository.SessionStoreRepository;
 import com.skyrocket.repository.ShelveRepository;
 import com.skyrocket.repository.UserAccountRepository;
 import com.skyrocket.services.ConvertNotebookListForShelveView;
-import com.skyrocket.utilityClasses.FilteredNotebookForShelveView;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import com.skyrocket.model.FilteredNotebookForShelveView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.thymeleaf.templateparser.markup.HTMLTemplateParser;
 
 import java.util.Collections;
 import java.util.List;
@@ -56,6 +52,7 @@ public class ShelveController {
         return null;
     }
 
+    // use this for rendering articles on dashboard and for getting articles for automatic invoice creation
     @PostMapping("/shelve/get-notebooks-filtered")
     public List<FilteredNotebookForShelveView> getArticlesInShelve(@CookieValue(name = "JSESSIONID") String sessionId,
                                                                    @RequestBody Map<String, String> shelveId) throws JsonProcessingException {

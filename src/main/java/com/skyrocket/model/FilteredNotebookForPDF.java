@@ -1,16 +1,15 @@
-package com.skyrocket.utilityClasses;
+package com.skyrocket.model;
 
 import com.skyrocket.model.articles.electronics.Notebook;
-import com.skyrocket.services.ConvertNotebookListForShelveView;
+import com.skyrocket.services.ConvertNotebookListForPDF;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilteredNotebookForShelveView implements ConvertNotebookListForShelveView {
+public class FilteredNotebookForPDF implements ConvertNotebookListForPDF {
     private String name;
     private int amount;
     private String type;
-    private double priceWhenBought;
     private double sellingPrice;
     private String brand;
     private String modelNr;
@@ -22,31 +21,46 @@ public class FilteredNotebookForShelveView implements ConvertNotebookListForShel
     private double batteryCapacityHealth;
     private String keyboardLayout;
     private String sideNote;
+    private final List<String> columnsForTablePDF = new ArrayList<>();
 
-    public FilteredNotebookForShelveView() {}
+    public FilteredNotebookForPDF() {
+        columnsForTablePDF.add("Amount");
+        columnsForTablePDF.add("Brand");
+        columnsForTablePDF.add("Name");
+        columnsForTablePDF.add("Modelnumber");
+        columnsForTablePDF.add("Type");
+        columnsForTablePDF.add("CPU");
+        columnsForTablePDF.add("RAM");
+        columnsForTablePDF.add("Storage");
+        columnsForTablePDF.add("Display Size");
+        columnsForTablePDF.add("Operating System");
+        columnsForTablePDF.add("Keyboard");
+        columnsForTablePDF.add("Battery");
+        columnsForTablePDF.add("Note");
+        columnsForTablePDF.add("Selling Price");
+
+    }
 
     // Constructor For listing articles for sale with sellingPrice
-    public FilteredNotebookForShelveView(
-                    String name,
-                    int amount,
-                    String type,
-                    double priceWhenBought,
-                    double sellingPrice,
-                    String brand,
-                    String modelNr,
-                    String cpu,
-                    int ram,
-                    int storage,
-                    double displaySize,
-                    String operatingSystem,
-                    double batteryCapacityHealth,
-                    String keyboardLayout,
-                    String sideNote
+    public FilteredNotebookForPDF(
+            String name,
+            int amount,
+            String type,
+            double sellingPrice,
+            String brand,
+            String modelNr,
+            String cpu,
+            int ram,
+            int storage,
+            double displaySize,
+            String operatingSystem,
+            double batteryCapacityHealth,
+            String keyboardLayout,
+            String sideNote
     ) {
         this.name = name;
         this.amount = amount;
         this.type = type;
-        this.priceWhenBought = priceWhenBought;
         this.sellingPrice = sellingPrice;
         this.brand = brand;
         this.modelNr = modelNr;
@@ -58,6 +72,25 @@ public class FilteredNotebookForShelveView implements ConvertNotebookListForShel
         this.batteryCapacityHealth = batteryCapacityHealth;
         this.keyboardLayout = keyboardLayout;
         this.sideNote = sideNote;
+
+
+        columnsForTablePDF.add("Amount");
+        columnsForTablePDF.add("Brand");
+        columnsForTablePDF.add("Name");
+        columnsForTablePDF.add("Modelnumber");
+        columnsForTablePDF.add("Type");
+        columnsForTablePDF.add("CPU");
+        columnsForTablePDF.add("RAM");
+        columnsForTablePDF.add("Storage");
+        columnsForTablePDF.add("Display Size");
+        columnsForTablePDF.add("Operating System");
+        columnsForTablePDF.add("Keyboard");
+        columnsForTablePDF.add("Battery");
+        columnsForTablePDF.add("Note");
+        columnsForTablePDF.add("Selling Price");
+
+
+
     }
 
     // This should be used for the rendered Articles on shelve dashboard
@@ -65,32 +98,31 @@ public class FilteredNotebookForShelveView implements ConvertNotebookListForShel
     // There will be a new filteredNotebook for each notebook in the parameter Notebooklist and then
     // the new created filteredNotebooks will be added to a List and return that List for PDF Activities or for frontend Rendering:D
     @Override
-    public List<FilteredNotebookForShelveView> filterOutNotUsedColumnsAndCreateNewListForShelveViewDashboard(List<Notebook> notebookList) {
-        List<FilteredNotebookForShelveView> filteredNotebookListForShelveView = new ArrayList<>();
+    public List<FilteredNotebookForPDF> convertNotebookListForPDF(List<Notebook> notebookList) {
+        List<FilteredNotebookForPDF> filteredNotebookForPDFS = new ArrayList<>();
         for (Notebook notebook : notebookList) {
             // I only get the necessary Fields here for the PDF
-            filteredNotebookListForShelveView.add( new FilteredNotebookForShelveView(
-                    notebook.getName(),
-                    notebook.getAmount(),
-                    notebook.getType(),
-                    notebook.getPriceWhenBought(),
-                    notebook.getSellingPrice(),
-                    notebook.getBrand(),
-                    notebook.getModelNr(),
-                    notebook.getCpu(),
-                    notebook.getRam(),
-                    notebook.getStorage(),
-                    notebook.getDisplaySize(),
-                    notebook.getOperatingSystem(),
-                    notebook.getBatteryCapacityHealth(),
-                    notebook.getKeyboardLayout(),
-                    notebook.getSideNote()
-                )
+            filteredNotebookForPDFS.add( new FilteredNotebookForPDF(
+                            notebook.getName(),
+                            notebook.getAmount(),
+                            notebook.getType(),
+                            notebook.getSellingPrice(),
+                            notebook.getBrand(),
+                            notebook.getModelNr(),
+                            notebook.getCpu(),
+                            notebook.getRam(),
+                            notebook.getStorage(),
+                            notebook.getDisplaySize(),
+                            notebook.getOperatingSystem(),
+                            notebook.getBatteryCapacityHealth(),
+                            notebook.getKeyboardLayout(),
+                            notebook.getSideNote()
+                    )
             );
 
 
         }
-        return filteredNotebookListForShelveView;
+        return filteredNotebookForPDFS;
     }
 
     public String getSideNote() {
@@ -181,14 +213,6 @@ public class FilteredNotebookForShelveView implements ConvertNotebookListForShel
         this.sellingPrice = sellingPrice;
     }
 
-    public double getPriceWhenBought() {
-        return priceWhenBought;
-    }
-
-    public void setPriceWhenBought(double priceWhenBought) {
-        this.priceWhenBought = priceWhenBought;
-    }
-
     public String getType() {
         return type;
     }
@@ -213,13 +237,16 @@ public class FilteredNotebookForShelveView implements ConvertNotebookListForShel
         this.name = name;
     }
 
+    public List<String> getColumnsForTablePDF() {
+        return columnsForTablePDF;
+    }
+
     @Override
     public String toString() {
-        return "FilteredNotebookListForPDF{" +
+        return "FilteredNotebookForPDF{" +
                 "name='" + name + '\'' +
                 ", amount=" + amount +
                 ", type='" + type + '\'' +
-                ", priceWhenBought=" + priceWhenBought +
                 ", sellingPrice=" + sellingPrice +
                 ", brand='" + brand + '\'' +
                 ", modelNr='" + modelNr + '\'' +
@@ -231,6 +258,8 @@ public class FilteredNotebookForShelveView implements ConvertNotebookListForShel
                 ", batteryCapacityHealth=" + batteryCapacityHealth +
                 ", keyboardLayout='" + keyboardLayout + '\'' +
                 ", sideNote='" + sideNote + '\'' +
+                ", columnsForTablePDF=" + columnsForTablePDF +
                 '}';
     }
 }
+

@@ -1,12 +1,15 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/imgs/favicon.svg" type="image/x-icon">
+
     <meta charset="UTF-8">
     <title>Shelves</title>
     <link rel="stylesheet" href="/css/simple.css">
+    <script src="/js/invoice_dashboard_functions.js"></script>
 </head>
-<body onload="showShelvesAsTable()" style="color:#483e37ff">
+<body style="color:#483e37ff">
 <header style="display: inline-flex; align-items: center; justify-content: space-around;">
     <div style="margin-top: 1%"><a href="/shelve/shelves"><img src="/imgs/logo-header-hippo.svg" alt="Hippo-logo"> </a></div>
     <nav>
@@ -20,18 +23,103 @@
     </nav>
 </header>
 <main id="main">
-    <h4>
-        Create Invoice
-    </h4>
+    <h4> Create Invoice</h4>
+    <a style="color: wheat; text-decoration: none" href="/invoice/invoice_for_article_or_service"><button> For Article / Service </button></a>
+    <a  style="color: wheat; text-decoration: none" href="/invoice/invoice-freemode"><button style="color: lightblue">Invoice Free mode</button></a>
 
-    <p>SOON</p>
-    <section> <h4>Invoice for stored Article</h4>
-        <select name="InvoiceForStoredSelection" id="InvoiceForStoredSelection">
-            <option value="1">Article 1</option>
-            <option value="2">Article 2</option>
-            <option value="3">Article 3</option>
-        </select>
-        <button onclick="">Create Invoice</button></section>
+    <section>
+        <div id="invoice_freemode_container">
+    <h4>
+        Invoice Free Mode (Manual Form, Download as PDF)
+    </h4>
+        <div id="outer_div_1">
+            <h5> Date of Invoice</h5>
+            <div>
+                <label for="date_invoice_freemode">Date</label>
+                <input type="date" name="" id="date_invoice_freemode" placeholder="DD/MM/YYYY">
+                <script> document.getElementById("date_invoice_freemode").valueAsDate = new Date()</script>
+            </div>
+            <h5>Own Info</h5>
+            <div>
+                <label for="Name">Name</label>
+                <input type="text" id="Name" placeholder="Max Meerrettich" required>
+            </div>
+            <div>
+                <label for="Address">Address</label>
+                <input type="text" id="Address" placeholder="Unternehmer-Straße 40">
+            </div>
+            <div>
+                <label for="Zip_Code">Zip Code</label>
+                <input type="text" id="Zip_Code" placeholder="xxxxx">
+            </div>
+            <div>
+                <label for="City">City</label>
+                <input type="text" id="City" placeholder="Berlin ...">
+            </div>
+            <div>
+                <label for="Tel.">Tel.</label>
+                <input type="text" id="Tel." placeholder="xxxxxxxx">
+            </div>
+        </div>
+        <div id="outer_div_2">
+            <h5>Customer Info</h5>
+            <div>
+                <label for="Name_Customer">Name</label>
+                <input type="text" id="Name_Customer" placeholder="Bernd Brot" required>
+            </div>
+            <div>
+                <label for="Address_Customer">Address</label>
+                <input type="text" id="Address_Customer" placeholder="Unternehmer-Straße 99">
+            </div>
+            <div>
+                <label for="Zip_Code_Customer">Zip Code</label>
+                <input type="text" id="Zip_Code_Customer" placeholder="13589">
+            </div>
+            <div>
+                <label for="City_Customer">City</label>
+                <input type="text" id="City_Customer" placeholder="Berlin...">
+            </div>
+            <div>
+                <label for="Tel._Customer">Tel.</label>
+                <input type="text" id="Tel._Customer" placeholder="+49 0176 ....">
+            </div>
+        </div>
+            <!-- Add button to add one more article to the invoice with its price and all.
+                 The Invoice will be created with the PDF_utility_class.
+                 The Prices will appear next to an article and the sum will be calculated in TOTAL.
+                 -->
+            <br>
+            <!--    Left this out until i get multiple article boxes to work.
+            <button class="button" id="button_add_article_box" onclick="add_article_box_and_increment_counter()">Add Article to Invoice</button>
+
+            <p>You can add 5 more Article Boxes.</p>
+            -->
+
+            <h5>Article / Service</h5>
+            <div style="font-size: medium" name="article_boxes_div_list" id="outer_div_4_to_add_articlebox_to">
+
+            <div id="article_box_0">
+            <div>
+                <label for="Invoice_Id">Invoice ID</label>
+                <input type="text" id="Invoice_Id" placeholder="0001IFM">
+            </div>
+
+            <div>
+                <label for="text_area_article">Article / Service description</label>
+                <textarea name="" id="text_area_article" cols="30" rows="10" placeholder="1x Article with..."></textarea>
+            </div>
+            <div>
+                <label for="price_article_0">Price in €</label>
+                <input type="number" id="price_article_0" placeholder="100" required>
+                <label for="tax_percent"> Tax in %</label>
+                <input type="number" max="100" min="1" id="tax_percent" placeholder="19%" required>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <button style="margin-top: 6%" type="button" class="button" id="submit_pdf" onclick="submit_to_get_invoice_freemode()">PDF Download</button>
+    </section>
 </main>
 <footer class="footer"><a style="text-align: center" href="https://uberspace.de/"><img style="vertical-align: middle;width: 15%" src="/badge/uberspace_badge_light.svg" alt="" ></a>
 

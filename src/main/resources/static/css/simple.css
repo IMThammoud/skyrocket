@@ -309,12 +309,16 @@ header > nav a[aria-current="true"] {
   cursor: pointer;
 }
 
-/* Reduce nav side on mobile */
+/* Reduce nav side on mobile
+   Put width for navigation buttons to 200px on mobile
+   Now they look like good sized buttons on a small screen.
+ */
 @media only screen and (max-width: 720px) {
   header > nav a {
-    border: none;
-    padding: 0;
-    text-decoration: underline;
+    border: solid 1px var(--accent);
+    width: 200px;
+    padding: 6%;
+    text-decoration: none;
     line-height: 1;
   }
 }

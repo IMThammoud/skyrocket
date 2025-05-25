@@ -123,7 +123,9 @@ public class PageController {
         return "redirect:/logout";
     }
 
-
+    // This needs to stay here as it redirects to another endpoint here that returns HTML
+    // This class has @Controller annotation so it returns html. Moving this endpoint to ShelveController will
+    // lead to it returning a String instead of redirecting :D
     @PostMapping("/shelve/submit")
     public String receiveNewShelve(@RequestParam(name = "shelve_name")String shelveName,
                                    @RequestParam(name = "is_for_service")String isForServiceAsString,
@@ -155,7 +157,20 @@ public class PageController {
     @GetMapping("/invoice/dashboard")
     public String showInvoiceDashboard(@CookieValue(name = "JSESSIONID") String sessionId){
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+            return "invoice-tab";
+        } else return "redirect:/logout";
+    }
+
+    @GetMapping("/invoice/invoice-freemode")
+    public String showInvoiceTab(@CookieValue(name = "JSESSIONID") String sessionId){
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             return "invoice-dashboard";
+        } else return "redirect:/logout";
+    }
+    @GetMapping("/invoice/invoice_for_article_or_service")
+    public String showInvoiceForArticleOrService(@CookieValue(name = "JSESSIONID") String sessionId){
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
+            return "invoice-for-article-or-service";
         } else return "redirect:/logout";
     }
 }

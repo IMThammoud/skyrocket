@@ -10,9 +10,8 @@ import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.repository.*;
-import com.skyrocket.utilityClasses.FilteredNotebookForPDF;
-import com.skyrocket.utilityClasses.FilteredNotebookForShelveView;
-import com.skyrocket.utilityClasses.PDFCreatorWithOpenPDF;
+import com.skyrocket.model.FilteredNotebookForPDF;
+import com.skyrocket.services.PDFCreatorWithOpenPDF;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -75,6 +75,12 @@ public class DynamicElementsController {
                     notebook.get("keyboard_layout"),
                     notebook.get("side_note")
                     );
+
+            // This will block shelves with the same name in one shelve.
+            //if (notebookRepository.existsNotebookByShelveAndName(shelveRepository.findById(UUID.fromString(notebook.get("fk_shelve_id"))), notebook.get("name"))) {
+            //    return "ArticleNameAlreadyExists";
+            //}
+
             LOG.info("Shelve for article: " + shelveForArticle.toString());
             LOG.info("New notebook: " + newNotebook.toString());
 
@@ -121,21 +127,15 @@ public class DynamicElementsController {
                         HttpSession session) {
 
         // If someone already has a SessionTOKEN then this prevents duplicate SessionTOKENS in the sessionstore.
-        // So if someone does not login and invalidates his session and then tries to LOGIN AGAIN
-        // It doesnt crash anymore. This fixes double session_token saves because the session_token could be stored
-        // On every login. The user had only to visit the login page again without logging out before and log in again
-        // and it would save the already stored session_id again.
-        // This could also be fixed by creating a new sessionID when saving the new Entry in session_store
-        // Example: sessionStore.setSessionToken(new HTTPsession().getId()) but my approach is fine too with catching it with
-        // if condition.
         if (sessionStoreRepository.existsBySessionToken(cookieAlreadyInUse)) {
             // JS checks for this as response and then lets user to the dashboard.
             return "alreadyHasAccount";
         }
 
-        // Fetch entry out of DB
+        // Fetch Useraccount and see if its even there.
         UserAccount foundUserAccountByEmail = userAccountRepository.getByEmail(userAccount.getEmail());
 
+        
         if (foundUserAccountByEmail != null && foundUserAccountByEmail.getPassword().equals(userAccount.getPassword())) {
             // logging for testing purposes
             System.out.println("Found e-mail: " + userAccount.getEmail());
@@ -153,7 +153,6 @@ public class DynamicElementsController {
         return "false";
     }
 
-
     @PostMapping("shelve/shelve-content-to-pdf")
     public ResponseEntity<FileSystemResource> getShelveContentToPDF(@CookieValue(name = "JSESSIONID") String sessionId,
                                                                     @RequestBody Map<String,String> requestBodyContainingShelveId) throws FileNotFoundException {
@@ -164,7 +163,7 @@ public class DynamicElementsController {
             switch (shelve.getType()) {
                 case "notebook":
                     FilteredNotebookForPDF filteredNotebookForPDFForLengthOfColumns = new FilteredNotebookForPDF();
-                    pdfCreator = new PDFCreatorWithOpenPDF(filteredNotebookForPDFForLengthOfColumns.getColumnsForTablePDF().size());
+                    pdfCreator = new PDFCreatorWithOpenPDF();
                     LOG.info(String.valueOf(filteredNotebookForPDFForLengthOfColumns.getColumnsForTablePDF().size()));
                     LOG.info("Generating PDF for contents of this shelve:" + shelve.getId() + ", And name: " + shelve.getName());
             }
@@ -172,13 +171,27 @@ public class DynamicElementsController {
             FileSystemResource createdPdf = new FileSystemResource(pdfCreator.createAndReturnPDFForNotebook(notebookRepository.findByShelve(shelve), shelve));
             // I have to check the ShelveType here first so my PDF-Method knows which
             // structure is needed for the PDF-Template (what columns to use for the table)
-            // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone ones..
+            // Example: type=notebook will tell the PDF-Methods that i need the Notebook-Columns and not Smartphone.java ones..
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("application/pdf"))
                     .body(createdPdf);
         } else
             LOG.info("Shelve is empty so no PDF was created for shelve: " + shelve.getId());
             return ResponseEntity.badRequest().body(null);
+    }
+
+    // Endpoint for Invoice free-mode
+    @PostMapping("/invoice/pdf-freemode")
+    public ResponseEntity<FileSystemResource> getInvoiceFreeMode(@CookieValue(name = "JSESSIONID") String sessionId,
+                                                                 @RequestBody Map<String, String> invoiceInfo) throws IOException {
+
+        // Parameter is not used for because i dont use tables for this invoice yet.
+        pdfCreator = new PDFCreatorWithOpenPDF();
+        FileSystemResource fileSystemResource = new FileSystemResource(pdfCreator.createInvoiceFreeModePDF(invoiceInfo));
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(fileSystemResource);
     }
 
 }
