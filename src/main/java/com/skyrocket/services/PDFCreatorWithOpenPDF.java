@@ -1,4 +1,4 @@
-package com.skyrocket.utilityClasses;
+package com.skyrocket.services;
 
 // This class need overhaul with generic methods that consume generic types that extend "Article".
 // I should then extract the amount of fields of an object in the list to determine the amount of columns
@@ -10,7 +10,7 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.*;
-import com.lowagie.text.pdf.TextField;
+import com.skyrocket.model.FilteredNotebookForPDF;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.articles.electronics.Notebook;
 import org.springframework.stereotype.Service;
@@ -234,6 +234,9 @@ public class PDFCreatorWithOpenPDF {
     }
 
     public File createAndReturnPDFForNotebook(List<Notebook> notebooks, Shelve shelve) {
+        FilteredNotebookForPDF filteredNotebookForPDF = new FilteredNotebookForPDF();
+        List<FilteredNotebookForPDF> filteredNotebookListForPDF = filteredNotebookForPDF.convertNotebookListForPDF(notebooks);
+        this.table = new PdfPTable(filteredNotebookForPDF.getColumnsForTablePDF().size());
        this.table.setWidthPercentage(100);
        this.headerShelveName = new Paragraph(shelve.getName());
         this.document.setPageSize(PageSize.A4.rotate()); // gives you ~842pt width instead of 595pt
@@ -259,8 +262,7 @@ public class PDFCreatorWithOpenPDF {
         };
         table.setWidths(columnWidths);
 
-        FilteredNotebookForPDF filteredNotebookForPDF = new FilteredNotebookForPDF();
-        List<FilteredNotebookForPDF> filteredNotebookListForPDF = filteredNotebookForPDF.convertNotebookListForPDF(notebooks);
+
         table.setHeaderRows(1);
         // For every column i add a cell to the pdf template with the right name of the column element ( i defined those)
         for(String column : filteredNotebookForPDF.getColumnsForTablePDF()) {

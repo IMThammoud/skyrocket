@@ -10,8 +10,8 @@ import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.repository.*;
-import com.skyrocket.utilityClasses.FilteredNotebookForPDF;
-import com.skyrocket.utilityClasses.PDFCreatorWithOpenPDF;
+import com.skyrocket.model.FilteredNotebookForPDF;
+import com.skyrocket.services.PDFCreatorWithOpenPDF;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
