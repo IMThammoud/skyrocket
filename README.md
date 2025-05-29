@@ -8,7 +8,7 @@ Geplant für die vollständige Veröffentlichung sind:
 - Hilfe in Steuern und Finanzen
 - PDF-integration von erstellen von Artikelauflistungen oder Regalen
 - Generierte Links die den aktuellen Stand des Lagers spiegeln und als HTML-Seite oder PDF zurückgegeben werden, um diesen weiterzugeben oder zu teilen.
-- Kreiren eigener Artikeltypen
+- Erstellen eigener Artikeltypen
 
 Mehr auf der [Website](http://mister-unternehmer.de)
 
