@@ -1,7 +1,6 @@
 package com.skyrocket.model.non_entities;
 
 import com.skyrocket.model.articles.electronics.Notebook;
-import com.skyrocket.services.ConvertNotebookListForPDF;
 
 import java.util.ArrayList;
 import java.util.List;

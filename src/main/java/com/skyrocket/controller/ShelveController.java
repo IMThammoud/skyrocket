@@ -8,8 +8,9 @@ import com.skyrocket.repository.NotebookRepository;
 import com.skyrocket.repository.SessionStoreRepository;
 import com.skyrocket.repository.ShelveRepository;
 import com.skyrocket.repository.UserAccountRepository;
-import com.skyrocket.services.ConvertNotebookListForShelveView;
+import com.skyrocket.model.non_entities.ConvertNotebookListForShelveView;
 import com.skyrocket.model.non_entities.FilteredNotebookForShelveView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,11 @@ public class ShelveController {
     ShelveRepository shelveRepository;
     NotebookRepository notebookRepository;
 
-    public ShelveController(UserAccountRepository userAccountRepository, SessionStoreRepository sessionStoreRepository, ShelveRepository shelveRepository, NotebookRepository notebookRepository) {
+    @Autowired
+    public ShelveController(UserAccountRepository userAccountRepository,
+                            SessionStoreRepository sessionStoreRepository,
+                            ShelveRepository shelveRepository,
+                            NotebookRepository notebookRepository) {
         this.userAccountRepository = userAccountRepository;
         this.sessionStoreRepository = sessionStoreRepository;
         this.shelveRepository = shelveRepository;

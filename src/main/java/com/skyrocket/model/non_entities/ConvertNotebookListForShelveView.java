@@ -1,7 +1,6 @@
-package com.skyrocket.services;
+package com.skyrocket.model.non_entities;
 
 import com.skyrocket.model.articles.electronics.Notebook;
-import com.skyrocket.model.non_entities.FilteredNotebookForShelveView;
 
 import java.util.List;
 

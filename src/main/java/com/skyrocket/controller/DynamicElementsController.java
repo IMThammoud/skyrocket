@@ -30,22 +30,26 @@ import static com.skyrocket.controller.PageController.LOG;
 
 @RestController
 public class DynamicElementsController {
-    @Autowired
-    private UserAccountRepository userAccountRepository;
-    @Autowired
-    private SessionStoreRepository sessionStoreRepository;
-    @Autowired
-    private ShelveRepository shelveRepository;
-    @Autowired
-    private NotebookRepository notebookRepository;
-    @Autowired
-    private ArticleRepository articleRepository;
+
+    private final UserAccountRepository userAccountRepository;
+    private final SessionStoreRepository sessionStoreRepository;
+    private final ShelveRepository shelveRepository;
+    private final NotebookRepository notebookRepository;
 
     PDFCreatorWithOpenPDF pdfCreator;
     
     @Autowired
-    public DynamicElementsController(PDFCreatorWithOpenPDF pdfCreator) {
+    public DynamicElementsController(PDFCreatorWithOpenPDF pdfCreator,
+                                     UserAccountRepository userAccountRepository,
+                                     SessionStoreRepository sessionStoreRepository,
+                                     ShelveRepository shelveRepository,
+                                     NotebookRepository notebookRepository
+                                     ) {
         this.pdfCreator = pdfCreator;
+        this.userAccountRepository = userAccountRepository;
+        this.sessionStoreRepository = sessionStoreRepository;
+        this.shelveRepository = shelveRepository;
+        this.notebookRepository = notebookRepository;
     }
 
     @GetMapping("/category/get/list_of_article_types_based_on_category")
