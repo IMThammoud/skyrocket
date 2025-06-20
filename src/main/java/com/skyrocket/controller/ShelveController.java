@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.electronics.Notebook;
+import com.skyrocket.model.non_entities.ConvertNotebookListForShelveView;
+import com.skyrocket.model.non_entities.FilteredNotebookForShelveView;
 import com.skyrocket.repository.NotebookRepository;
 import com.skyrocket.repository.SessionStoreRepository;
 import com.skyrocket.repository.ShelveRepository;
 import com.skyrocket.repository.UserAccountRepository;
-import com.skyrocket.model.non_entities.ConvertNotebookListForShelveView;
-import com.skyrocket.model.non_entities.FilteredNotebookForShelveView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +43,7 @@ public class ShelveController {
     // Return List of Shelves in JSON
     // Serialization happens automatically due to Jacksons Spring Web-Starter Super duper Magic
     @PostMapping("/shelve/retrieve")
-    public List<Shelve> getShelves(@CookieValue(name ="JSESSIONID") String sessionId) throws JsonProcessingException {
+    public List<Shelve> getShelves(@CookieValue(name = "JSESSIONID") String sessionId) throws JsonProcessingException {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             UserAccount fetchedUserAccount = userAccountRepository.findById(sessionStoreRepository.findBySessionToken(sessionId).getUserAccount().getId());
             LOG.info("Fetched user account: " + fetchedUserAccount.toString());
@@ -91,9 +91,9 @@ public class ShelveController {
                                        @RequestBody Map<String, String> shelveIdAndShelveTypeInMap) {
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             Shelve shelveToBeChecked = shelveRepository.findById(UUID.fromString(shelveIdAndShelveTypeInMap.get("shelve_id")));
-            switch (shelveIdAndShelveTypeInMap.get("shelve_type")){
+            switch (shelveIdAndShelveTypeInMap.get("shelve_type")) {
                 case "notebook":
-                    LOG.info("Counting Articles in notebook shelve of shelve:"+ shelveIdAndShelveTypeInMap.get("shelve_id"));
+                    LOG.info("Counting Articles in notebook shelve of shelve:" + shelveIdAndShelveTypeInMap.get("shelve_id"));
 
                     return notebookRepository.countByShelve_Id(shelveToBeChecked.getId());
 
@@ -104,11 +104,12 @@ public class ShelveController {
         }
         return 0;
     }
+
     // Return 200 if deletion was successful
     @Transactional
     @DeleteMapping("/shelve/delete")
     public ResponseEntity deleteShelve(@CookieValue(name = "JSESSIONID") String sessionId,
-                             @RequestBody Map<String, String> sessionIdMap) {
+                                       @RequestBody Map<String, String> sessionIdMap) {
         // If sessionToken exists and there are Articles with that shelve_id then delete all the articles and the shelve on top.
         if (sessionStoreRepository.existsBySessionToken(sessionId) && shelveRepository.existsById(UUID.fromString(sessionIdMap.get("shelve_id")))) {
             System.out.println("Deleting Notebooks of Shelve: " + sessionIdMap.get("shelve_id"));

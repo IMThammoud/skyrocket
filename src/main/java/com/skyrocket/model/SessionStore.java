@@ -1,6 +1,5 @@
 package com.skyrocket.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,7 +20,9 @@ public class SessionStore {
     @ManyToOne
     @JoinColumn(name = "fk_user_account_id")
     private UserAccount userAccount;
+
     private String sessionToken;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -30,9 +31,7 @@ public class SessionStore {
         this.sessionToken = sessionToken;
     }
 
-    public SessionStore() {
-
-    }
+    public SessionStore() {}
 
     public UserAccount getUserAccount() {
         return userAccount;
@@ -52,7 +51,7 @@ public class SessionStore {
         return this;
     }
 
-    public SessionStore build(){
+    public SessionStore build() {
         return this;
     }
 

@@ -9,11 +9,13 @@ import com.skyrocket.model.SessionStore;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
 import com.skyrocket.model.articles.electronics.Notebook;
-import com.skyrocket.repository.*;
 import com.skyrocket.model.non_entities.FilteredNotebookForPDF;
+import com.skyrocket.repository.NotebookRepository;
+import com.skyrocket.repository.SessionStoreRepository;
+import com.skyrocket.repository.ShelveRepository;
+import com.skyrocket.repository.UserAccountRepository;
 import com.skyrocket.services.PDFCreatorWithOpenPDF;
 import jakarta.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
@@ -37,14 +39,14 @@ public class DynamicElementsController {
     private final NotebookRepository notebookRepository;
 
     PDFCreatorWithOpenPDF pdfCreator;
-    
+
     @Autowired
     public DynamicElementsController(PDFCreatorWithOpenPDF pdfCreator,
                                      UserAccountRepository userAccountRepository,
                                      SessionStoreRepository sessionStoreRepository,
                                      ShelveRepository shelveRepository,
                                      NotebookRepository notebookRepository
-                                     ) {
+    ) {
         this.pdfCreator = pdfCreator;
         this.userAccountRepository = userAccountRepository;
         this.sessionStoreRepository = sessionStoreRepository;
@@ -59,10 +61,10 @@ public class DynamicElementsController {
 
     @PostMapping("/add/article/receiveArticle")
     public String receiveArticle(@CookieValue(name = "JSESSIONID") String sessionId,
-                                 @RequestBody Map<String,String> notebook) {
+                                 @RequestBody Map<String, String> notebook) {
         LOG.info("Received notebook: " + notebook.toString());
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-           Shelve shelveForArticle = shelveRepository.findById(UUID.fromString(notebook.get("fk_shelve_id")));
+            Shelve shelveForArticle = shelveRepository.findById(UUID.fromString(notebook.get("fk_shelve_id")));
             Notebook newNotebook = new Notebook(UUID.randomUUID(),
                     notebook.get("name"),
                     Integer.parseInt(notebook.get("amount")),
@@ -81,7 +83,7 @@ public class DynamicElementsController {
                     Integer.parseInt(notebook.get("battery_capacity_health")),
                     notebook.get("keyboard_layout"),
                     notebook.get("side_note")
-                    );
+            );
 
             // This will block shelves with the same name in one shelve.
             //if (notebookRepository.existsNotebookByShelveAndName(shelveRepository.findById(UUID.fromString(notebook.get("fk_shelve_id"))), notebook.get("name"))) {
@@ -89,7 +91,7 @@ public class DynamicElementsController {
             //}
 
             LOG.info("Shelve for article: " + shelveForArticle.toString());
-            LOG.info("New notebook: " + newNotebook.toString());
+            LOG.info("New notebook: " + newNotebook);
 
             notebookRepository.save(newNotebook);
 
@@ -102,7 +104,7 @@ public class DynamicElementsController {
     @PostMapping("/add/article/check-shelve-type")
     public String renderArticleFormBasedOnShelveType(@CookieValue(name = "JSESSIONID") String sessionId,
                                                      @RequestBody Map<String, String> jsBody) {
-        if(sessionStoreRepository.existsBySessionToken(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             // ShelveId will be carried through option into select element in html
             // check the Shelve_ID and see what type it is
             // Use Type with Switch Case to return type as string so JS can build the form for the type
@@ -111,7 +113,7 @@ public class DynamicElementsController {
             // Maybe this has to be solved differently as it feels very UngaBunga
             Shelve shelveToBeChecked = shelveRepository.findById(UUID.fromString(jsBody.get("shelve")));
             System.out.println("check-shelve-type Endpoint received this shelve_id: " + jsBody.get("shelve"));
-            if(shelveToBeChecked.getIsForService() == false) {
+            if (!shelveToBeChecked.getIsForService()) {
                 switch (shelveToBeChecked.getType()) {
                     case "notebook":
                         // Returning notebook as string to JS so it can render notebook form
@@ -128,7 +130,7 @@ public class DynamicElementsController {
     }
 
     // When logging in: new sessionStore entry for user is created.
-    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes="application/json")
+    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json")
     public String login(@RequestBody UserAccount userAccount,
                         @CookieValue(name = "JSESSIONID", required = false) String cookieAlreadyInUse,
                         HttpSession session) {
@@ -142,7 +144,7 @@ public class DynamicElementsController {
         // Fetch Useraccount and see if its even there.
         UserAccount foundUserAccountByEmail = userAccountRepository.getByEmail(userAccount.getEmail());
 
-        
+
         if (foundUserAccountByEmail != null && foundUserAccountByEmail.getPassword().equals(userAccount.getPassword())) {
             // logging for testing purposes
             System.out.println("Found e-mail: " + userAccount.getEmail());
@@ -162,11 +164,11 @@ public class DynamicElementsController {
 
     @PostMapping("shelve/shelve-content-to-pdf")
     public ResponseEntity<FileSystemResource> getShelveContentToPDF(@CookieValue(name = "JSESSIONID") String sessionId,
-                                                                    @RequestBody Map<String,String> requestBodyContainingShelveId) throws FileNotFoundException {
+                                                                    @RequestBody Map<String, String> requestBodyContainingShelveId) throws FileNotFoundException {
 
         Shelve shelve = shelveRepository.findById(UUID.fromString(requestBodyContainingShelveId.get("shelve_id")));
         // Here i should check the Shelve_type and based on that i would create the corresponding PDFCREATOR and call the right PDF methods.
-        if (notebookRepository.countByShelve_Id(shelve.getId()) > 0) {
+        if (shelveRepository.existsById(shelve.getId()) && notebookRepository.countByShelve_Id(shelve.getId()) > 0) {
             switch (shelve.getType()) {
                 case "notebook":
                     FilteredNotebookForPDF filteredNotebookForPDFForLengthOfColumns = new FilteredNotebookForPDF();
@@ -184,7 +186,7 @@ public class DynamicElementsController {
                     .body(createdPdf);
         } else
             LOG.info("Shelve is empty so no PDF was created for shelve: " + shelve.getId());
-            return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.badRequest().body(null);
     }
 
     // Endpoint for Invoice free-mode
