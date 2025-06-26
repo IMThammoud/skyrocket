@@ -84,13 +84,14 @@ async function submit_to_get_invoice_freemode() {
     })
 
     let pdf = await request.blob()
-    // Check if my mandatory fields are there, if not yell at the user with alert.
-    if (!!document.getElementById("Invoice_Id").value && !!document.getElementById("Name") && !!document.getElementById("price_article_0") && !!document.getElementById("tax_percent")) {
+    // Check for 200, if not yell at the user with alerts.
+    if (request.status === 200) {
         let download_link = document.createElement("a")
         download_link.href = URL.createObjectURL(pdf)
         download_link.download = document.getElementById("Name_Customer").value + "_" + "invoice" + ".pdf"
         download_link.click()
     } else {
+        console.log("Server: " + pdf.status)
         alert("Mandatory: Invoice ID, Your Name, Customer Name, Price and Tax.")
     }
 }

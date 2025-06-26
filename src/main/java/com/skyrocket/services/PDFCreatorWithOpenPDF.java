@@ -41,6 +41,11 @@ public class PDFCreatorWithOpenPDF {
     }
 
     public File createInvoiceFreeModePDF(Map<String, String> invoiceInfo) throws IOException {
+
+        if (invoiceInfo == null || invoiceInfo.isEmpty()) {
+            return null;
+        }
+
         this.document.open();
 
         // Add logo

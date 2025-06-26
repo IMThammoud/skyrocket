@@ -195,6 +195,12 @@ public class DynamicElementsController {
     public ResponseEntity<FileSystemResource> getInvoiceFreeMode(@CookieValue(name = "JSESSIONID") String sessionId,
                                                                  @RequestBody Map<String, String> invoiceInfo) throws IOException {
 
+        for(var entry : invoiceInfo.entrySet()){
+            if ( entry == null || entry.getValue().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+        }
+
         // Parameter is not used for because i dont use tables for this invoice yet.
         pdfCreator = new PDFCreatorWithOpenPDF();
         FileSystemResource fileSystemResource = new FileSystemResource(pdfCreator.createInvoiceFreeModePDF(invoiceInfo));
