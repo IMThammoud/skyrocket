@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.security.SecureRandom;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -14,36 +13,54 @@ import java.util.UUID;
 public class UserSalts {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private final UUID id;
-    private final SecureRandom salt;
+    private UUID id;
+    private byte[] salt;
 
     @JsonIdentityReference(alwaysAsId = true)  // Only serialize the ID of UserAccount
     @OneToOne
     @JoinColumn(name = "fk_user_account")
-    private final UserAccount user;
+    private UserAccount userAccount;
     @CreatedDate
-    private final OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
-    public UserSalts(final UUID id , final SecureRandom salt, final UserAccount user, OffsetDateTime createdAt) {
+    public UserSalts(){};
+
+    public UserSalts( UUID id,  byte[] salt,  UserAccount userAccount, LocalDateTime createdAt) {
         this.id = id;
         this.salt = salt;
-        this.user = user;
+        this.userAccount = userAccount;
         this.createdAt = createdAt;
     }
 
-    public SecureRandom getSalt() {
+    public byte[] getSalt() {
         return salt;
     }
 
-    public UserAccount getUser() {
-        return user;
+    public UserAccount getUserAccount() {
+        return userAccount;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

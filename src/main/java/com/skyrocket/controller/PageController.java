@@ -9,9 +9,13 @@ package com.skyrocket.controller;
 
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
+import com.skyrocket.model.UserSalts;
 import com.skyrocket.repository.SessionStoreRepository;
 import com.skyrocket.repository.ShelveRepository;
 import com.skyrocket.repository.UserAccountRepository;
+import com.skyrocket.repository.UserSaltsRepository;
+import com.skyrocket.services.HashingService;
+import com.skyrocket.services.SaltingService;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +26,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Controller
 public class PageController {
     public final static Logger LOG = LoggerFactory.getLogger(PageController.class);
     UserAccountRepository userAccountRepository;
+    UserSaltsRepository userSaltsRepository;
     SessionStoreRepository sessionStoreRepository;
     ShelveRepository shelveRepository;
     Shelve shelve;
@@ -36,8 +43,9 @@ public class PageController {
     @Autowired
     HttpSession session;
 
-    public PageController(UserAccountRepository userAccountRepository, SessionStoreRepository sessionStoreRepository, ShelveRepository shelveRepository) {
+    public PageController(UserAccountRepository userAccountRepository, UserSaltsRepository userSaltsRepository, SessionStoreRepository sessionStoreRepository, ShelveRepository shelveRepository) {
         this.userAccountRepository = userAccountRepository;
+        this.userSaltsRepository = userSaltsRepository;
         this.sessionStoreRepository = sessionStoreRepository;
         this.shelveRepository = shelveRepository;
     }
@@ -60,20 +68,27 @@ public class PageController {
 
     @PostMapping("/register")
     public String register(@RequestParam(name = "email") String email,
-                           @RequestParam(name = "password") String password) {
+                           @RequestParam(name = "password") String password) throws NoSuchAlgorithmException {
 
         if (userAccountRepository.getByEmail(email) != null) {
             return "AccountExistsAlready";
         }
-        UserAccount userAccount = new UserAccount(email, password, LocalDateTime.now());
 
+        // add salt and hash the password
+        byte[] salt = SaltingService.createSalt();
+        byte[] hashedPassword = HashingService.createPasswordHash(salt, password);
+
+        UserAccount userAccount = new UserAccount(email, hashedPassword, LocalDateTime.now());
         userAccount.setId(UUID.randomUUID());
-        //userAccount.setSessionId(UUID.randomUUID().toString());
 
-        LOG.info("Change Session_ID on registration to avoid login skip.");
         LOG.info("Registering new user: " + userAccount.getEmail());
-        LOG.info("SessionID will be generated and stored on next login of the user.");
+
         userAccountRepository.save(userAccount);
+
+        UserAccount fetchedUser = userAccountRepository.getByEmail(email);
+
+        UserSalts userSalt = new UserSalts(UUID.randomUUID(), salt, fetchedUser, LocalDateTime.now());
+        userSaltsRepository.save(userSalt);
 
 
         return "registration-successful";

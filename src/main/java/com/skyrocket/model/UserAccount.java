@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,17 +29,17 @@ public class UserAccount {
     @Column(unique = true)
     private String email;
 
-    private String password;
+    private byte[] password;
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userAccount")
     private UserSalts salt;
 
     public UserAccount() {
     }
 
-    public UserAccount(final String email, final String password, final LocalDateTime createdAt) {
+    public UserAccount(final String email, final byte[] password, final LocalDateTime createdAt) {
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;
@@ -53,11 +54,11 @@ public class UserAccount {
         return this;
     }
 
-    public String getPassword() {
+    public byte[] getPassword() {
         return password;
     }
 
-    public UserAccount setPassword(String password) {
+    public UserAccount setPassword(byte[] password) {
         this.password = password;
         return this;
     }
@@ -89,7 +90,7 @@ public class UserAccount {
         return "UserAccount{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
+                ", password='" + Arrays.toString(password) + '\'' +
                 ", creationDate=" + createdAt +
                 '}';
     }

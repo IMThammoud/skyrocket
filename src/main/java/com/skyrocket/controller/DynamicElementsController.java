@@ -8,12 +8,11 @@ package com.skyrocket.controller;
 import com.skyrocket.model.SessionStore;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
+import com.skyrocket.model.UserSalts;
 import com.skyrocket.model.articles.electronics.Notebook;
 import com.skyrocket.model.non_entities.FilteredNotebookForPDF;
-import com.skyrocket.repository.NotebookRepository;
-import com.skyrocket.repository.SessionStoreRepository;
-import com.skyrocket.repository.ShelveRepository;
-import com.skyrocket.repository.UserAccountRepository;
+import com.skyrocket.repository.*;
+import com.skyrocket.services.HashingService;
 import com.skyrocket.services.PDFCreatorWithOpenPDF;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 import static com.skyrocket.controller.PageController.LOG;
 
@@ -34,6 +32,7 @@ import static com.skyrocket.controller.PageController.LOG;
 public class DynamicElementsController {
 
     private final UserAccountRepository userAccountRepository;
+    private final UserSaltsRepository userSaltsRepository;
     private final SessionStoreRepository sessionStoreRepository;
     private final ShelveRepository shelveRepository;
     private final NotebookRepository notebookRepository;
@@ -43,12 +42,14 @@ public class DynamicElementsController {
     @Autowired
     public DynamicElementsController(PDFCreatorWithOpenPDF pdfCreator,
                                      UserAccountRepository userAccountRepository,
+                                     UserSaltsRepository userSaltsRepository,
                                      SessionStoreRepository sessionStoreRepository,
                                      ShelveRepository shelveRepository,
                                      NotebookRepository notebookRepository
     ) {
         this.pdfCreator = pdfCreator;
         this.userAccountRepository = userAccountRepository;
+        this.userSaltsRepository = userSaltsRepository;
         this.sessionStoreRepository = sessionStoreRepository;
         this.shelveRepository = shelveRepository;
         this.notebookRepository = notebookRepository;
@@ -131,9 +132,9 @@ public class DynamicElementsController {
 
     // When logging in: new sessionStore entry for user is created.
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json")
-    public String login(@RequestBody UserAccount userAccount,
+    public String login(@RequestBody HashMap<String,String> userCredentials,
                         @CookieValue(name = "JSESSIONID", required = false) String cookieAlreadyInUse,
-                        HttpSession session) {
+                        HttpSession session) throws NoSuchAlgorithmException {
 
         // If someone already has a SessionTOKEN then this prevents duplicate SessionTOKENS in the sessionstore.
         if (sessionStoreRepository.existsBySessionToken(cookieAlreadyInUse)) {
@@ -142,14 +143,14 @@ public class DynamicElementsController {
         }
 
         // Fetch Useraccount and see if its even there.
-        UserAccount foundUserAccountByEmail = userAccountRepository.getByEmail(userAccount.getEmail());
+        UserAccount foundUserAccountByEmail = userAccountRepository.getByEmail(userCredentials.get("email"));
+
+        UserSalts userSalt = userSaltsRepository.getSaltByUserAccount(foundUserAccountByEmail);
+        byte[] hashedPassword = HashingService.createPasswordHash(userSalt.getSalt(), userCredentials.get("password"));
 
 
-        if (foundUserAccountByEmail != null && foundUserAccountByEmail.getPassword().equals(userAccount.getPassword())) {
-            // logging for testing purposes
-            System.out.println("Found e-mail: " + userAccount.getEmail());
-            System.out.println("Found PW: " + userAccount.getPassword());
 
+        if (foundUserAccountByEmail != null && Arrays.equals(foundUserAccountByEmail.getPassword(), hashedPassword)) {
             SessionStore sessionStore = new SessionStore();
             // Important: Always use the object that was fetched from DB and dont use the parameter Object when referencing.
             sessionStore.setUserAccount(foundUserAccountByEmail);
