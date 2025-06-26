@@ -1,7 +1,9 @@
 package com.skyrocket.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skyrocket.model.articles.electronics.Notebook;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @EntityListeners(AuditingEntityListener.class)
 public class Shelve {
 
@@ -123,5 +126,25 @@ public class Shelve {
                 ", userAccount=" + userAccount +
                 ", notebooks=" + notebooks +
                 '}';
+    }
+
+    public List<Notebook> getNotebooks() {
+        return notebooks;
+    }
+
+    public void setNotebooks(List<Notebook> notebooks) {
+        this.notebooks = notebooks;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

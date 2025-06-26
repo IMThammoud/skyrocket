@@ -32,6 +32,9 @@ public class UserAccount {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    private UserSalts salt;
+
     public UserAccount() {
     }
 

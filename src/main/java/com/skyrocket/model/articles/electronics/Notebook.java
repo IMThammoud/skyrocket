@@ -172,4 +172,12 @@ public class Notebook extends Article {
                 ", createdAt=" + this.getCreatedAt() +
                 '}';
     }
+
+    public Shelve getShelve() {
+        return shelve;
+    }
+
+    public void setShelve(Shelve shelve) {
+        this.shelve = shelve;
+    }
 }
