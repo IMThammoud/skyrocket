@@ -1,12 +1,11 @@
 package com.skyrocket.model.articles.electronics;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.skyrocket.Article;
+import com.skyrocket.model.Article;
 import com.skyrocket.model.Shelve;
-import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 //@Entity
@@ -35,23 +34,23 @@ public class Smartphone extends Article {
     }
 
     public Smartphone(UUID id,
-                    String name,
-                    int amount,
-                    String type,
-                    String description,
-                    double priceWhenBought,
-                    double sellingPrice,
-                    Shelve shelve,
-                    String brand,
-                    String modelNr,
-                    String cpu,
-                    int ram,
-                    int storage,
-                    double displaySize,
-                    String operatingSystem,
-                    double batteryCapacityHealth,
-                    String keyboardLayout,
-                    String sideNote
+                      String name,
+                      int amount,
+                      String type,
+                      String description,
+                      double priceWhenBought,
+                      double sellingPrice,
+                      Shelve shelve,
+                      String brand,
+                      String modelNr,
+                      String cpu,
+                      int ram,
+                      int storage,
+                      double displaySize,
+                      String operatingSystem,
+                      double batteryCapacityHealth,
+                      String keyboardLayout,
+                      String sideNote
     ) {
         super(id, name, amount, type, description, priceWhenBought, sellingPrice);
         this.shelve = shelve;
@@ -67,16 +66,7 @@ public class Smartphone extends Article {
         this.sideNote = sideNote;
 
 
-
     }
-
-    // to make the superclass ID primary_key
-    /*@Id
-    @Override
-    public UUID getId() {
-        return super.getId();
-    }
-    */
 
     public String getBrand() {
         return brand;

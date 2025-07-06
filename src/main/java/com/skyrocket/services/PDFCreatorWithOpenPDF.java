@@ -4,15 +4,16 @@ package com.skyrocket.services;
 // I should then extract the amount of fields of an object in the list to determine the amount of columns
 // needed for the pdf. This should be done with 2 seperate Methods.
 
-
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.*;
-import com.skyrocket.model.FilteredNotebookForPDF;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.articles.electronics.Notebook;
+import com.skyrocket.model.non_entities.FilteredNotebookForPDF;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -30,117 +31,21 @@ public class PDFCreatorWithOpenPDF {
     private PdfWriter pdfWriter;
     private PdfPTable table;
     private Paragraph headerShelveName;
-    private File file;
+    private final File file;
 
     public PDFCreatorWithOpenPDF() throws FileNotFoundException {
         this.document = new Document();
         // This File will be generated, written to and returned by the createAndReturnPDF() Method
-        this.file = new File("pdf/"+UUID.randomUUID()+".pdf");
+        this.file = new File("pdf/" + UUID.randomUUID() + ".pdf");
         this.pdfWriter = PdfWriter.getInstance(this.document, new FileOutputStream(file));
     }
 
-    public File createInvoiceFreeModePDF(Map<String, String > invoiceInfo) throws IOException {
-        /*
-        Paragraph headerForFreeModeInvoice = new Paragraph("- Invoice - ");
-        // Table for biller und customer info
-        PdfPTable tableForBillerAndCustomerInfo = new PdfPTable(2);
-        // Table for Article or Service
-        PdfPTable tableForArticleOrService = new PdfPTable(1);
-        PdfPCell articleCell = new PdfPCell();
-        articleCell.setBackgroundColor(Color.lightGray);
-        PdfPCell billerCell = new PdfPCell();
-        billerCell.setBorder(Rectangle.NO_BORDER);
-        billerCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        PdfPCell toBeBilledCell = new PdfPCell();
-        toBeBilledCell.setBorder(Rectangle.NO_BORDER);
-        toBeBilledCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        headerForFreeModeInvoice.setAlignment(Element.ALIGN_CENTER);
-        headerForFreeModeInvoice.setFont(FontFactory.getFont(FontFactory.HELVETICA, 20));
-        Paragraph date  = new Paragraph(invoiceInfo.get("date"));
-        date.setAlignment(Paragraph.ALIGN_RIGHT);
-        ////////////////////////////////////////////////////////////////////
-        // Invoice Creator Info
-        Paragraph nameCreator = new Paragraph(invoiceInfo.get("name_creator"));
-        Paragraph addressCreator = new Paragraph(invoiceInfo.get("address_creator"));
-        Paragraph zipCodeCreator = new Paragraph(invoiceInfo.get("zip_code_creator"));
-        Paragraph cityCreator = new Paragraph(invoiceInfo.get("city_creator"));
-        Paragraph telCreator = new Paragraph(invoiceInfo.get("tel_creator"));
-        /// ///////////////////////////////////////////////////////////////
-        // Add invoice creator to left cell
-        billerCell.addElement(new Paragraph("Biller: "));
-        billerCell.addElement(nameCreator);
-        billerCell.addElement(addressCreator);
-        billerCell.addElement(zipCodeCreator);
-        billerCell.addElement(cityCreator);
-        billerCell.addElement(telCreator);
-        ////////////////////////////////////////////////////////////////////
-        // Customer Info
-        Paragraph nameCustomer = new Paragraph(invoiceInfo.get("name_customer"));
-        Paragraph addressCustomer = new Paragraph(invoiceInfo.get("address_customer"));
-        Paragraph zipCodeCustomer = new Paragraph(invoiceInfo.get("zip_code_customer"));
-        Paragraph cityCustomer = new Paragraph(invoiceInfo.get("city_customer"));
-        Paragraph telCustomer = new Paragraph(invoiceInfo.get("tel_customer"));
-        /// ////////////////////////////////////////////////////////////////
-        // Add Customer info to the right cell
-        toBeBilledCell.addElement(new Paragraph("Customer: "));
-        toBeBilledCell.addElement(nameCustomer);
-        toBeBilledCell.addElement(addressCustomer);
-        toBeBilledCell.addElement(zipCodeCustomer);
-        toBeBilledCell.addElement(cityCustomer);
-        toBeBilledCell.addElement(telCustomer);
-        /// ///////////////////////////////////////////////////////////////
-        // Add cells to billercells and customer table.
-        tableForBillerAndCustomerInfo.addCell(billerCell);
-        tableForBillerAndCustomerInfo.addCell(toBeBilledCell);
-        ////////////////////////////////////////////////////////////////////
-        // Article / Service Offering info
-        Paragraph invoiceId = new Paragraph(invoiceInfo.get("invoice_id"));
-        Paragraph articleHeaderText = new Paragraph("Article / Service");
-        Paragraph textAreaArticle = new Paragraph(invoiceInfo.get("text_area_article"));
-        Paragraph articlePrice = new Paragraph(invoiceInfo.get("price"));
-        Paragraph taxPercentage = new Paragraph(invoiceInfo.get("tax_percentage"));
-        /// ///////////////////////////////////////////////////////////////
-        // Calculating Taxes and price.
-        double parsedFullPrice = Double.parseDouble(invoiceInfo.get("price"));
-        double parsedTaxRate = Double.parseDouble(invoiceInfo.get("tax_percentage"));
-        double parsedTaxPercentage = Double.parseDouble(invoiceInfo.get("tax_percentage"));
-        double priceBeforeTax =   parsedFullPrice - Double.parseDouble(invoiceInfo.get("price")) * (parsedTaxPercentage / 100);
-        double taxResult = Double.parseDouble(invoiceInfo.get("price")) * (parsedTaxPercentage / 100);
-        /// ///////////////////////////////////////////////////////////////
-        // Adding taxes and prices to the article cell.
-        articleCell.addElement(textAreaArticle);
-        articleCell.addElement(new Paragraph("Tax Percentage:  " + String.format("%.2f",parsedTaxRate) + "%" ));
-        articleCell.addElement(new Paragraph("Price before Tax:  " + String.format("%.2f",priceBeforeTax) + "€"));
-        articleCell.addElement(new Paragraph("Tax Result:  " + String.format("%.2f",taxResult) + "€" ));
-        articleCell.addElement(new Paragraph("Price after Tax:  " + String.format("%.2f",parsedFullPrice) + "€"));
-        /// ///////////////////////////////////////////////////////////////
-        // Adding article Cell to article / service table
-        tableForArticleOrService.addCell(articleCell);
-        /////////////////////////////////////////////////////////////////////
-        // Open Document and add fields to it and close it at the end.
-        this.document.open();
-        this.document.add(headerForFreeModeInvoice);
-        this.document.add(Chunk.NEWLINE);
-        this.document.add(date);
-        this.document.add(Chunk.NEWLINE);
-        /// /////////////////////////////////////////////////////////////////
-        // Adding billdercell and customerCell to the table and adding table to document.
-        // Adding Invoice Creator Info to Document
-        this.document.add(tableForBillerAndCustomerInfo);
-        this.document.add(Chunk.NEWLINE);
-        this.document.add(Chunk.NEWLINE);
-        /// ///////////////////////////////////////////////////////////////////
-        // Adding Article / Service Offering Info
-        this.document.add(new Paragraph("Invoice ID: "+ invoiceId));
-        this.document.add(Chunk.NEWLINE);
-        this.document.add(Chunk.NEWLINE);
-        this.document.add(Chunk.NEWLINE);
-        this.document.add(tableForArticleOrService);
-        this.document.add(Chunk.NEWLINE);
-        /// ///////////////////////////////////////////////////////////////////
-        // Close document and return file
+    public File createInvoiceFreeModePDF(Map<String, String> invoiceInfo) throws IOException {
 
-        */
+        if (invoiceInfo == null || invoiceInfo.isEmpty()) {
+            return null;
+        }
+
         this.document.open();
 
         // Add logo
@@ -237,8 +142,8 @@ public class PDFCreatorWithOpenPDF {
         FilteredNotebookForPDF filteredNotebookForPDF = new FilteredNotebookForPDF();
         List<FilteredNotebookForPDF> filteredNotebookListForPDF = filteredNotebookForPDF.convertNotebookListForPDF(notebooks);
         this.table = new PdfPTable(filteredNotebookForPDF.getColumnsForTablePDF().size());
-       this.table.setWidthPercentage(100);
-       this.headerShelveName = new Paragraph(shelve.getName());
+        this.table.setWidthPercentage(100);
+        this.headerShelveName = new Paragraph(shelve.getName());
         this.document.setPageSize(PageSize.A4.rotate()); // gives you ~842pt width instead of 595pt
         this.document.open();
         this.document.add(headerShelveName);
@@ -265,29 +170,29 @@ public class PDFCreatorWithOpenPDF {
 
         table.setHeaderRows(1);
         // For every column i add a cell to the pdf template with the right name of the column element ( i defined those)
-        for(String column : filteredNotebookForPDF.getColumnsForTablePDF()) {
+        for (String column : filteredNotebookForPDF.getColumnsForTablePDF()) {
             System.out.println(column);
             table.addCell(new PdfPCell(new Phrase(column, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9f)))).setBackgroundColor(Color.orange);
         }
 
-            // Create a row for every Notebook in the Filtered Notebook List
-            for (FilteredNotebookForPDF filteredNotebook : filteredNotebookListForPDF) {
-                table.addCell(String.valueOf(filteredNotebook.getAmount()));
-                table.addCell(filteredNotebook.getBrand());
-                table.addCell(filteredNotebook.getName());
-                table.addCell(filteredNotebook.getModelNr());
-                table.addCell(filteredNotebook.getType());
-                table.addCell(filteredNotebook.getCpu());
-                table.addCell(String.valueOf(filteredNotebook.getRam()));
-                table.addCell(String.valueOf(filteredNotebook.getStorage()));
-                table.addCell(String.valueOf(filteredNotebook.getDisplaySize()));
-                table.addCell(filteredNotebook.getOperatingSystem());
-                table.addCell(filteredNotebook.getKeyboardLayout());
-                table.addCell(String.valueOf(filteredNotebook.getBatteryCapacityHealth()));
-                table.addCell(new PdfPCell(new Phrase(filteredNotebook.getSideNote(), FontFactory.getFont(FontFactory.HELVETICA, 9f))));
-                //table.addCell(filteredNotebook.getSideNote());
-                table.addCell(String.valueOf(filteredNotebook.getSellingPrice()));
-            }
+        // Create a row for every Notebook in the Filtered Notebook List
+        for (FilteredNotebookForPDF filteredNotebook : filteredNotebookListForPDF) {
+            table.addCell(String.valueOf(filteredNotebook.getAmount()));
+            table.addCell(filteredNotebook.getBrand());
+            table.addCell(filteredNotebook.getName());
+            table.addCell(filteredNotebook.getModelNr());
+            table.addCell(filteredNotebook.getType());
+            table.addCell(filteredNotebook.getCpu());
+            table.addCell(String.valueOf(filteredNotebook.getRam()));
+            table.addCell(String.valueOf(filteredNotebook.getStorage()));
+            table.addCell(String.valueOf(filteredNotebook.getDisplaySize()));
+            table.addCell(filteredNotebook.getOperatingSystem());
+            table.addCell(filteredNotebook.getKeyboardLayout());
+            table.addCell(String.valueOf(filteredNotebook.getBatteryCapacityHealth()));
+            table.addCell(new PdfPCell(new Phrase(filteredNotebook.getSideNote(), FontFactory.getFont(FontFactory.HELVETICA, 9f))));
+            //table.addCell(filteredNotebook.getSideNote());
+            table.addCell(String.valueOf(filteredNotebook.getSellingPrice()));
+        }
 
         System.out.println("Columns: " + filteredNotebookForPDF.getColumnsForTablePDF());
         System.out.println("Notebooks: " + notebooks);
@@ -301,6 +206,8 @@ public class PDFCreatorWithOpenPDF {
 
         return file;
     }
+
+    
 
     public Document getDocument() {
         return document;

@@ -8,12 +8,13 @@ package com.skyrocket.controller;
 import com.skyrocket.model.SessionStore;
 import com.skyrocket.model.Shelve;
 import com.skyrocket.model.UserAccount;
+import com.skyrocket.model.UserSalts;
 import com.skyrocket.model.articles.electronics.Notebook;
+import com.skyrocket.model.non_entities.FilteredNotebookForPDF;
 import com.skyrocket.repository.*;
-import com.skyrocket.model.FilteredNotebookForPDF;
+import com.skyrocket.services.HashingService;
 import com.skyrocket.services.PDFCreatorWithOpenPDF;
 import jakarta.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
@@ -22,28 +23,37 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 import static com.skyrocket.controller.PageController.LOG;
 
 @RestController
 public class DynamicElementsController {
-    @Autowired
-    private UserAccountRepository userAccountRepository;
-    @Autowired
-    private SessionStoreRepository sessionStoreRepository;
-    @Autowired
-    private ShelveRepository shelveRepository;
-    @Autowired
-    private NotebookRepository notebookRepository;
-    @Autowired
-    private ArticleRepository articleRepository;
+
+    private final UserAccountRepository userAccountRepository;
+    private final UserSaltsRepository userSaltsRepository;
+    private final SessionStoreRepository sessionStoreRepository;
+    private final ShelveRepository shelveRepository;
+    private final NotebookRepository notebookRepository;
 
     PDFCreatorWithOpenPDF pdfCreator;
 
-    public DynamicElementsController() {}
+    @Autowired
+    public DynamicElementsController(PDFCreatorWithOpenPDF pdfCreator,
+                                     UserAccountRepository userAccountRepository,
+                                     UserSaltsRepository userSaltsRepository,
+                                     SessionStoreRepository sessionStoreRepository,
+                                     ShelveRepository shelveRepository,
+                                     NotebookRepository notebookRepository
+    ) {
+        this.pdfCreator = pdfCreator;
+        this.userAccountRepository = userAccountRepository;
+        this.userSaltsRepository = userSaltsRepository;
+        this.sessionStoreRepository = sessionStoreRepository;
+        this.shelveRepository = shelveRepository;
+        this.notebookRepository = notebookRepository;
+    }
 
     @GetMapping("/category/get/list_of_article_types_based_on_category")
     public List<String> getListOfArticleTypesBasedOnCategoryChosen() {
@@ -52,10 +62,10 @@ public class DynamicElementsController {
 
     @PostMapping("/add/article/receiveArticle")
     public String receiveArticle(@CookieValue(name = "JSESSIONID") String sessionId,
-                                 @RequestBody Map<String,String> notebook) {
+                                 @RequestBody Map<String, String> notebook) {
         LOG.info("Received notebook: " + notebook.toString());
         if (sessionStoreRepository.existsBySessionToken(sessionId)) {
-           Shelve shelveForArticle = shelveRepository.findById(UUID.fromString(notebook.get("fk_shelve_id")));
+            Shelve shelveForArticle = shelveRepository.findById(UUID.fromString(notebook.get("fk_shelve_id")));
             Notebook newNotebook = new Notebook(UUID.randomUUID(),
                     notebook.get("name"),
                     Integer.parseInt(notebook.get("amount")),
@@ -74,7 +84,7 @@ public class DynamicElementsController {
                     Integer.parseInt(notebook.get("battery_capacity_health")),
                     notebook.get("keyboard_layout"),
                     notebook.get("side_note")
-                    );
+            );
 
             // This will block shelves with the same name in one shelve.
             //if (notebookRepository.existsNotebookByShelveAndName(shelveRepository.findById(UUID.fromString(notebook.get("fk_shelve_id"))), notebook.get("name"))) {
@@ -82,7 +92,7 @@ public class DynamicElementsController {
             //}
 
             LOG.info("Shelve for article: " + shelveForArticle.toString());
-            LOG.info("New notebook: " + newNotebook.toString());
+            LOG.info("New notebook: " + newNotebook);
 
             notebookRepository.save(newNotebook);
 
@@ -95,7 +105,7 @@ public class DynamicElementsController {
     @PostMapping("/add/article/check-shelve-type")
     public String renderArticleFormBasedOnShelveType(@CookieValue(name = "JSESSIONID") String sessionId,
                                                      @RequestBody Map<String, String> jsBody) {
-        if(sessionStoreRepository.existsBySessionToken(sessionId)) {
+        if (sessionStoreRepository.existsBySessionToken(sessionId)) {
             // ShelveId will be carried through option into select element in html
             // check the Shelve_ID and see what type it is
             // Use Type with Switch Case to return type as string so JS can build the form for the type
@@ -104,7 +114,7 @@ public class DynamicElementsController {
             // Maybe this has to be solved differently as it feels very UngaBunga
             Shelve shelveToBeChecked = shelveRepository.findById(UUID.fromString(jsBody.get("shelve")));
             System.out.println("check-shelve-type Endpoint received this shelve_id: " + jsBody.get("shelve"));
-            if(shelveToBeChecked.getIsForService() == false) {
+            if (!shelveToBeChecked.getIsForService()) {
                 switch (shelveToBeChecked.getType()) {
                     case "notebook":
                         // Returning notebook as string to JS so it can render notebook form
@@ -121,10 +131,10 @@ public class DynamicElementsController {
     }
 
     // When logging in: new sessionStore entry for user is created.
-    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes="application/json")
-    public String login(@RequestBody UserAccount userAccount,
+    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json")
+    public String login(@RequestBody HashMap<String,String> userCredentials,
                         @CookieValue(name = "JSESSIONID", required = false) String cookieAlreadyInUse,
-                        HttpSession session) {
+                        HttpSession session) throws NoSuchAlgorithmException {
 
         // If someone already has a SessionTOKEN then this prevents duplicate SessionTOKENS in the sessionstore.
         if (sessionStoreRepository.existsBySessionToken(cookieAlreadyInUse)) {
@@ -133,14 +143,14 @@ public class DynamicElementsController {
         }
 
         // Fetch Useraccount and see if its even there.
-        UserAccount foundUserAccountByEmail = userAccountRepository.getByEmail(userAccount.getEmail());
+        UserAccount foundUserAccountByEmail = userAccountRepository.getByEmail(userCredentials.get("email"));
 
-        
-        if (foundUserAccountByEmail != null && foundUserAccountByEmail.getPassword().equals(userAccount.getPassword())) {
-            // logging for testing purposes
-            System.out.println("Found e-mail: " + userAccount.getEmail());
-            System.out.println("Found PW: " + userAccount.getPassword());
+        UserSalts userSalt = userSaltsRepository.getSaltByUserAccount(foundUserAccountByEmail);
+        byte[] hashedPassword = HashingService.createPasswordHash(userSalt.getSalt(), userCredentials.get("password"));
 
+
+
+        if (foundUserAccountByEmail != null && Arrays.equals(foundUserAccountByEmail.getPassword(), hashedPassword)) {
             SessionStore sessionStore = new SessionStore();
             // Important: Always use the object that was fetched from DB and dont use the parameter Object when referencing.
             sessionStore.setUserAccount(foundUserAccountByEmail);
@@ -155,11 +165,11 @@ public class DynamicElementsController {
 
     @PostMapping("shelve/shelve-content-to-pdf")
     public ResponseEntity<FileSystemResource> getShelveContentToPDF(@CookieValue(name = "JSESSIONID") String sessionId,
-                                                                    @RequestBody Map<String,String> requestBodyContainingShelveId) throws FileNotFoundException {
+                                                                    @RequestBody Map<String, String> requestBodyContainingShelveId) throws FileNotFoundException {
 
         Shelve shelve = shelveRepository.findById(UUID.fromString(requestBodyContainingShelveId.get("shelve_id")));
         // Here i should check the Shelve_type and based on that i would create the corresponding PDFCREATOR and call the right PDF methods.
-        if (notebookRepository.countByShelve_Id(shelve.getId()) > 0) {
+        if (shelveRepository.existsById(shelve.getId()) && notebookRepository.countByShelve_Id(shelve.getId()) > 0) {
             switch (shelve.getType()) {
                 case "notebook":
                     FilteredNotebookForPDF filteredNotebookForPDFForLengthOfColumns = new FilteredNotebookForPDF();
@@ -177,13 +187,19 @@ public class DynamicElementsController {
                     .body(createdPdf);
         } else
             LOG.info("Shelve is empty so no PDF was created for shelve: " + shelve.getId());
-            return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.badRequest().body(null);
     }
 
     // Endpoint for Invoice free-mode
     @PostMapping("/invoice/pdf-freemode")
     public ResponseEntity<FileSystemResource> getInvoiceFreeMode(@CookieValue(name = "JSESSIONID") String sessionId,
                                                                  @RequestBody Map<String, String> invoiceInfo) throws IOException {
+
+        for(var entry : invoiceInfo.entrySet()){
+            if ( entry == null || entry.getValue().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+        }
 
         // Parameter is not used for because i dont use tables for this invoice yet.
         pdfCreator = new PDFCreatorWithOpenPDF();

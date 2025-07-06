@@ -1,7 +1,9 @@
 package com.skyrocket.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skyrocket.model.articles.electronics.Notebook;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,15 +14,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @EntityListeners(AuditingEntityListener.class)
 public class Shelve {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private String name;
-    private String category;
-    private boolean isForServices;
-    private String type;
 
     @JsonIdentityReference(alwaysAsId = true)  // Only serialize the ID of UserAccount
     @ManyToOne
@@ -30,13 +26,24 @@ public class Shelve {
     @OneToMany(mappedBy = "shelve")
     List<Notebook> notebooks;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    private String name;
+
+    private String category;
+
+    private boolean isForServices;
+
+    private String type;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public Shelve() {
-    }
+    public Shelve() {}
 
-    public Shelve(UUID id, String name, String category, boolean isForServices, String type,UserAccount userAccount) {
+    public Shelve(UUID id, String name, String category, boolean isForServices, String type, UserAccount userAccount) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -87,13 +94,13 @@ public class Shelve {
         return isForServices;
     }
 
-    public boolean getIsForService(){
-        return this.isForServices;
-    }
-
     public Shelve setForServices(boolean forServices) {
         this.isForServices = forServices;
         return this;
+    }
+
+    public boolean getIsForService() {
+        return this.isForServices;
     }
 
     public UserAccount getUserAccount() {
@@ -104,7 +111,7 @@ public class Shelve {
         this.userAccount = userAccount;
     }
 
-    public Shelve build(){
+    public Shelve build() {
         return this;
     }
 
@@ -119,5 +126,25 @@ public class Shelve {
                 ", userAccount=" + userAccount +
                 ", notebooks=" + notebooks +
                 '}';
+    }
+
+    public List<Notebook> getNotebooks() {
+        return notebooks;
+    }
+
+    public void setNotebooks(List<Notebook> notebooks) {
+        this.notebooks = notebooks;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface UserAccountRepository extends JpaRepository<UserAccount, Integer> {
     boolean getUserAccountByEmail(String email);
 
-    boolean getUserAccountByPassword(String password);
+    boolean getUserAccountByPassword(byte[] password);
 
     UserAccount getByEmail(String email);
 

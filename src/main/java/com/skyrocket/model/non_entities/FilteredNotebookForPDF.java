@@ -1,7 +1,6 @@
-package com.skyrocket.model;
+package com.skyrocket.model.non_entities;
 
 import com.skyrocket.model.articles.electronics.Notebook;
-import com.skyrocket.services.ConvertNotebookListForPDF;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +87,6 @@ public class FilteredNotebookForPDF implements ConvertNotebookListForPDF {
         columnsForTablePDF.add("Battery");
         columnsForTablePDF.add("Note");
         columnsForTablePDF.add("Selling Price");
-
-
 
     }
 

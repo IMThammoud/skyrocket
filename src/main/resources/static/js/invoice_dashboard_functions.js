@@ -84,13 +84,14 @@ async function submit_to_get_invoice_freemode() {
     })
 
     let pdf = await request.blob()
-    // Check if my mandatory fields are there, if not yell at the user with alert.
-    if (!!document.getElementById("Invoice_Id").value && !!document.getElementById("Name") && !!document.getElementById("price_article_0") && !!document.getElementById("tax_percent")) {
+    // Check for 200, if not yell at the user with alerts.
+    if (request.status === 200) {
         let download_link = document.createElement("a")
         download_link.href = URL.createObjectURL(pdf)
         download_link.download = document.getElementById("Name_Customer").value + "_" + "invoice" + ".pdf"
         download_link.click()
     } else {
+        console.log("Server: " + pdf.status)
         alert("Mandatory: Invoice ID, Your Name, Customer Name, Price and Tax.")
     }
 }
@@ -125,5 +126,40 @@ async function loadShelvesForAutoInvoiceSelect(){
         whenNoShelvesFoundForTemplateCreation.innerHTML = "<p>Please create a shelve first: <a href='/shelve/create'> Create </a></p>"
         document.getElementById("replaceableWithJS").appendChild(whenNoShelvesFoundForTemplateCreation)
     }
+    }
 
-}
+    async function loadArticlesOfShelveAsSelection(){
+
+        document.getElementById("article").remove()
+        let article_selection = document.createElement("select")
+        article_selection.id = "article"
+        document.getElementById("select_section").appendChild(article_selection)
+
+
+
+        let request = await fetch("/shelve/get-notebooks-unfiltered",
+            {
+                headers : {"content-type" : "application/json;charset=UTF8"},
+                method : "POST",
+                body : JSON.stringify({"shelve_id" : document.getElementById("shelve").value})
+            })
+        let response = await request.text()
+        let articlesAsArray = JSON.parse(response)
+        console.log("Length of shelve-Array" + articlesAsArray.length)
+
+        if( articlesAsArray.length > 0) {
+            for (const articlesAsArrayKey in articlesAsArray) {
+                let option = document.createElement("option")
+                option.id = "optionIdentifierArticle"
+                console.log("testing if blockblabalbalab shelves should be created now haha!")
+                // Giving the option an ID so i can pass it to the server to get the right article-template back.
+                option.value = articlesAsArray[articlesAsArrayKey]["id"]
+                option.innerText = articlesAsArray[articlesAsArrayKey]["name"]
+                article_selection.appendChild(option)
+
+                console.log("retrieved article: " + option.innerText)
+            }
+        } else {
+            document.getElementById("article").remove()
+           }
+        }

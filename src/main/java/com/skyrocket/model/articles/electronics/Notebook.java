@@ -1,12 +1,10 @@
 package com.skyrocket.model.articles.electronics;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.skyrocket.Article;
+import com.skyrocket.model.Article;
 import com.skyrocket.model.Shelve;
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -52,7 +50,7 @@ public class Notebook extends Article {
                     double batteryCapacityHealth,
                     String keyboardLayout,
                     String sideNote
-                    ) {
+    ) {
         super(id, name, amount, type, description, priceWhenBought, sellingPrice);
         this.shelve = shelve;
         this.brand = brand;
@@ -65,7 +63,6 @@ public class Notebook extends Article {
         this.batteryCapacityHealth = batteryCapacityHealth;
         this.keyboardLayout = keyboardLayout;
         this.sideNote = sideNote;
-
 
 
     }
@@ -174,5 +171,13 @@ public class Notebook extends Article {
                 ", shelve=" + shelve.getId() +
                 ", createdAt=" + this.getCreatedAt() +
                 '}';
+    }
+
+    public Shelve getShelve() {
+        return shelve;
+    }
+
+    public void setShelve(Shelve shelve) {
+        this.shelve = shelve;
     }
 }

@@ -3,7 +3,7 @@ Templates for Article subclasses like Notebooks or Smartphones
 have all Attributes from this abstract class.
  */
 
-package com.skyrocket;
+package com.skyrocket.model;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;

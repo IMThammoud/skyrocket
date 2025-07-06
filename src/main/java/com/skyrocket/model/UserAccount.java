@@ -7,21 +7,14 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @EntityListeners(AuditingEntityListener.class)
 public class UserAccount {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    @Column(unique=true)
-    private String email;
-    private String password;
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAccount")
     public List<SessionStore> sessionStore;
@@ -29,23 +22,27 @@ public class UserAccount {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAccount")
     public List<Shelve> shelve;
 
-    public UserAccount() {}
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    public UserAccount(String email, String password, LocalDateTime createdAt) {
+    @Column(unique = true)
+    private String email;
+
+    private byte[] password;
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userAccount")
+    private UserSalts salt;
+
+    public UserAccount() {
+    }
+
+    public UserAccount(final String email, final byte[] password, final LocalDateTime createdAt) {
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;
-    }
-
-
-    public UserAccount(UUID id,
-                       String email,
-                       String password,
-                       String sessionId) {
-
-        this.id = id;
-        this.email = email;
-        this.password = password;
     }
 
     public UUID getId() {
@@ -57,11 +54,11 @@ public class UserAccount {
         return this;
     }
 
-    public String getPassword() {
+    public byte[] getPassword() {
         return password;
     }
 
-    public UserAccount setPassword(String password) {
+    public UserAccount setPassword(byte[] password) {
         this.password = password;
         return this;
     }
@@ -84,7 +81,7 @@ public class UserAccount {
         return this;
     }
 
-    public UserAccount build(){
+    public UserAccount build() {
         return this;
     }
 
@@ -93,7 +90,7 @@ public class UserAccount {
         return "UserAccount{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
+                ", password='" + Arrays.toString(password) + '\'' +
                 ", creationDate=" + createdAt +
                 '}';
     }
