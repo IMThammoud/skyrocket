@@ -1,44 +1,19 @@
 ![Alt-Text](src/main/resources/static/imgs/logo-header-hippo.svg)
-### An Inventory App  (Codename Skyrocket)
-Mister-Unternehmer (Skyrocket) ist eine WebApp, die dich bei deinem Unternehmertum unterstützt.
-Sie ist auf Unternehmer ausgerichtet, die mehrere Tools an einem Ort haben möchten.
-Geplant für die vollständige Veröffentlichung sind:
-- Inventarfuntkion
-- Rechnungserstellung (Mit & ohne Konto)
-- Hilfe in Steuern und Finanzen
-- PDF-integration von erstellen von Artikelauflistungen oder Regalen
-- Generierte Links die den aktuellen Stand des Lagers spiegeln und als HTML-Seite oder PDF zurückgegeben werden, um diesen weiterzugeben oder zu teilen.
-- Erstellen eigener Artikeltypen
+An Inventory App (Codename Skyrocket)
+Mister-Unternehmer (Skyrocket) is a web app designed to support you in your entrepreneurial journey. It is aimed at entrepreneurs who want to have multiple tools in one place. The full release is planned to include inventory functionality, invoice generation (with and without an account), assistance with taxes and finances, PDF integration for creating item or shelf listings, generated links that reflect the current stock status and can be returned as an HTML page or PDF for sharing, and the ability to create custom item types. (Website currently down).
 
-Mehr auf der [Website](http://mister-unternehmer.de)
+To run the app locally, you need a MariaDB container with the following environment variables: MARIADB_USER, MARIADB_PASSWORD, MARIADB_ROOT_PASSWORD, and MARIADB_DATABASE. Additionally, the following application properties must be set:
 
-### Requirements to run locally:
-- MariaDB Container using these Envs: MARIADB_USER, MARIADB_PASSWORD, MARIADB_ROOT_PASSWORD, MARIADB_DATABASE
-- These application properties:
-```
-spring.datasource.driver-class-name= DB-Driver
-spring.datasource.name= mariadb-database
-spring.datasource.username= mariadb-user
-spring.datasource.password= mariadb-password
-spring.datasource.url= URL
-spring.jpa.show-sql=true
-spring.jpa.hibernate.ddl-auto= ddlmode
-```
-- Always make sure that there is a directory "pdf" at the root path "/"
+Properties file for db connection:
 
+spring.datasource.driver-class-name= DB-Driver  
+spring.datasource.name= mariadb-database  
+spring.datasource.username= mariadb-user  
+spring.datasource.password= mariadb-password  
+spring.datasource.url= URL  
+spring.jpa.show-sql=true  
+spring.jpa.hibernate.ddl-auto= ddlmode  
 
-#### Functionalities in progress:
-+ Inventory with different shelves, articles and services
-+ Exporting as csv, pdf or similar
-+ Displaying Item/Article/Service as View
-+ functioning login system
-+ an API connection (eBay or PayPal or something similar)
+Make sure there is always a directory named pdf at the root path /.
 
-#### ORM Migration in progress
-- ~~Registration done~~
-- ~~SessionID check on navigation done~~
-- ~~Make Shelve creation work~~
-- ~~listing shelves with new endpoints~~
-- ~~Make Article creation work~~
-- ~~Show article count in shelve view~~
-- ~~listing articles with new endpoints on the dashboard~~
+Currently in development are the following functionalities: inventory with multiple shelves, articles, and services; export as PDF or similar formats; invoice generator; display of items/articles/services as views; and a user account system.
