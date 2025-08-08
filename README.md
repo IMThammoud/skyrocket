@@ -4,7 +4,8 @@ Mister-Unternehmer (Skyrocket) is a web app designed to support you in your entr
 
 To run the app locally, you need a MariaDB container with the following environment variables: MARIADB_USER, MARIADB_PASSWORD, MARIADB_ROOT_PASSWORD, and MARIADB_DATABASE. Additionally, the following application properties must be set:
 
-Properties file for db connection:
+
+## Properties file for db connection:
 
 spring.datasource.driver-class-name= DB-Driver  
 spring.datasource.name= mariadb-database  
@@ -12,8 +13,14 @@ spring.datasource.username= mariadb-user
 spring.datasource.password= mariadb-password  
 spring.datasource.url= URL  
 spring.jpa.show-sql=true  
-spring.jpa.hibernate.ddl-auto= ddlmode  
+spring.jpa.hibernate.ddl-auto= ddlmode  (create, validate.. etc)
 
-Make sure there is always a directory named pdf at the root path /.
+## If DB and App are containerized:
+Create a network using docker or podman.
+Throw app and DB into seperate containers and run them on the same network. Use the DB-Name as Host in the Apps credentials for the Database connection (application.properties).
+Regarding spring.datasource.url= URL (Host is DB-Container Name. Example: jdbc:mariadb//mariadb_container:3306/DBNAME). The Springboot-App and The Database should be containerized and in the same network for this to work.
+The other Credentials for the mariaDB container should match the credentials you set in the application.properties or yml (Username etc.)
 
-Currently in development are the following functionalities: inventory with multiple shelves, articles, and services; export as PDF or similar formats; invoice generator; display of items/articles/services as views; and a user account system.
+## Important directory for pdfs
+Make sure there is always a directory named "pdf" at the same path where the App is executed from.
+
