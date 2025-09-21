@@ -1,4 +1,7 @@
 ![Alt-Text](src/main/resources/static/imgs/logo-header-hippo.svg)
+
+Available on: [mister-unternehmer.de](https://mister-unternehmer.de)
+
 An Inventory App (Codename Skyrocket)
 Mister-Unternehmer (Skyrocket) is a web app designed to support you in your entrepreneurial journey. It is aimed at entrepreneurs who want to have multiple tools in one place. The full release is planned to include inventory functionality, invoice generation (with and without an account), assistance with taxes and finances, PDF integration for creating item or shelf listings, generated links that reflect the current stock status and can be returned as an HTML page or PDF for sharing, and the ability to create custom item types. (Website currently down).
 
@@ -14,6 +17,5 @@ spring.datasource.url= URL
 spring.jpa.show-sql=true  
 spring.jpa.hibernate.ddl-auto= ddlmode  
 
-Make sure there is always a directory named pdf at the root path /.
+**Make sure there is always a directory named pdf at the root path where the application is ran from: /.**
 
-Currently in development are the following functionalities: inventory with multiple shelves, articles, and services; export as PDF or similar formats; invoice generator; display of items/articles/services as views; and a user account system.
