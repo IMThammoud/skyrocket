@@ -48,11 +48,12 @@ public class PDFCreatorWithOpenPDF {
 
         this.document.open();
 
-        // Add logo
+        /* Add logo
         Image logo = Image.getInstance("invoice_demo_icon.jpeg");
         logo.scaleToFit(60, 60);
         logo.setAlignment(Image.ALIGN_LEFT);
         document.add(logo);
+         */
 
         // Add invoice title and date
         PdfPTable headerTable = new PdfPTable(2);
